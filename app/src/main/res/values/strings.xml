@@ -3,13 +3,13 @@
 
     <!--  speech-synthesis-credentials --> 
     <string name="SpeechSynthesisUsername">578750bf-9635-4dfc-8616-ca1b74cf80f8</string>
-     <string name="SpeechSynthesisPassword"></string>
+     <string name="SpeechSynthesisPassword">cpkgGis5qZ7F</string>
      <string name="SpeechSynthesisURLTokenFactory">https://stream.watsonplatform.net/text-to-speech/api</string> 
 
 
     <!-- speech-recognition-credentials --> 
     <string name="SpeechRecognitionUsername">ad9d9c5f-b291-43e5-a238-9a3e6bf034f0</string> 
-    <string name="SpeechRecognitionPassword"></string> 
+    <string name="SpeechRecognitionPassword">msZ5NI8AaK15</string> 
     <string name="SpeechRecognitionURLTokenFactory">https://stream.watsonplatform.net/speech-to-text/api</string> 
 
 
