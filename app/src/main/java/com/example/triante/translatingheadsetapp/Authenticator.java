@@ -1,12 +1,14 @@
 package com.example.triante.translatingheadsetapp;
 
+import java.io.IOException;
+
 /**
  * Created by Jorge Aguiniga on 10/7/2016.
  */
 
 public interface Authenticator {
 
-    public void createAuthToken();
+    public void createAuthToken() throws IOException;
     public boolean isExpired();
-    public void getAuthToken();
+    public String getAuthToken();
 }

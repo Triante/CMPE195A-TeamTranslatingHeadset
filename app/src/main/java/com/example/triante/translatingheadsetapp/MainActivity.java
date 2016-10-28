@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ibm.watson.developer_cloud.android.speech_to_text.v1.ISpeechDelegate;
@@ -13,6 +14,7 @@ import com.ibm.watson.developer_cloud.android.speech_to_text.v1.SpeechToText;
 import com.ibm.watson.developer_cloud.android.speech_to_text.v1.dto.SpeechConfiguration;
 import com.ibm.watson.developer_cloud.android.text_to_speech.v1.TextToSpeech;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -20,12 +22,20 @@ public class MainActivity extends AppCompatActivity implements ISpeechDelegate, 
 
     Button bSpeechRecognition, bSpeechSynthesis, bTranslate;
     EditText editTextField;
+    TextView translatedTextView;
     boolean isInRecording = false;
+    MSTranslator translator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        try {
+            translator = new MSTranslator();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         //Instantiation of SpeechToText
         String sttURL = getString(R.string.SpeechRecognitionURLTokenFactory);
         String sstUsername = getString(R.string.SpeechRecognitionUsername);
@@ -57,16 +67,12 @@ public class MainActivity extends AppCompatActivity implements ISpeechDelegate, 
         bSpeechSynthesis = (Button) findViewById(R.id.bSpeechSynthesis);
         bTranslate = (Button) findViewById(R.id.bTranslate);
         editTextField = (EditText) findViewById(R.id.editTextDemo);
+        translatedTextView = (TextView) findViewById(R.id.translatedTextView);
         editTextField.setText(ttsURL);
 
         bSpeechRecognition.setOnClickListener(this);
         bSpeechSynthesis.setOnClickListener(this);
-        bTranslate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this.getApplicationContext(), "Micorsoft's Cognitive Service not implemented yet.", Toast.LENGTH_SHORT).show();
-            }
-        });
+        bTranslate.setOnClickListener(this);
 
     }
 
@@ -93,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements ISpeechDelegate, 
 
             @Override
             public void run() {
-                editTextField.setText(mes);
+                translatedTextView.setText(mes);
             }
         });
 
@@ -142,6 +148,27 @@ public class MainActivity extends AppCompatActivity implements ISpeechDelegate, 
                 String toSpeech = editTextField.getText().toString();
                 TextToSpeech.sharedInstance().setVoice("en-US_MichaelVoice");
                 TextToSpeech.sharedInstance().synthesize(toSpeech);
+                break;
+            case R.id.bTranslate:
+                final String input = editTextField.getText().toString();
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... none) {
+                        try {
+                            final String output = translator.translate(input, "en", "de");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    translatedTextView.setText(output);
+                                }
+                            });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
+                }.execute();
+
                 break;
         }
     }
