@@ -46,7 +46,10 @@ public class MSTranslator {
                 buffer.append(line);
             }
             connection.disconnect();
-            return buffer.toString();
+            String translation = buffer.toString();
+            translation = translation.replace("<string xmlns=\"http://schemas.microsoft.com/2003/10/Serialization/\">", "");
+            translation = translation.replace("</string>", "");
+            return translation;
         }
         return "ERROR: " + connection.getResponseCode();
     }

@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements ISpeechDelegate, 
         //Instantiation of TextToSpeech
         String ttsURL = getString(R.string.SpeechSynthesisURLTokenFactory);
         String ttsUsername = getString(R.string.SpeechSynthesisUsername);
-        String ttsPass = getString(R.string.SpeechRecognitionPassword);
+        String ttsPass = getString(R.string.SpeechSynthesisPassword);
         String ttsServiceURL = "https://stream.watsonplatform.net/text-to-speech/api";
         try {
             TextToSpeech.sharedInstance().initWithContext(new URI(ttsServiceURL));

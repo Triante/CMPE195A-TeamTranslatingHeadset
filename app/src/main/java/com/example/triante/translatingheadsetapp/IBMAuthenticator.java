@@ -10,17 +10,8 @@ import java.net.URL;
 
 public class IBMAuthenticator implements Authenticator {
 
-    private String client, pass;
-    private final String DATAMARKET_ACCESS = "https://datamarket.accesscontrol.windows.net/v2/OAuth2-13";
     public IBMAuthenticator() throws IOException {
 
-
-        URL url = new URL("https://api.datamarket.azure.com/Bing/MicrosoftTranslator/v1/Translate");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setReadTimeout(50000);
-        connection.setConnectTimeout(65000);
-        connection.setRequestMethod("GET");
-        connection.connect();
     }
 
     @Override
