@@ -9,12 +9,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+
+import static com.example.triante.translatingheadsetapp.R.id.translatedTextView;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     public Button bSpeechRecognition, bSpeechSynthesis, bTranslate;
     private IBMSpeechToText stt;
     private IBMTextToSpeech tts;
     public EditText editTextField;
+    public TextView translatedTextView;
     boolean isInRecording = false;
     MSTranslator translator;
 
@@ -28,31 +33,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
 
-        //Instantiation of SpeechToText
-        String sttURL = getString(R.string.SpeechRecognitionURLTokenFactory);
-        String sstUsername = getString(R.string.SpeechRecognitionUsername);
-        String sstPass = getString(R.string.SpeechRecognitionPassword);
-        String sstServiceURL = "wss://stream.watsonplatform.net/speech-to-text/api";
-        try {
-            SpeechToText.sharedInstance().initWithContext(new URI(sstServiceURL), this.getApplicationContext(), new SpeechConfiguration());
-            SpeechToText.sharedInstance().setCredentials(sstUsername, sstPass);
-            SpeechToText.sharedInstance().setDelegate(this);
-        } catch (URISyntaxException e) {
-            Toast.makeText(this.getApplicationContext(), "IBM Watson's Speech Recognition Failed to Authenticate", Toast.LENGTH_SHORT).show();
-        }
-
         stt = new IBMSpeechToText(this);
         tts = new IBMTextToSpeech(this);
-
-            Toast.makeText(this.getApplicationContext(), "IBM Watson's Speech Synthesis Failed to Authenticate", Toast.LENGTH_SHORT).show();
-        }
 
         bSpeechRecognition = (Button) findViewById(R.id.bSpeechRecognition);
         bSpeechSynthesis = (Button) findViewById(R.id.bSpeechSynthesis);
         bTranslate = (Button) findViewById(R.id.bTranslate);
         editTextField = (EditText) findViewById(R.id.editTextDemo);
         translatedTextView = (TextView) findViewById(R.id.translatedTextView);
-        editTextField.setText(ttsURL);
 
         bSpeechRecognition.setOnClickListener(this);
         bSpeechSynthesis.setOnClickListener(this);
@@ -68,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     new AsyncTask<Void, Void, Void>() {
                         @Override
                         protected Void doInBackground(Void... none) {
-                            stt.end()
+                            stt.end();
                             return null;
                         }
                     }.execute();
@@ -93,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.bSpeechSynthesis:
-                tts.synthesize(editTextField.getText().toString(), "");
+                tts.synthesize(translatedTextView.getText().toString(), "");
                 break;
             case R.id.bTranslate:
                 final String input = editTextField.getText().toString();

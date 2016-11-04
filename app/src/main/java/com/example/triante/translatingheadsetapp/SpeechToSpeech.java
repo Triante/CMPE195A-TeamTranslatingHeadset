@@ -1,5 +1,7 @@
 package com.example.triante.translatingheadsetapp;
 
+import java.io.IOException;
+
 /**
  * Created by Jorge Aguiniga on 10/7/2016.
  */
@@ -15,7 +17,11 @@ public class SpeechToSpeech {
     public SpeechToSpeech (MainActivity instance) {
         speaker = new Speaker(instance);
         microphone = new Microphone(instance);
-        translator = new MSTranslator();
+        try {
+            translator = new MSTranslator();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         speech = "";
     }
 
