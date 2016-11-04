@@ -2,9 +2,7 @@ package com.example.triante.translatingheadsetapp;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 
 /**
  * Created by Jorge Aguiniga on 10/7/2016.
@@ -36,7 +34,7 @@ public class IBMAuthenticator implements Authenticator {
     }
 
     @Override
-    public void getAuthToken() {
-
+    public String getAuthToken() {
+        return  "";
     }
 }
