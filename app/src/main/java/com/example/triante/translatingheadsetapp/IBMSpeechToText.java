@@ -31,7 +31,6 @@ public class IBMSpeechToText implements ISpeechDelegate {
         this.instance = instance;
 
         //Instantiation of SpeechToText
-        String sttURL = instance.getString(R.string.SpeechRecognitionURLTokenFactory);
         String sstUsername = instance.getString(R.string.SpeechRecognitionUsername);
         String sstPass = instance.getString(R.string.SpeechRecognitionPassword);
         String sstServiceURL = "wss://stream.watsonplatform.net/speech-to-text/api";

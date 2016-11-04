@@ -6,6 +6,8 @@ import android.widget.Toast;
 import com.ibm.watson.developer_cloud.android.speech_to_text.v1.ISpeechDelegate;
 import com.ibm.watson.developer_cloud.android.text_to_speech.v1.TextToSpeech;
 
+import org.w3c.dom.Text;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
