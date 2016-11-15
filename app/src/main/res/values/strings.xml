@@ -3,14 +3,52 @@
 
     <!--  speech-synthesis-credentials --> 
     <string name="SpeechSynthesisUsername">578750bf-9635-4dfc-8616-ca1b74cf80f8</string>
-     <string name="SpeechSynthesisPassword">cpkgGis5qZ7F</string>
-     <string name="SpeechSynthesisURLTokenFactory">https://stream.watsonplatform.net/text-to-speech/api</string> 
+     
+    <string name="SpeechSynthesisPassword"></string>
+     <string name="SpeechSynthesisURLTokenFactory">https://stream.watsonplatform.net/text-to-speech/api</string>
+     
 
 
     <!-- speech-recognition-credentials --> 
     <string name="SpeechRecognitionUsername">ad9d9c5f-b291-43e5-a238-9a3e6bf034f0</string> 
-    <string name="SpeechRecognitionPassword">msZ5NI8AaK15</string> 
-    <string name="SpeechRecognitionURLTokenFactory">https://stream.watsonplatform.net/speech-to-text/api</string> 
+    <string name="SpeechRecognitionPassword"></string> 
+    <string name="SpeechRecognitionURLTokenFactory">https://stream.watsonplatform.net/speech-to-text/api</string>
+
+    <string-array name="MyLanguageArray">
+        <item>US English</item>
+        <item>UK English</item>
+        <item>Spanish</item>
+        <item>French</item>
+        <item>Japanese</item>
+        <item>Brazilian Portuguese</item>
+        <item>Mandarin Chinese</item>
+    </string-array>
+
+    <string-array name="ResponseLanguageAvailable">
+        <item>US English-Male</item>
+        <item>US English-Female</item>
+        <item>UK English</item>
+        <item>French</item>
+        <item>German-Male</item>
+        <item>German-Female</item>
+        <item>Italian</item>
+        <item>Japanese</item>
+        <item>Brazilian Portuguese</item>
+        <item>Castilian Spanish-Male</item>
+        <item>Castilian Spanish-Female</item>
+        <item>Mexican Spanish</item>
+    </string-array>
+
+    <string-array name="LanguageArray">
+        <item>US English</item>
+        <item>UK English</item>
+        <item>SP Spanish</item>
+        <item>MX Spanish</item>
+        <item>French</item>
+        <item>Japanese</item>
+        <item>Brazilian Portuguese</item>
+    </string-array>
+     
 
 
 </resources>

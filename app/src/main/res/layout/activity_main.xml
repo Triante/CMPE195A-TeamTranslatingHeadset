@@ -27,19 +27,19 @@
         android:layout_below="@+id/bSpeechRecognition"
         android:layout_centerHorizontal="true" />
 
-    <EditText
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:hint="Write or Speak Demo"
-        android:ems="10"
         android:id="@+id/editTextDemo"
         android:gravity="center"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:text="Translatalk Demo"
+        android:textSize="30sp"
+        android:textColor="#000025"/>
 
     <Button
         android:text="Translate To..."
@@ -51,6 +51,7 @@
 
     <TextView
         android:text="Try to translate something!"
+        android:paddingTop="8dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/bTranslate"
@@ -60,4 +61,23 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true" />
+
+    <Button
+        android:text="Settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bSpeechRecognition"
+        android:layout_toRightOf="@+id/bSpeechSynthesis"
+        android:layout_toEndOf="@+id/bSpeechSynthesis"
+        android:id="@+id/bOptions" />
+
+    <Button
+        android:text="TEST"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bTest"
+        android:layout_alignBaseline="@+id/bSpeechSynthesis"
+        android:layout_alignBottom="@+id/bSpeechSynthesis"
+        android:layout_toLeftOf="@+id/bSpeechSynthesis"
+        android:layout_toStartOf="@+id/bSpeechSynthesis" />
 </RelativeLayout>

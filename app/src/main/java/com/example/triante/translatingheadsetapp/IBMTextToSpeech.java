@@ -1,15 +1,11 @@
 package com.example.triante.translatingheadsetapp;
 
 import android.content.Context;
-import android.widget.Toast;
+import android.os.AsyncTask;
 
-import com.ibm.watson.developer_cloud.android.speech_to_text.v1.ISpeechDelegate;
-import com.ibm.watson.developer_cloud.android.text_to_speech.v1.TextToSpeech;
-
-import org.w3c.dom.Text;
-
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.ibm.watson.developer_cloud.android.library.audio.StreamPlayer;
+import com.ibm.watson.developer_cloud.text_to_speech.v1.TextToSpeech;
+import com.ibm.watson.developer_cloud.text_to_speech.v1.model.Voice;
 
 /**
  * Created by Jorge Aguiniga on 10/7/2016.
@@ -17,30 +13,32 @@ import java.net.URISyntaxException;
 
 public class IBMTextToSpeech {
 
+    TextToSpeech textToSpeech;
+    StreamPlayer player = new StreamPlayer();
+
 
     public IBMTextToSpeech (Context instance)
     {
-
         //Instantiation of TextToSpeech
         String ttsURL = instance.getString(R.string.SpeechSynthesisURLTokenFactory);
         String ttsUsername = instance.getString(R.string.SpeechSynthesisUsername);
         String ttsPass = instance.getString(R.string.SpeechSynthesisPassword);
         String ttsServiceURL = "https://stream.watsonplatform.net/text-to-speech/api";
-        try {
-            TextToSpeech.sharedInstance().initWithContext(new URI(ttsServiceURL));
-            TextToSpeech.sharedInstance().setCredentials(ttsUsername, ttsPass);
-        }
-        catch (URISyntaxException e) {
-
-            Toast.makeText(instance.getApplicationContext(), "IBM Watson's Speech Synthesis Failed to Authenticate", Toast.LENGTH_SHORT).show();
-        }
-
+        textToSpeech = new TextToSpeech();
+        textToSpeech.setUsernameAndPassword(ttsUsername, ttsPass);
     }
 
     public void synthesize(String speech, String language) {
-        TextToSpeech.sharedInstance().setVoice("en-US_MichaelVoice");
-        TextToSpeech.sharedInstance().synthesize(speech);
+        new SynthesizeTask().execute(speech);
     }
 
+    private class SynthesizeTask extends AsyncTask<String, Void, String> {
+
+        @Override protected String doInBackground(String... params) {
+            Voice responseVoice = Language.getResponseLanguageVoice();
+            player.playStream(textToSpeech.synthesize(params[0], responseVoice).execute());
+            return "Did syntesize";
+        }
+    }
 
 }

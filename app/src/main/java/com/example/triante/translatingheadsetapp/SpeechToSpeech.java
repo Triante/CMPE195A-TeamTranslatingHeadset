@@ -1,5 +1,7 @@
 package com.example.triante.translatingheadsetapp;
 
+import android.os.AsyncTask;
+
 import java.io.IOException;
 
 /**
@@ -39,8 +41,36 @@ public class SpeechToSpeech {
         return true;
     }
 
-    public void stopListening () {
+    public void stopListening () throws IOException {
         microphone.end();
     }
 
+    private class SpeechToTextRunnable implements Runnable {
+
+        @Override
+        public void run() {
+
+        }
+
+        private void record() {
+
+        }
+
+        private void stop() {
+
+        }
+    }
+
+    private class TextToTranslatedSpeechRunnable extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
+    }
 }

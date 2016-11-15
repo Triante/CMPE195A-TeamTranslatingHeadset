@@ -1,5 +1,6 @@
 package com.example.triante.translatingheadsetapp;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,21 +8,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
 
-import static com.example.triante.translatingheadsetapp.R.id.translatedTextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public Button bSpeechRecognition, bSpeechSynthesis, bTranslate;
+    public Button bSpeechRecognition, bSpeechSynthesis, bTranslate, bTest, bSettings;
     private IBMSpeechToText stt;
     private IBMTextToSpeech tts;
-    public EditText editTextField;
+    public TextView editTextField;
     public TextView translatedTextView;
     boolean isInRecording = false;
     MSTranslator translator;
+    Language language;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,17 +35,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         stt = new IBMSpeechToText(this);
         tts = new IBMTextToSpeech(this);
+        //language = new Language(this);
 
         bSpeechRecognition = (Button) findViewById(R.id.bSpeechRecognition);
         bSpeechSynthesis = (Button) findViewById(R.id.bSpeechSynthesis);
         bTranslate = (Button) findViewById(R.id.bTranslate);
-        editTextField = (EditText) findViewById(R.id.editTextDemo);
+        bSettings = (Button) findViewById(R.id.bOptions);
+        editTextField = (TextView) findViewById(R.id.editTextDemo);
         translatedTextView = (TextView) findViewById(R.id.translatedTextView);
+        editTextField.setClickable(false);
 
         bSpeechRecognition.setOnClickListener(this);
         bSpeechSynthesis.setOnClickListener(this);
         bTranslate.setOnClickListener(this);
+        bSettings.setOnClickListener(this);
 
+        bTest = (Button) findViewById(R.id.bTest);
+        bTest.setOnClickListener(this);
     }
 
     @Override
@@ -56,7 +62,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     new AsyncTask<Void, Void, Void>() {
                         @Override
                         protected Void doInBackground(Void... none) {
-                            stt.end();
+                            try {
+                                stt.end();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                             return null;
                         }
                     }.execute();
@@ -84,12 +94,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 tts.synthesize(translatedTextView.getText().toString(), "");
                 break;
             case R.id.bTranslate:
-                final String input = editTextField.getText().toString();
+                final String input = translatedTextView.getText().toString();
                 new AsyncTask<Void, Void, Void>() {
                     @Override
                     protected Void doInBackground(Void... none) {
                         try {
-                            final String output = translator.translate(input, "en", "de");
+                            String myCode = Language.getMyLanguageCode();
+                            String RespCode = Language.getResponseLanguageCode();
+                            final String output = translator.translate(input, myCode, RespCode);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -103,6 +115,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }.execute();
 
+                break;
+            case R.id.bTest:
+                //language.getSupportedSpeech();
+                break;
+            case R.id.bOptions:
+                Intent options = new Intent(this, SettingsActivity.class);
+                startActivity(options);
                 break;
         }
     }

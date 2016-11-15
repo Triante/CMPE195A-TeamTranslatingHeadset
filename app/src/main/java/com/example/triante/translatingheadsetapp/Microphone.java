@@ -2,6 +2,8 @@ package com.example.triante.translatingheadsetapp;
 
 import android.bluetooth.BluetoothDevice;
 
+import java.io.IOException;
+
 /**
  * Created by Jorge Aguiniga on 10/7/2016.
  */
@@ -21,7 +23,7 @@ public class Microphone {
         return speechToTextConverter.speech();
     }
 
-    public void end() {
+    public void end() throws IOException {
         speechToTextConverter.end();
     }
 

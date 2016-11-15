@@ -24,7 +24,7 @@ import java.util.Timer;
 public class MSAuthenticator implements Authenticator {
 
 
-    private String client = "cmpe195a-translating-headset", pass = "MdBJTh3PgMh0Z2qoh9WTaxadPf/toSMT3PZTWH/9qZA=";
+    private String client = "cmpe195a-translating-headset", pass = "";
     private final String DATAMARKET_ACCESS = "https://datamarket.accesscontrol.windows.net/v2/OAuth2-13";
     private AdmAccessToken token;
 
