@@ -11,26 +11,34 @@ import java.net.Authenticator;
  * Created by Jorge Aguiniga on 10/7/2016.
  */
 
+/* Class for translating text from one language to another*/
 public class MSTranslator {
 
-    private String inputText;
-    private String outPutText;
-    private String languageFrom;
-    private String languageTo;
+    private String inputText; //placeholder for text in language retrieved from speech-to-text
+    private String outPutText; //placeholder for translated text
+    private String languageFrom; //language to translate from
+    private String languageTo; //language to translate to
     private MSAuthenticator authenticator;
 
     public MSTranslator() throws IOException {
         authenticator = new MSAuthenticator();
     }
 
+    /* Method that takes input text in one language and translates that text to another language */
     public String translate(String inputText, String languageFrom, String languageTo) throws IOException {
+        
+        /* Define text and languages*/
         this.inputText = inputText;
         this.languageFrom = languageFrom;
         this.languageTo = languageTo;
+        
+        /* Define uri and access token*/
         String marketUri = "http://api.microsofttranslator.com/v2/Http.svc/Translate?text=";
         String contextUri = URLEncoder.encode(inputText, "UTF-8") + "&from=" + languageFrom + "&to=" + languageTo;
         String authToken = authenticate();
         String uri = marketUri + contextUri;
+        
+        /* Establish an HTTP connection to Microsoft's server*/
         URL url = new URL(uri);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Authorization", authToken);
@@ -38,15 +46,20 @@ public class MSTranslator {
         connection.connect();
         System.out.println();
 
+        /* Checks if connection was succesfully created*/
         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
             StringBuffer buffer = new StringBuffer();
             String line;
+            
+            /* Grab translated text as an XML document from the cloud*/
             while ((line = reader.readLine()) != null) {
                 buffer.append(line);
             }
             connection.disconnect();
             String translation = buffer.toString();
+            
+            /* Extract translated text from the XML*/
             translation = translation.replace("<string xmlns=\"http://schemas.microsoft.com/2003/10/Serialization/\">", "");
             translation = translation.replace("</string>", "");
             return translation;
@@ -54,6 +67,7 @@ public class MSTranslator {
         return "ERROR: " + connection.getResponseCode();
     }
 
+    /* Method used to get the existing token for the current client*/
     private String authenticate() throws IOException {
         if (authenticator.isExpired()) {
             authenticator.createAuthToken();
