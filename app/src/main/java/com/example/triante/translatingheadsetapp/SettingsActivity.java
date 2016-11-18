@@ -8,30 +8,38 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+/* Activity used for allowing user to change languages*/
 public class SettingsActivity extends AppCompatActivity {
 
-    private int myLanguage = 0;
-    private int respLanguage = 0;
+    private int myLanguage = 0; //User's preferred language
+    private int respLanguage = 0; //Other party's preferred language
 
-    private Spinner spinMyLang, spinRespLang;
-    private Button bSave;
+    private Spinner spinMyLang, spinRespLang; //Spinners used for displaying all possible languages
+    private Button bSave; //Button for saving preferences
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        
+        /* Initializes and starts the view*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
+        
+        /* Initializes the sae button*/
         bSave = (Button) findViewById(R.id.bSave);
-
+        
+        /* Initializes the spinners used to hold the language options*/
         spinMyLang = (Spinner) findViewById(R.id.spinMyLang);
         spinRespLang = (Spinner) findViewById(R.id.spinRespLang);
         initiateSpinnerPositionValues();
         spinMyLang.setSelection(myLanguage);
         spinRespLang.setSelection(respLanguage);
-
+        
+        /* Sets the on click listeners for the button and spinners */
         spinMyLang.setOnItemSelectedListener(new SpinnerSelectionListener(true));
         spinRespLang.setOnItemSelectedListener(new SpinnerSelectionListener(false));
+        
+        /* Defines the on click listener for the save button*/
         bSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,8 +49,9 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
+    /* Method to save the language settings for the session*/
     private void save() {
-        switch (myLanguage) {
+        switch (myLanguage) { //checks what language was chosen for the user preferred language
             case 0:
                 Language.setLanguage(true, Language.LanguageSelect.ENGLISH_M);
                 break;
@@ -65,7 +74,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Language.setLanguage(true, Language.LanguageSelect.MANDARIN);
                 break;
         }
-        switch (respLanguage) {
+        switch (respLanguage) { //checks what language was chosen for the other party's preferred language
             case 0:
                 Language.setLanguage(false, Language.LanguageSelect.ENGLISH_M);
                 break;
@@ -105,8 +114,9 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    /* Defines all the options for the spinners*/
     private void initiateSpinnerPositionValues() {
-        switch (Language.getLanguage(true)) {
+        switch (Language.getLanguage(true)) { //Sets the language values for the user's language preference
             case ENGLISH_M:
                 myLanguage = 0;
                 break;
@@ -130,7 +140,7 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
         }
 
-        switch (Language.getLanguage(false)) {
+        switch (Language.getLanguage(false)) { //Sets the language values for the other party's language preference
             case ENGLISH_M:
                 respLanguage = 0;
                 break;
@@ -170,6 +180,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    /* Inner class for managing the data that is retrieved from each option of the spinners*/
     private class SpinnerSelectionListener implements AdapterView.OnItemSelectedListener {
 
         private boolean isMyLanguage;
@@ -177,16 +188,18 @@ public class SettingsActivity extends AppCompatActivity {
         public SpinnerSelectionListener(boolean myLanguage) {
             isMyLanguage = myLanguage;
         }
-
+        
+        /* Method to store the language chosen when user selects one of the options*/
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if (isMyLanguage) myLanguage = position;
             else respLanguage = position;
         }
-
+        
+        /* Method to contorl what happens when none of the options are selected */
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
-
+            //No implementation yet
         }
     }
 }
