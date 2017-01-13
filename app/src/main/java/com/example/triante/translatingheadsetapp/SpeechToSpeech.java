@@ -19,12 +19,11 @@ public class SpeechToSpeech {
     private String languageTo; //language to translate to/playback
 
     public SpeechToSpeech (MainActivity instance) {
-        
         /* Initialize all objects*/
         speaker = new Speaker(instance);
         microphone = new Microphone(instance);
         try {
-            translator = new MSTranslator();
+            translator = new MSTranslator(instance);
         } catch (IOException e) {
             e.printStackTrace();
         }

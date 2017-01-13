@@ -1,5 +1,7 @@
 package com.example.triante.translatingheadsetapp;
 
+import android.content.Context;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -19,9 +21,11 @@ public class MSTranslator {
     private String languageFrom; //language to translate from
     private String languageTo; //language to translate to
     private MSAuthenticator authenticator;
+    private Context instance;
 
-    public MSTranslator() throws IOException {
-        authenticator = new MSAuthenticator();
+    public MSTranslator(MainActivity instance) throws IOException {
+        this.instance = instance;
+        authenticator = new MSAuthenticator(instance);
     }
 
     /* Method that takes input text in one language and translates that text to another language */
@@ -33,9 +37,9 @@ public class MSTranslator {
         this.languageTo = languageTo;
         
         /* Define uri and access token*/
-        String marketUri = "http://api.microsofttranslator.com/v2/Http.svc/Translate?text=";
-        String contextUri = URLEncoder.encode(inputText, "UTF-8") + "&from=" + languageFrom + "&to=" + languageTo;
+        String marketUri = instance.getString(R.string.MicrosoftTranslateTranslatorURL);
         String authToken = authenticate();
+        String contextUri = "?text=" + URLEncoder.encode(inputText, "UTF-8") + "&from=" + languageFrom + "&to=" + languageTo;
         String uri = marketUri + contextUri;
         
         /* Establish an HTTP connection to Microsoft's server*/
@@ -72,7 +76,7 @@ public class MSTranslator {
         if (authenticator.isExpired()) {
             authenticator.createAuthToken();
         }
-        return  "Bearer" + " " + authenticator.getAuthToken();
+        return  authenticator.getAuthToken();
     }
 
 }

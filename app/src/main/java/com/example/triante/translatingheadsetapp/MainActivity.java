@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         
         /* Attempt to initialize Translator model*/
         try {
-            translator = new MSTranslator();
+            translator = new MSTranslator(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -136,7 +136,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
             case R.id.bTest: //Testing method (not yet finished)
-                //language.getSupportedSpeech();
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        try {
+                            MSAuthenticator auth = new MSAuthenticator(MainActivity.this);
+                            auth.createAuthToken();
+                            final String token = auth.getAuthToken();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    translatedTextView.setText(token);
+                                }
+                            });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
+                }.execute();
                 break;
             case R.id.bOptions: //Settings button listener
                 Intent options = new Intent(this, SettingsActivity.class); 
