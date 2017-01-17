@@ -24,7 +24,7 @@ public class Speaker {
     }
 
     /* Method used to perform playback to a device*/
-    public void synthesizeSpeech(String speech) {
-        textToSpeechConverter.synthesize(speech, languageTo);
+    public void synthesizeSpeech(String speech, int user) {
+        textToSpeechConverter.synthesize(speech, "");
     }
 }

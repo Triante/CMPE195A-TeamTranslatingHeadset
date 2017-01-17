@@ -1,5 +1,6 @@
 package com.example.triante.translatingheadsetapp;
 
+import com.ibm.watson.developer_cloud.android.library.audio.AmplitudeListener;
 import com.ibm.watson.developer_cloud.android.library.audio.MicrophoneInputStream;
 import com.ibm.watson.developer_cloud.android.library.audio.utils.ContentType;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
@@ -8,15 +9,17 @@ import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechResults;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.websocket.BaseRecognizeCallback;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by Jorge Aguiniga on 10/7/2016.
  */
 
 /* Main class for converting speech input into text based on a user-specified language input */
-public class IBMSpeechToText  {
+public class IBMSpeechToText {
     private MainActivity instance; //instance of the main activity to send information from this class to the activity UI
-    private String message; //placeholder for the speech being converted
+    private String message = ""; //placeholder for the speech being converted
+    private ArrayList<String> messagesRecognized;
     private double amplitude; //placeholder for the peak amplitude of the speech input
 
     private SpeechToText speechToText; //IBM-specific speech-to-text object
@@ -26,6 +29,7 @@ public class IBMSpeechToText  {
     public IBMSpeechToText(MainActivity instance)
     {
         this.instance = instance;
+        messagesRecognized = new ArrayList<>();
 
         /* Credential initialization for getting access to IBM Watson cloud service */
         String sstUsername = instance.getString(R.string.SpeechRecognitionUsername);
@@ -42,9 +46,30 @@ public class IBMSpeechToText  {
     }
 
     /* Getter for extracting current speech converted by the IBM Speech-to-Text object */
-    public String speech()
+    public synchronized Transcript speech()
     {
-        return message;
+        if (isMessageRecognizedEmpty()) return null;
+        int index = messagesRecognized.size()-1;
+        message = messagesRecognized.remove(index);
+        Transcript transcript = new Transcript(message, 0);
+        return transcript;
+    }
+
+    public synchronized boolean isSpeechAvailable() {
+        if (messagesRecognized.isEmpty()) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    private synchronized void addToMessagesRecognized(String temp) {
+        messagesRecognized.add(0, temp);
+    }
+
+    private synchronized boolean isMessageRecognizedEmpty() {
+        return messagesRecognized.isEmpty();
     }
 
     /* Method to begin the recording process*/
@@ -55,12 +80,24 @@ public class IBMSpeechToText  {
         
         
         micInput =  new MicrophoneInputStream(true);
+        /*
+        Could be used to create two different micInputs with different AmplitudeListeners, one for user and another for party
+        Therefore two different speechToText services running, one for user and another for party
+        One SpeechToText Service is needed for one language and another service for the second language
+        Each language will have therefore different Recognize options that only happen when a certain amplitude range is reached
+        */
+//        AmplitudeListener listener = new AmplitudeListener() {
+//            @Override
+//            public void onSample(double amplitude, double volume) {
+//
+//            }
+//        };
         
         /* Make the recording its own separate process */
         new Thread(new Runnable() {
             @Override
             public void run() {
-                MicrophoneRecognizeCallback callback = new MicrophoneRecognizeCallback(); //Creat a message retrieving object
+                MicrophoneRecognizeCallback callback = new MicrophoneRecognizeCallback(); //Create a message retrieving object
                 RecognizeOptions options = getRecognizeOptions(); //Create an option object for speech preferences
                 speechToText.recognizeUsingWebSocket(micInput, options, callback); //Initialize recognizer with defined preferences
             }
@@ -100,12 +137,15 @@ public class IBMSpeechToText  {
         public void onTranscription(SpeechResults speechResults) {
             /* Does not continue if the system is not recording */
             if(!isInRecording) return;
-            
-            /* Extracts the converted speech and stores it in a string */
-            System.out.println(speechResults);
-            message = speechResults.getResults().get(0).getAlternatives().get(0).getTranscript();
-            final String mes = message;
-            
+
+            String temp = speechResults.getResults().get(0).getAlternatives().get(0).getTranscript();
+            //message = temp + "\nFinal: " +  speechResults.isFinal();
+            //final String mes = message;
+
+            if (speechResults.getResults().get(0).isFinal()) {
+                addToMessagesRecognized(temp);
+            }
+            final String mes = temp;
             /* Writes the text to a text field on the current activity UI */
             instance.runOnUiThread(new Runnable()
                 {

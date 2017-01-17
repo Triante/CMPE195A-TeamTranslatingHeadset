@@ -5,6 +5,7 @@ import com.ibm.watson.developer_cloud.text_to_speech.v1.model.Voice;
 import java.io.Serializable;
 
 import static com.example.triante.translatingheadsetapp.Language.LanguageSelect.ENGLISH_F;
+import static com.example.triante.translatingheadsetapp.Language.LanguageSelect.SPANISH_F;
 
 /**
  * Created by Jorge Aguiniga on 10/7/2016.
@@ -20,7 +21,7 @@ public class Language implements Serializable {
     }
     
     private static LanguageSelect myLanguage = ENGLISH_F; //placeholder for the user's preferred language
-    private static LanguageSelect responseLanguage = ENGLISH_F; //placeholder for the other party's preferred language
+    private static LanguageSelect responseLanguage = SPANISH_F; //placeholder for the other party's preferred language
 
     /* Getter for the current language saved as the user's preferred language */
     public static String getMyLanguageCode() {

@@ -3,6 +3,9 @@ package com.example.triante.translatingheadsetapp;
 import android.os.AsyncTask;
 
 import java.io.IOException;
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.concurrent.Executor;
 
 /**
  * Created by Jorge Aguiniga on 10/7/2016.
@@ -17,6 +20,10 @@ public class SpeechToSpeech {
     private String speech; //speech gathered from microphone
     private String languageFrom; //language to recognize/translate from
     private String languageTo; //language to translate to/playback
+    private ArrayList<Transcript> translatedTextList; //text ready to be translated
+    private Executor executor;
+    private SpeechToSpeechRunnable r1;
+    private SpeechToSpeechRunnable2 r2;
 
     public SpeechToSpeech (MainActivity instance) {
         /* Initialize all objects*/
@@ -28,58 +35,124 @@ public class SpeechToSpeech {
             e.printStackTrace();
         }
         speech = "";
+        translatedTextList = new ArrayList<>();
     }
 
     /* Delegated task for translating text from one language to another*/
-    private String translate (String languageFrom, String languageTo) {
-        return ""; //currently inactive (translator does not work seamlessly with other objects yet)
+    private void translate (final Transcript transcript) {
+        new TranslateTextTask().execute(transcript);
     }
 
     /* Delegated task to take translated speech and play it back to whoever is waiting for a response*/
-    private void synthesizeSpeech (String speech) {
-        speaker.synthesizeSpeech(speech);
+    private void synthesizeSpeech (final Transcript transcript) {
+        speaker.synthesizeSpeech(transcript.getSpeech(), transcript.getUser());
     }
 
     /* Delegated task to start the speech recognition process*/
     public boolean beginListening () {
-        speech = microphone.convertSpeechToText();
-        synthesizeSpeech(speech);
+        r1 = new SpeechToSpeechRunnable();
+        r2 = new SpeechToSpeechRunnable2();
+        microphone.convertSpeechToText();
+        new Thread(r1).start();
+        new Thread(r2).start();
         return true;
     }
 
     /* Delegated method to stop recording speech*/
     public void stopListening () throws IOException {
         microphone.end();
+        r1.stop();
+        r2.stop();
+
+    }
+
+    private synchronized void addToTranslatedList(Transcript transcript) {
+        translatedTextList.add(0, transcript);
+    }
+
+    private synchronized Transcript retrieveTranscriptFromTranslatedList() {
+        int index = translatedTextList.size() - 1;
+        return translatedTextList.remove(index);
+    }
+
+    private synchronized boolean isTranslatedTextListEmpty() {
+        return translatedTextList.isEmpty();
     }
 
     /* Inner class for handing the speech-to-text tasks separate from the UI thread (not yet working)*/
-    private class SpeechToTextRunnable implements Runnable {
+    private class SpeechToSpeechRunnable implements Runnable {
+        private boolean isGoing = true;
 
         @Override
         public void run() {
-
+            while (isGoing) {
+                Transcript transcript = microphone.retrieveConvertedTranscript();
+                if (transcript != null)  {
+                    translate(transcript);
+                }
+            }
         }
 
-        private void record() {
+        public void stop() {
+            isGoing = false;
+        }
+    }
 
+    private class SpeechToSpeechRunnable2 implements Runnable {
+        private boolean isGoing = true;
+
+        @Override
+        public void run() {
+            while (isGoing) {
+                if (!isTranslatedTextListEmpty()) {
+                    Transcript transcript = retrieveTranscriptFromTranslatedList();
+                    synthesizeSpeech(transcript);
+                }
+            }
         }
 
-        private void stop() {
-
+        public void stop() {
+            isGoing = false;
         }
     }
 
      /* Inner class for handing the text-to-speech tasks separate from the UI thread (not yet working)*/
-    private class TextToTranslatedSpeechRunnable extends AsyncTask<String, Void, String> {
+    private class TextToTranslatedSpeechRunnable extends AsyncTask<Transcript, Void, String> {
 
         @Override
-        protected String doInBackground(String... params) {
+        protected String doInBackground(Transcript... params) {
             return null;
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+        }
+    }
+
+    /* Inner class for translating a given text and then storing it in the complete list*/
+    private class TranslateTextTask extends AsyncTask<Transcript, Void, Transcript> {
+
+        @Override
+        protected Transcript doInBackground(Transcript... params) {
+            String message = "";
+            try {
+                if (params[0].getUser() == 0) {
+                    message = translator.translate(params[0].getSpeech(), Language.getMyLanguageCode(), Language.getResponseLanguageCode());
+                }
+                else {
+                    message = translator.translate(params[0].getSpeech(), Language.getResponseLanguageCode(), Language.getMyLanguageCode());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Transcript transcript = new Transcript(message, params[0].getUser());
+            return transcript;
+        }
+
+        @Override
+        protected void onPostExecute(Transcript mes) {
+            addToTranslatedList(mes);
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.triante.translatingheadsetapp;
 
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,10 +23,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     boolean isInRecording = false; //flag for checking if the system is currently recording speech
     MSTranslator translator; //Translator model
     Language language; //Language model
+    private SpeechToSpeech speechToSpeech;
+    private boolean isSTS = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        
+
         /* Create view for activity*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         /* Initialize IBM speech-to-text and text-to-speech*/
         stt = new IBMSpeechToText(this);
         tts = new IBMTextToSpeech(this);
+        speechToSpeech = new SpeechToSpeech(this);
 
         /* Initialize buttons*/
         bSpeechRecognition = (Button) findViewById(R.id.bSpeechRecognition);
@@ -136,25 +140,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
             case R.id.bTest: //Testing method (not yet finished)
-                new AsyncTask<Void, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(Void... params) {
-                        try {
-                            MSAuthenticator auth = new MSAuthenticator(MainActivity.this);
-                            auth.createAuthToken();
-                            final String token = auth.getAuthToken();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    translatedTextView.setText(token);
-                                }
-                            });
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        return null;
+                if (isSTS) {
+                    try {
+                        speechToSpeech.stopListening();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                }.execute();
+                    isSTS = false;
+                }
+                else {
+                    speechToSpeech.beginListening();
+                    isSTS = true;
+                }
                 break;
             case R.id.bOptions: //Settings button listener
                 Intent options = new Intent(this, SettingsActivity.class); 

@@ -20,9 +20,18 @@ public class Microphone {
     }
 
     /* Method used to start recording speech */
-    public String convertSpeechToText() {
+    public void convertSpeechToText() {
         speechToTextConverter.record();
-        return speechToTextConverter.speech();
+        //return speechToTextConverter.speech();
+    }
+
+    public Transcript retrieveConvertedTranscript() {
+        if (speechToTextConverter.isSpeechAvailable()) {
+            return speechToTextConverter.speech();
+        }
+        else {
+            return null;
+        }
     }
 
     /* Method to end the speech recording process */
