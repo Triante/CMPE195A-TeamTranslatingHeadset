@@ -25,6 +25,8 @@ public class IBMSpeechToText {
     private SpeechToText speechToText; //IBM-specific speech-to-text object
     private MicrophoneInputStream micInput; //Input stream for getting the speech input from microphone
     private boolean isInRecording; //flag for use to check if system is currently in recording mode
+    double amp = 0;
+    double vol = 0;
 
     public IBMSpeechToText(MainActivity instance)
     {
@@ -79,19 +81,21 @@ public class IBMSpeechToText {
         if (isInRecording) return;
         
         
-        micInput =  new MicrophoneInputStream(true);
+        micInput =  new MicrophoneInputStream();
         /*
         Could be used to create two different micInputs with different AmplitudeListeners, one for user and another for party
         Therefore two different speechToText services running, one for user and another for party
         One SpeechToText Service is needed for one language and another service for the second language
         Each language will have therefore different Recognize options that only happen when a certain amplitude range is reached
         */
-//        AmplitudeListener listener = new AmplitudeListener() {
-//            @Override
-//            public void onSample(double amplitude, double volume) {
-//
-//            }
-//        };
+        AmplitudeListener listener = new AmplitudeListener() {
+            @Override
+            public void onSample(double amplitude, double volume) {
+                amp = amplitude;
+                vol = volume;
+            }
+        };
+        micInput.setOnAmplitudeListener(listener);
         
         /* Make the recording its own separate process */
         new Thread(new Runnable() {
@@ -120,7 +124,8 @@ public class IBMSpeechToText {
         /* Create and initialize an options builder for setting up speech-to-text preferences */
         RecognizeOptions.Builder build = new RecognizeOptions.Builder();
         build.continuous(true);
-        build.contentType(ContentType.OPUS.toString());
+        //build.contentType(ContentType.OPUS.toString());
+        build.contentType(ContentType.RAW.toString());
         
         /* Set the language for speech-to-text */
         String myLanguageModel = Language.getMyLanguageModel();
@@ -142,10 +147,30 @@ public class IBMSpeechToText {
             //message = temp + "\nFinal: " +  speechResults.isFinal();
             //final String mes = message;
 
+            final String mes;
             if (speechResults.getResults().get(0).isFinal()) {
                 addToMessagesRecognized(temp);
+                mes = temp + "\nAve Volume: " + getAveVol(vol)
+                        + "\nMax Volume: " + max2
+                        + "\nAve Amplitude: " + getAveAmp(amp)
+                        + "\nMax Amplitude: " + max;
+                max = 0;
+                max2 = 0;
+                current = 0;
+                count = 0;
+                ave2 = 0;
+                c2 = 0;
             }
-            final String mes = temp;
+            else {
+                getAveAmp(amp);
+                getAveVol(vol);
+                mes = temp + "\nCurrent Volume: " + vol
+                        + "\nMax Volume: " + max2
+                        + "\nCurrent Amplitude: " + amp
+                        + "\nMax Amplitude: " + max;
+            }
+
+
             /* Writes the text to a text field on the current activity UI */
             instance.runOnUiThread(new Runnable()
                 {
@@ -156,4 +181,29 @@ public class IBMSpeechToText {
                 });
         }
     }
+
+    //average amplitude at close to mouth > 1.0E7
+    double current = 0;
+    int count = 0;
+    double max = 0;
+    private double getAveAmp(double a) {
+        count++;
+        current = current + a;
+        double aveCurrent = (current + a) / count;
+        if (current > max) max = current;
+        return aveCurrent;
+    }
+
+    double ave2 = 0;
+    double c2;
+    double max2 = 0;
+    private double getAveVol(double v) {
+        c2++;
+        ave2 = ave2 + v;
+        double ave = (ave2 + v) / c2;
+        if (ave2 > max2) max2 = ave2;
+        return ave;
+    }
+
+
 }
