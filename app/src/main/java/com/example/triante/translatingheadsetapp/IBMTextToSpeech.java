@@ -36,16 +36,21 @@ public class IBMTextToSpeech {
     }
     
     /* Method to convert text input to speech and project it to an audio output device*/
-    public void synthesize(String speech, String language) {
-        new SynthesizeTask().execute(speech);
+    public void synthesize(String speech, Voice language) {
+        new SynthesizeTask(language).execute(speech);
     }
 
     /* Inner class for performing the text-to-speech process as a separate task from the main thread*/
     private class SynthesizeTask extends AsyncTask<String, Void, String> {
 
+        private Voice voice;
+
+        public SynthesizeTask(Voice v) {
+            voice = v;
+        }
+
         @Override protected String doInBackground(String... params) {
-            Voice responseVoice = Language.getResponseLanguageVoice(); //voice used for playback
-            player.playStream(textToSpeech.synthesize(params[0], responseVoice).execute()); //playback execution
+            player.playStream(textToSpeech.synthesize(params[0], voice).execute()); //playback execution
             return "Did syntesize";
         }
     }

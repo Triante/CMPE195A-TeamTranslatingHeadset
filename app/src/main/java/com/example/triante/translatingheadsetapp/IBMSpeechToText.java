@@ -19,11 +19,14 @@ import java.util.ArrayList;
 public class IBMSpeechToText {
     private MainActivity instance; //instance of the main activity to send information from this class to the activity UI
     private String message = ""; //placeholder for the speech being converted
-    private ArrayList<String> messagesRecognized;
+    private ArrayList<Transcript> messagesRecognized;
     private double amplitude; //placeholder for the peak amplitude of the speech input
+    private double userAmplitudeLevel = 9000000;
 
-    private SpeechToText speechToText; //IBM-specific speech-to-text object
+    private SpeechToText speechToTextUser; //IBM-specific speech-to-text object
+    private SpeechToText speechToTextParty;
     private MicrophoneInputStream micInput; //Input stream for getting the speech input from microphone
+    private MicrophoneInputStream micInput2;
     private boolean isInRecording; //flag for use to check if system is currently in recording mode
     double amp = 0;
     double vol = 0;
@@ -42,9 +45,13 @@ public class IBMSpeechToText {
         
         /* Initialize all other speech-to-text components (flags, library objects, etc.) */
         isInRecording = false;
-        speechToText = new SpeechToText();
-        speechToText.setUsernameAndPassword(sstUsername, sstPass);
-        speechToText.setEndPoint(sstServiceURL);
+        speechToTextUser = new SpeechToText();
+        speechToTextUser.setUsernameAndPassword(sstUsername, sstPass);
+        speechToTextUser.setEndPoint(sstServiceURL);
+
+        speechToTextParty = new SpeechToText();
+        speechToTextParty.setUsernameAndPassword(sstUsername, sstPass);
+        speechToTextParty.setEndPoint(sstServiceURL);
     }
 
     /* Getter for extracting current speech converted by the IBM Speech-to-Text object */
@@ -52,8 +59,7 @@ public class IBMSpeechToText {
     {
         if (isMessageRecognizedEmpty()) return null;
         int index = messagesRecognized.size()-1;
-        message = messagesRecognized.remove(index);
-        Transcript transcript = new Transcript(message, 0);
+        Transcript transcript = messagesRecognized.remove(index);
         return transcript;
     }
 
@@ -66,9 +72,12 @@ public class IBMSpeechToText {
         }
     }
 
-    private synchronized void addToMessagesRecognized(String temp) {
-        messagesRecognized.add(0, temp);
-    }
+    private synchronized void addToMessagesRecognized(String temp, boolean isUser) {
+        int user = 1;
+        if (isUser) user = 0;
+        Transcript transcript = new Transcript(temp, user);
+        messagesRecognized.add(0, transcript);
+        }
 
     private synchronized boolean isMessageRecognizedEmpty() {
         return messagesRecognized.isEmpty();
@@ -84,7 +93,7 @@ public class IBMSpeechToText {
         micInput =  new MicrophoneInputStream();
         /*
         Could be used to create two different micInputs with different AmplitudeListeners, one for user and another for party
-        Therefore two different speechToText services running, one for user and another for party
+        Therefore two different speechToTextUser services running, one for user and another for party
         One SpeechToText Service is needed for one language and another service for the second language
         Each language will have therefore different Recognize options that only happen when a certain amplitude range is reached
         */
@@ -101,11 +110,20 @@ public class IBMSpeechToText {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                MicrophoneRecognizeCallback callback = new MicrophoneRecognizeCallback(); //Create a message retrieving object
-                RecognizeOptions options = getRecognizeOptions(); //Create an option object for speech preferences
-                speechToText.recognizeUsingWebSocket(micInput, options, callback); //Initialize recognizer with defined preferences
+                MicrophoneRecognizeCallback callback = new MicrophoneRecognizeCallback(0); //Create a message retrieving object
+                RecognizeOptions options = getRecognizeOptions(0); //Create an option object for speech preferences
+                speechToTextUser.recognizeUsingWebSocket(micInput, options, callback); //Initialize recognizer with defined preferences
             }
         }).start();
+
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                MicrophoneRecognizeCallback callback = new MicrophoneRecognizeCallback(1); //Create a message retrieving object
+//                RecognizeOptions options = getRecognizeOptions(1); //Create an option object for speech preferences
+//                speechToTextParty.recognizeUsingWebSocket(micInput, options, callback); //Initialize recognizer with defined preferences
+//            }
+//        }).start();
         isInRecording = true;
     }
 
@@ -120,7 +138,7 @@ public class IBMSpeechToText {
     }
     
     /* Retrieve preferences for the speech-to-text process*/
-    private RecognizeOptions getRecognizeOptions() {
+    private RecognizeOptions getRecognizeOptions(int user) {
         /* Create and initialize an options builder for setting up speech-to-text preferences */
         RecognizeOptions.Builder build = new RecognizeOptions.Builder();
         build.continuous(true);
@@ -128,8 +146,14 @@ public class IBMSpeechToText {
         build.contentType(ContentType.RAW.toString());
         
         /* Set the language for speech-to-text */
-        String myLanguageModel = Language.getMyLanguageModel();
-        build.model(myLanguageModel);
+        String languageModel;
+        if (user == 0) {
+            languageModel = Language.getMyLanguageModel();
+        }
+        else {
+            languageModel = Language.getResponseLanguageModel();
+        }
+        build.model(languageModel);
         build.interimResults(true);
         build.inactivityTimeout(2000);
         RecognizeOptions option = build.build();
@@ -138,71 +162,77 @@ public class IBMSpeechToText {
 
     /* Inner class for extracting the converted speech from the Speech-to-text object */
     private class MicrophoneRecognizeCallback extends BaseRecognizeCallback {
+
+        private boolean isUser = false;
+
+        public MicrophoneRecognizeCallback(int user) {
+            if (user == 0) isUser = true;
+        }
+
+
         @Override
         public void onTranscription(SpeechResults speechResults) {
             /* Does not continue if the system is not recording */
             if(!isInRecording) return;
+            convertAverageAmp(amp);
+//            if (isUser) {
+//                if (getAverageAmp() > userAmplitudeLevel) getOnTranscript(speechResults);
+//            }
+//            else {
+//                if (getAverageAmp() <= userAmplitudeLevel) getOnTranscript(speechResults);
+//            }
+            if (isUser) getOnTranscript(speechResults);
 
+
+        }
+
+        private void getOnTranscript(SpeechResults speechResults) {
             String temp = speechResults.getResults().get(0).getAlternatives().get(0).getTranscript();
             //message = temp + "\nFinal: " +  speechResults.isFinal();
             //final String mes = message;
 
             final String mes;
+            if (isUser) mes = "User Speech:   " + temp + "\nAverageAmp:   " + getAverageAmp();
+            else mes = "Party Speech:   " + temp + "\nAverageAmp:   " + getAverageAmp();
             if (speechResults.getResults().get(0).isFinal()) {
-                addToMessagesRecognized(temp);
-                mes = temp + "\nAve Volume: " + getAveVol(vol)
-                        + "\nMax Volume: " + max2
-                        + "\nAve Amplitude: " + getAveAmp(amp)
-                        + "\nMax Amplitude: " + max;
-                max = 0;
-                max2 = 0;
-                current = 0;
-                count = 0;
-                ave2 = 0;
-                c2 = 0;
-            }
-            else {
-                getAveAmp(amp);
-                getAveVol(vol);
-                mes = temp + "\nCurrent Volume: " + vol
-                        + "\nMax Volume: " + max2
-                        + "\nCurrent Amplitude: " + amp
-                        + "\nMax Amplitude: " + max;
+                addToMessagesRecognized(temp, isUser);
+                resetAmpVariables();
             }
 
 
             /* Writes the text to a text field on the current activity UI */
             instance.runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run() {
-                        instance.translatedTextView.setText(mes);
-                    }
-                });
+            {
+                @Override
+                public void run() {
+
+                    instance.translatedTextView.setText(mes);
+                }
+            });
         }
     }
 
     //average amplitude at close to mouth > 1.0E7
-    double current = 0;
-    int count = 0;
-    double max = 0;
-    private double getAveAmp(double a) {
-        count++;
-        current = current + a;
-        double aveCurrent = (current + a) / count;
-        if (current > max) max = current;
-        return aveCurrent;
+    private double averageAmp = 0;
+    private double currentAmp = 0;
+    private int ampCount = 0;
+    private double maxAmp = 0;
+    private synchronized void convertAverageAmp(double amp) {
+        ampCount++;
+        currentAmp +=  amp;
+        averageAmp = currentAmp / ampCount;
+        if (amp > maxAmp) maxAmp = amp;
     }
 
-    double ave2 = 0;
-    double c2;
-    double max2 = 0;
-    private double getAveVol(double v) {
-        c2++;
-        ave2 = ave2 + v;
-        double ave = (ave2 + v) / c2;
-        if (ave2 > max2) max2 = ave2;
-        return ave;
+    private synchronized double getAverageAmp() {
+        return averageAmp;
+    }
+
+    private synchronized void resetAmpVariables() {
+        averageAmp = 0;
+        currentAmp = 0;
+        ampCount = 0;
+        maxAmp = 0;
     }
 
 

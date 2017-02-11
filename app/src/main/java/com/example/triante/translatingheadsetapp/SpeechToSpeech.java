@@ -3,7 +3,6 @@ package com.example.triante.translatingheadsetapp;
 import android.os.AsyncTask;
 
 import java.io.IOException;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 
@@ -22,8 +21,8 @@ public class SpeechToSpeech {
     private String languageTo; //language to translate to/playback
     private ArrayList<Transcript> translatedTextList; //text ready to be translated
     private Executor executor;
-    private SpeechToSpeechRunnable r1;
-    private SpeechToSpeechRunnable2 r2;
+    private SpeechToSpeechTranslationRunnable r1;
+    private SpeechToSpeechSynthesizeSpeechRunnable r2;
 
     public SpeechToSpeech (MainActivity instance) {
         /* Initialize all objects*/
@@ -50,8 +49,8 @@ public class SpeechToSpeech {
 
     /* Delegated task to start the speech recognition process*/
     public boolean beginListening () {
-        r1 = new SpeechToSpeechRunnable();
-        r2 = new SpeechToSpeechRunnable2();
+        r1 = new SpeechToSpeechTranslationRunnable();
+        r2 = new SpeechToSpeechSynthesizeSpeechRunnable();
         microphone.convertSpeechToText();
         new Thread(r1).start();
         new Thread(r2).start();
@@ -80,7 +79,7 @@ public class SpeechToSpeech {
     }
 
     /* Inner class for handing the speech-to-text tasks separate from the UI thread (not yet working)*/
-    private class SpeechToSpeechRunnable implements Runnable {
+    private class SpeechToSpeechTranslationRunnable implements Runnable {
         private boolean isGoing = true;
 
         @Override
@@ -98,7 +97,7 @@ public class SpeechToSpeech {
         }
     }
 
-    private class SpeechToSpeechRunnable2 implements Runnable {
+    private class SpeechToSpeechSynthesizeSpeechRunnable implements Runnable {
         private boolean isGoing = true;
 
         @Override
