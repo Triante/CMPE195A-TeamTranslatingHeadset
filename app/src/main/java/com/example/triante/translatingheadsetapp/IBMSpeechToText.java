@@ -2,6 +2,7 @@ package com.example.triante.translatingheadsetapp;
 
 import com.ibm.watson.developer_cloud.android.library.audio.AmplitudeListener;
 import com.ibm.watson.developer_cloud.android.library.audio.MicrophoneInputStream;
+import com.ibm.watson.developer_cloud.android.library.audio.StreamPlayer;
 import com.ibm.watson.developer_cloud.android.library.audio.utils.ContentType;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions;
@@ -21,18 +22,21 @@ public class IBMSpeechToText {
     private String message = ""; //placeholder for the speech being converted
     private ArrayList<Transcript> messagesRecognized;
     private double amplitude; //placeholder for the peak amplitude of the speech input
-    private double userAmplitudeLevel = 9000000;
+    private double userAmplitudeLevel = 2E7;
 
     private SpeechToText speechToTextUser; //IBM-specific speech-to-text object
     private SpeechToText speechToTextParty;
-    private MicrophoneInputStream micInput; //Input stream for getting the speech input from microphone
+    //private MicrophoneInputStream micInput; //Input stream for getting the speech input from microphone
     private MicrophoneInputStream micInput2;
+    private MultipleMicrophoneInputStream micDuelInput;
+    private MicrophoneInputStreamReader streamOne;
+    private MicrophoneInputStreamReader streamTwo;
+    private AmplitudeAverageCalculator calculator;
     private boolean isInRecording; //flag for use to check if system is currently in recording mode
     double amp = 0;
     double vol = 0;
 
-    public IBMSpeechToText(MainActivity instance)
-    {
+    public IBMSpeechToText(MainActivity instance) {
         this.instance = instance;
         messagesRecognized = new ArrayList<>();
 
@@ -52,11 +56,12 @@ public class IBMSpeechToText {
         speechToTextParty = new SpeechToText();
         speechToTextParty.setUsernameAndPassword(sstUsername, sstPass);
         speechToTextParty.setEndPoint(sstServiceURL);
+
+        calculator = new AmplitudeAverageCalculator();
     }
 
     /* Getter for extracting current speech converted by the IBM Speech-to-Text object */
-    public synchronized Transcript speech()
-    {
+    public synchronized Transcript speech() {
         if (isMessageRecognizedEmpty()) return null;
         int index = messagesRecognized.size()-1;
         Transcript transcript = messagesRecognized.remove(index);
@@ -84,13 +89,15 @@ public class IBMSpeechToText {
     }
 
     /* Method to begin the recording process*/
-    public void record()
-    {
+    public void record() {
         /* Don't start recording process if it is already running */
         if (isInRecording) return;
         
         
-        micInput =  new MicrophoneInputStream();
+        //micInput =  new MicrophoneInputStream();
+        micDuelInput = new MultipleMicrophoneInputStream(2);
+        streamOne = new MicrophoneInputStreamReader(micDuelInput);
+        streamTwo = new MicrophoneInputStreamReader(micDuelInput);
         /*
         Could be used to create two different micInputs with different AmplitudeListeners, one for user and another for party
         Therefore two different speechToTextUser services running, one for user and another for party
@@ -104,7 +111,8 @@ public class IBMSpeechToText {
                 vol = volume;
             }
         };
-        micInput.setOnAmplitudeListener(listener);
+        //micInput.setOnAmplitudeListener(listener);
+        micDuelInput.setOnAmplitudeListener(listener);
         
         /* Make the recording its own separate process */
         new Thread(new Runnable() {
@@ -112,18 +120,18 @@ public class IBMSpeechToText {
             public void run() {
                 MicrophoneRecognizeCallback callback = new MicrophoneRecognizeCallback(0); //Create a message retrieving object
                 RecognizeOptions options = getRecognizeOptions(0); //Create an option object for speech preferences
-                speechToTextUser.recognizeUsingWebSocket(micInput, options, callback); //Initialize recognizer with defined preferences
+                speechToTextUser.recognizeUsingWebSocket(streamOne, options, callback); //Initialize recognizer with defined preferences
             }
         }).start();
 
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                MicrophoneRecognizeCallback callback = new MicrophoneRecognizeCallback(1); //Create a message retrieving object
-//                RecognizeOptions options = getRecognizeOptions(1); //Create an option object for speech preferences
-//                speechToTextParty.recognizeUsingWebSocket(micInput, options, callback); //Initialize recognizer with defined preferences
-//            }
-//        }).start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MicrophoneRecognizeCallback callback = new MicrophoneRecognizeCallback(1); //Create a message retrieving object
+                RecognizeOptions options = getRecognizeOptions(1); //Create an option object for speech preferences
+                speechToTextParty.recognizeUsingWebSocket(streamTwo, options, callback); //Initialize recognizer with defined preferences
+            }
+        }).start();
         isInRecording = true;
     }
 
@@ -132,7 +140,8 @@ public class IBMSpeechToText {
         /* Don't continue if process is not already running */
         if (!isInRecording) return;
         
-        micInput.close();
+        //micInput.close();
+        micDuelInput.close();
         isInRecording = false;
 
     }
@@ -174,14 +183,23 @@ public class IBMSpeechToText {
         public void onTranscription(SpeechResults speechResults) {
             /* Does not continue if the system is not recording */
             if(!isInRecording) return;
-            convertAverageAmp(amp);
-//            if (isUser) {
-//                if (getAverageAmp() > userAmplitudeLevel) getOnTranscript(speechResults);
-//            }
-//            else {
-//                if (getAverageAmp() <= userAmplitudeLevel) getOnTranscript(speechResults);
-//            }
-            if (isUser) getOnTranscript(speechResults);
+            calculator.convertAverageAmp(amp);
+            if (isUser) {
+                if (calculator.getAverageAmp() > userAmplitudeLevel)
+                {
+                    //streamOne.setBlockStatus(false);
+                    //streamTwo.setBlockStatus(true);
+                    getOnTranscript(speechResults);
+                }
+            }
+            else {
+                if (calculator.getAverageAmp() <= userAmplitudeLevel) {
+                    //streamOne.setBlockStatus(true);
+                    //streamTwo.setBlockStatus(false);
+                    getOnTranscript(speechResults);
+                }
+            }
+            //if (!isUser) getOnTranscript(speechResults);
 
 
         }
@@ -191,49 +209,30 @@ public class IBMSpeechToText {
             //message = temp + "\nFinal: " +  speechResults.isFinal();
             //final String mes = message;
 
-            final String mes;
-            if (isUser) mes = "User Speech:   " + temp + "\nAverageAmp:   " + getAverageAmp();
-            else mes = "Party Speech:   " + temp + "\nAverageAmp:   " + getAverageAmp();
+            String mes;
+            if (isUser) mes = "User Speech:   " + temp + "\nAverageAmp:   " + calculator.getAverageAmp();
+            else mes = "Party Speech:   " + temp + "\nAverageAmp:   " + calculator.getAverageAmp();
             if (speechResults.getResults().get(0).isFinal()) {
-                addToMessagesRecognized(temp, isUser);
-                resetAmpVariables();
+                mes = mes + "\nFINAL";
+                streamOne.setBlockStatus(false);
+                streamTwo.setBlockStatus(false);
+                if (calculator.countAboveOne()) {
+                    addToMessagesRecognized(temp, isUser);
+                    mes = mes + "\nDID ENTER RESET CALC";
+                }
+                calculator.resetAmpVariables();
             }
 
 
             /* Writes the text to a text field on the current activity UI */
+            final String message = mes;
             instance.runOnUiThread(new Runnable()
             {
                 @Override
                 public void run() {
-
-                    instance.translatedTextView.setText(mes);
+                    instance.translatedTextView.setText(message);
                 }
             });
         }
     }
-
-    //average amplitude at close to mouth > 1.0E7
-    private double averageAmp = 0;
-    private double currentAmp = 0;
-    private int ampCount = 0;
-    private double maxAmp = 0;
-    private synchronized void convertAverageAmp(double amp) {
-        ampCount++;
-        currentAmp +=  amp;
-        averageAmp = currentAmp / ampCount;
-        if (amp > maxAmp) maxAmp = amp;
-    }
-
-    private synchronized double getAverageAmp() {
-        return averageAmp;
-    }
-
-    private synchronized void resetAmpVariables() {
-        averageAmp = 0;
-        currentAmp = 0;
-        ampCount = 0;
-        maxAmp = 0;
-    }
-
-
 }

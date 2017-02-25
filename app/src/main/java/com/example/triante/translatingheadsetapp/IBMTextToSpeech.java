@@ -18,8 +18,7 @@ public class IBMTextToSpeech {
     StreamPlayer player = new StreamPlayer(); //Used for playback to an output device
 
 
-    public IBMTextToSpeech (Context instance)
-    {
+    public IBMTextToSpeech (Context instance) {
         /*URL for IBM's text-to-speech cloud service cloud token factory*/
         String ttsURL = instance.getString(R.string.SpeechSynthesisURLTokenFactory);
         

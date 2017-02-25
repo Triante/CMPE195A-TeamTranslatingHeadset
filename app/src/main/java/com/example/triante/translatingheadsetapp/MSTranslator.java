@@ -48,9 +48,8 @@ public class MSTranslator {
         connection.setRequestProperty("Authorization", authToken);
         connection.setRequestMethod("GET");
         connection.connect();
-        System.out.println();
 
-        /* Checks if connection was succesfully created*/
+        /* Checks if connection was successfully created*/
         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
             StringBuffer buffer = new StringBuffer();
