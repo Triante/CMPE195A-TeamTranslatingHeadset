@@ -2,7 +2,6 @@ package com.example.triante.translatingheadsetapp;
 
 import com.ibm.watson.developer_cloud.android.library.audio.AmplitudeListener;
 import com.ibm.watson.developer_cloud.android.library.audio.MicrophoneInputStream;
-import com.ibm.watson.developer_cloud.android.library.audio.StreamPlayer;
 import com.ibm.watson.developer_cloud.android.library.audio.utils.ContentType;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions;
@@ -18,7 +17,7 @@ import java.util.ArrayList;
 
 /* Main class for converting speech input into text based on a user-specified language input */
 public class IBMSpeechToText {
-    private MainActivity instance; //instance of the main activity to send information from this class to the activity UI
+    private DemoActivity instance; //instance of the main activity to send information from this class to the activity UI
     private String message = ""; //placeholder for the speech being converted
     private ArrayList<Transcript> messagesRecognized;
     private double amplitude; //placeholder for the peak amplitude of the speech input
@@ -36,7 +35,7 @@ public class IBMSpeechToText {
     double amp = 0;
     double vol = 0;
 
-    public IBMSpeechToText(MainActivity instance) {
+    public IBMSpeechToText(DemoActivity instance) {
         this.instance = instance;
         messagesRecognized = new ArrayList<>();
 

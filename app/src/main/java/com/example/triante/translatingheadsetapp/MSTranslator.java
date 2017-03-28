@@ -5,9 +5,7 @@ import android.content.Context;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.*;
-import java.net.Authenticator;
 
 /**
  * Created by Jorge Aguiniga on 10/7/2016.
@@ -23,7 +21,7 @@ public class MSTranslator {
     private MSAuthenticator authenticator;
     private Context instance;
 
-    public MSTranslator(MainActivity instance) throws IOException {
+    public MSTranslator(DemoActivity instance) throws IOException {
         this.instance = instance;
         authenticator = new MSAuthenticator(instance);
     }

@@ -1,22 +1,12 @@
 package com.example.triante.translatingheadsetapp;
 
 import android.content.Context;
-import android.util.Xml;
-
-import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Timer;
 
 /**
  * Created by Jorge Aguiniga on 10/22/2016.
@@ -32,7 +22,7 @@ public class MSAuthenticator implements Authenticator {
     
     private AdmAccessToken token; //Access token for the cloud service
 
-    public MSAuthenticator(MainActivity instance) throws IOException {
+    public MSAuthenticator(DemoActivity instance) throws IOException {
         this.instance = instance;
         DATAMARKET_ACCESS = instance.getString(R.string.MicrosoftTranslateTokenURL);
         token = new AdmAccessToken();

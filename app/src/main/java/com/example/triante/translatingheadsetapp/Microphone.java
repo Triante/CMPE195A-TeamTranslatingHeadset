@@ -15,7 +15,7 @@ public class Microphone {
     private String languageFrom; //Language to recognize
     private String languageTo; //Language to translate to
 
-    public Microphone (MainActivity instance) {
+    public Microphone (DemoActivity instance) {
         speechToTextConverter = new IBMSpeechToText(instance);
     }
 

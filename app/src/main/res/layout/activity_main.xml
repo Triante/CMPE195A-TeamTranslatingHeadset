@@ -1,83 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_zero_margin"
+    android:paddingRight="@dimen/activity_zero_margin"
+    android:paddingTop="@dimen/activity_zero_margin"
     tools:context="com.example.triante.translatingheadsetapp.MainActivity">
 
-    <Button
-        android:text="Start Recording"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/editTextDemo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:id="@+id/bSpeechRecognition" />
-
-    <Button
-        android:text="Read Text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/bSpeechSynthesis"
-        android:layout_below="@+id/bSpeechRecognition"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editTextDemo"
-        android:gravity="center"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/mainActivity_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/splashBackgroundColor"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:text="Translatalk Demo"
-        android:textSize="30sp"
-        android:textColor="#000025"/>
-
-    <Button
-        android:text="Translate To..."
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/bSpeechSynthesis"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/bTranslate" />
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="4dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+            <Button
+                android:layout_width="65dp"
+                android:layout_height="wrap_content"
+                android:text="Off"
+                android:layout_alignParentLeft="true"
+                android:id="@+id/off_toolbarButton"
+                android:visibility="visible"
+                android:clickable="true"/>
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
 
     <TextView
-        android:text="Try to translate something!"
-        android:paddingTop="8dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/bTranslate"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/translatedTextView"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true" />
+        android:layout_height="?attr/actionBarSize"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:text="@string/app_name"/>
 
     <Button
-        android:text="Settings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/bSpeechRecognition"
-        android:layout_toRightOf="@+id/bSpeechSynthesis"
-        android:layout_toEndOf="@+id/bSpeechSynthesis"
-        android:id="@+id/bOptions" />
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/round_button"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/button_connect"
+        android:textColor="#fff"
+        android:id="@+id/bConnect_main"
+        android:layout_marginTop="@dimen/spacing_padding"
+        android:layout_below="@+id/mainActivity_toolbar"
+        android:layout_centerHorizontal="true" />
 
-    <Button
-        android:text="TEST"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/bTest"
-        android:layout_alignBaseline="@+id/bSpeechSynthesis"
-        android:layout_alignBottom="@+id/bSpeechSynthesis"
-        android:layout_toLeftOf="@+id/bSpeechSynthesis"
-        android:layout_toStartOf="@+id/bSpeechSynthesis" />
+    <Space
+        android:layout_width="@dimen/spacing_padding"
+        android:layout_height="@dimen/spacing_padding"
+        android:layout_below="@+id/bConnect_main"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/spacing_padding"
+        android:id="@+id/space_main"/>
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/headset_glow_mainImage"
+        android:background="@drawable/ic_headset_glow"
+        android:layout_alignTop="@+id/space_main"
+        android:layout_toLeftOf="@+id/space_main"
+        android:layout_toStartOf="@+id/space_main"
+        android:visibility="invisible"/>
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/headset_mainImage"
+        android:background="@drawable/ic_headset"
+        android:layout_alignTop="@+id/space_main"
+        android:layout_toLeftOf="@+id/space_main"
+        android:layout_toStartOf="@+id/space_main"/>
+
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/speaker_mainImage"
+        android:background="@drawable/ic_speaker"
+        android:layout_alignTop="@+id/space_main"
+        android:layout_toRightOf="@id/space_main"
+        android:layout_toEndOf="@id/space_main"
+        />
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/speaker_glow_mainImage"
+        android:background="@drawable/ic_speaker_glow"
+        android:layout_alignTop="@+id/space_main"
+        android:layout_toRightOf="@id/space_main"
+        android:layout_toEndOf="@id/space_main"
+        android:visibility="invisible"
+        />
+
+
 </RelativeLayout>

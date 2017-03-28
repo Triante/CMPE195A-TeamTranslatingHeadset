@@ -1,162 +1,143 @@
 package com.example.triante.translatingheadsetapp;
 
 import android.content.Intent;
-import android.media.AudioManager;
-import android.os.AsyncTask;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ImageView;
 
-import java.io.IOException;
-
-/* Main activity. Home to the UI for accessing the buttons for speech recognition, translation, and speech synthesis*/
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public Button bSpeechRecognition, bSpeechSynthesis, bTranslate, bTest, bSettings; //Main UI buttons
-    private IBMSpeechToText stt; //Speech-to-text model 
-    private IBMTextToSpeech tts; //Text-to-speech model
-    public TextView editTextField;
-    public TextView translatedTextView; //Shows translated text
-    boolean isInRecording = false; //flag for checking if the system is currently recording speech
-    MSTranslator translator; //Translator model
-    Language language; //Language model
-    private SpeechToSpeech speechToSpeech;
-    private boolean isSTS = false;
+    private Toolbar myToolBar;
+    private Button bConnect, bOff;
+    private ImageView headsetImage, headsetGlowImage, speakerImage, speakerGlowImage;
+    private static boolean isGlow = false;
+    private static boolean isTranslating = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        /* Create view for activity*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-        /* Attempt to initialize Translator model*/
-        try {
-            translator = new MSTranslator(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-        /* Initialize IBM speech-to-text and text-to-speech*/
-        stt = new IBMSpeechToText(this);
-        tts = new IBMTextToSpeech(this);
-        speechToSpeech = new SpeechToSpeech(this);
+        myToolBar = (Toolbar) findViewById(R.id.mainActivity_toolbar);
+        setSupportActionBar(myToolBar);
+        bConnect = (Button) findViewById(R.id.bConnect_main);
+        bConnect.setOnClickListener(this);
+        bOff = (Button) findViewById(R.id.off_toolbarButton);
+        bOff.setOnClickListener(this);
+        bOff.setVisibility(View.INVISIBLE);
+        bOff.setClickable(false);
+        headsetImage = (ImageView) findViewById(R.id.headset_mainImage);
+        headsetGlowImage = (ImageView) findViewById(R.id.headset_glow_mainImage);
+        speakerImage = (ImageView) findViewById(R.id.speaker_mainImage);
+        speakerGlowImage = (ImageView) findViewById(R.id.speaker_glow_mainImage);
 
-        /* Initialize buttons*/
-        bSpeechRecognition = (Button) findViewById(R.id.bSpeechRecognition);
-        bSpeechSynthesis = (Button) findViewById(R.id.bSpeechSynthesis);
-        bTranslate = (Button) findViewById(R.id.bTranslate);
-        bSettings = (Button) findViewById(R.id.bOptions);
-        editTextField = (TextView) findViewById(R.id.editTextDemo);
-        translatedTextView = (TextView) findViewById(R.id.translatedTextView);
-        editTextField.setClickable(false);
-        
-        /* Declare all the on click listeners for the buttons*/
-        bSpeechRecognition.setOnClickListener(this);
-        bSpeechSynthesis.setOnClickListener(this);
-        bTranslate.setOnClickListener(this);
-        bSettings.setOnClickListener(this);
-        bTest = (Button) findViewById(R.id.bTest);
-        bTest.setOnClickListener(this);
     }
 
-    /* Method to manage all the on click listeners for the buttons*/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.action_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.bSpeechRecognition: //Speech Recognition button listener
-                
-                /* Checks if the system is currently recording speech */
-                if (isInRecording) { 
-                    
-                    /* New task created to end the recording session */
-                    new AsyncTask<Void, Void, Void>() {
-                        @Override
-                        protected Void doInBackground(Void... none) {
-                            try {
-                                stt.end();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            return null;
-                        }
-                    }.execute();
-                    
-                    /* New task created to switch the state of the button from "Stop Recording" to "Start Recording" */
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            bSpeechRecognition.setText("Start Recording");
-                            isInRecording = false;
-                        }
-                    });
-                }               
-                /* If the system is currently not recording */
+            case R.id.bConnect_main:
+               if (!isGlow) {
+                   isGlow = true;
+                   changeSignals(headsetGlowImage, true);
+                   changeSignals(speakerGlowImage, true);
+                   changeSignals(headsetImage, false);
+                   changeSignals(speakerImage, false);
+                   String t = "Translate\n" + Language.getMyLanguageCode() + " to/from " + Language.getResponseLanguageCode();
+                   bConnect.setText(t);
+               }
                 else {
-                    stt.record(); //Start recording
-                    
-                    /* New task created to change button state from "Start Recording" to "Stop Recording" */
-                    runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run() {
-                            bSpeechRecognition.setText("Stop Recording");
-                            isInRecording = true;
-                        }
-                    });
-                }
+                   bOff.setVisibility(View.VISIBLE);
+                   bOff.setClickable(true);
+                   String t = "Translating\n" + Language.getMyLanguageCode() + " to/from " + Language.getResponseLanguageCode();
+                   bConnect.setText(t);
+                   isTranslating = true;
+               }
                 break;
-            case R.id.bSpeechSynthesis: //Speech synthesis button listener
-                tts.synthesize(translatedTextView.getText().toString(), Language.getResponseLanguageVoice()); //Performs speech synthesis on IBMTextToSpeech
+            case R.id.off_toolbarButton:
+                isGlow = false;
+                isTranslating = false;
+                changeSignals(headsetGlowImage, false);
+                changeSignals(speakerGlowImage, false);
+                changeSignals(headsetImage, true);
+                changeSignals(speakerImage, true);
+                bOff.setVisibility(View.INVISIBLE);
+                bOff.setClickable(false);
+                bConnect.setText(R.string.button_connect);
                 break;
-            case R.id.bTranslate: //Translator button listener
-                final String input = translatedTextView.getText().toString(); //Gets contents of the translated text view
-                
-                /* New taks created to perform the translation*/
-                new AsyncTask<Void, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(Void... none) {
-                        try {
-                            String myCode = Language.getMyLanguageCode(); //User's preferred language model
-                            String RespCode = Language.getResponseLanguageCode(); //Other party's preferred language model
-                            final String output = translator.translate(input, myCode, RespCode); //translated text
-                            
-                            /* New task created to set translated text to the translated text view*/
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    translatedTextView.setText(output);
-                                }
-                            });
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    }
-                }.execute();
-
-                break;
-            case R.id.bTest: //Testing method (not yet finished)
-                if (isSTS) {
-                    try {
-                        speechToSpeech.stopListening();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    isSTS = false;
-                }
-                else {
-                    speechToSpeech.beginListening();
-                    isSTS = true;
-                }
-                break;
-            case R.id.bOptions: //Settings button listener
-                Intent options = new Intent(this, SettingsActivity.class); 
-                startActivity(options); //Starts new settings activity
+            default:
                 break;
         }
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Intent options = new Intent(this, SettingsActivity.class);
+                startActivity(options); //Starts new settings activity
+                break;
+            case R.id.action_demo:
+                Intent demo = new Intent(this, DemoActivity.class);
+                startActivity(demo); //Starts new settings activity
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        if (isGlow) {
+            String t = "Translate\n" + Language.getMyLanguageCode() + " to/from " + Language.getResponseLanguageCode();
+            bConnect.setText(t);
+        }
+        if (isTranslating) {
+            String t = "Translating\n" + Language.getMyLanguageCode() + " to/from " + Language.getResponseLanguageCode();
+            bConnect.setText(t);
+        }
+        super.onResume();
+    }
+
+    private void changeSignals(final ImageView view, final boolean toOn) {
+        if (toOn) {
+            AlphaAnimation swap = new AlphaAnimation(0,1);
+            swap.setDuration(500);
+            view.setVisibility(View.VISIBLE);
+            view.startAnimation(swap);
+        }
+        else {
+            AlphaAnimation swap = new AlphaAnimation(1,0);
+            swap.setDuration(500);
+            view.startAnimation(swap);
+            new CountDownTimer(500, 500) {
+                @Override
+                public void onTick(long millisUntilFinished) {}
+
+                @Override
+                public void onFinish() {
+                    view.setVisibility(View.INVISIBLE);
+                }
+            }.start();
+        }
+    }
+
+
 }

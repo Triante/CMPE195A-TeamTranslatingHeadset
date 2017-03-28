@@ -1,18 +1,19 @@
 <resources>
-    <string name="app_name">Translating Headset App</string>
+    <string name="app_name">TranslaTa</string>
+    <string name="button_connect">Connect</string>
 
     <!--  speech-synthesis-credentials --> 
     <string name="SpeechSynthesisUsername">578750bf-9635-4dfc-8616-ca1b74cf80f8</string>
-     <string name="SpeechSynthesisURLTokenFactory">https://stream.watsonplatform.net/text-to-speech/api</string>
-     
+    <string name="SpeechSynthesisURLTokenFactory">https://stream.watsonplatform.net/text-to-speech/api</string>
     <!-- speech-recognition-credentials --> 
     <string name="SpeechRecognitionUsername">ad9d9c5f-b291-43e5-a238-9a3e6bf034f0</string> 
     <string name="SpeechRecognitionURLTokenFactory">https://stream.watsonplatform.net/speech-to-text/api</string>
 
+    <!-- translate-credentials --> 
     <string name="MicrosoftTranslateTranslatorURL">http://api.microsofttranslator.com/v2/Http.svc/Translate</string> 
-    <string name="MicrosoftTranslateTokenURL">https://api.cognitive.microsoft.com/sts/v1.0/issueToken</string> 
-
-
+    <string name="MicrosoftTranslateTokenURL">https://api.cognitive.microsoft.com/sts/v1.0/issueToken</string>
+     
+    <!-- language-options --> 
     <string-array name="MyLanguageArray">
         <item>US English</item>
         <item>UK English</item>
@@ -22,7 +23,6 @@
         <item>Brazilian Portuguese</item>
         <item>Mandarin Chinese</item>
     </string-array>
-
     <string-array name="ResponseLanguageAvailable">
         <item>US English-Male</item>
         <item>US English-Female</item>
@@ -37,7 +37,6 @@
         <item>Castilian Spanish-Female</item>
         <item>Mexican Spanish</item>
     </string-array>
-
     <string-array name="LanguageArray">
         <item>US English</item>
         <item>UK English</item>
@@ -47,7 +46,5 @@
         <item>Japanese</item>
         <item>Brazilian Portuguese</item>
     </string-array>
-     
-
 
 </resources>

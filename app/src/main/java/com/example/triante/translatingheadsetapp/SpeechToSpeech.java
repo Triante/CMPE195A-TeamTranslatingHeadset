@@ -24,7 +24,7 @@ public class SpeechToSpeech {
     private SpeechToSpeechTranslationRunnable r1;
     private SpeechToSpeechSynthesizeSpeechRunnable r2;
 
-    public SpeechToSpeech (MainActivity instance) {
+    public SpeechToSpeech (DemoActivity instance) {
         /* Initialize all objects*/
         speaker = new Speaker(instance);
         microphone = new Microphone(instance);

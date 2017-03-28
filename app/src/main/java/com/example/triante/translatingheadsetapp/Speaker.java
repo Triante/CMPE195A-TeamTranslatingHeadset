@@ -16,7 +16,7 @@ public class Speaker {
     private BluetoothDevice outSpeaker; //placeholder for Bluetooth data from the external speaker
     private Voice languageTo; //language to use for playback
 
-    public Speaker (MainActivity instance) {
+    public Speaker (DemoActivity instance) {
         textToSpeechConverter = new IBMTextToSpeech(instance);
     }
 
