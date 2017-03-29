@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Language.initiateSavedLanguageSettings(this);
         myToolBar = (Toolbar) findViewById(R.id.mainActivity_toolbar);
         setSupportActionBar(myToolBar);
         bConnect = (Button) findViewById(R.id.bConnect_main);

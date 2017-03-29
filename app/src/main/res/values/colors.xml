@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="splashBackgroundColor">#f0f0f0</color>
+    <color name="buttonColor">#0aae9f</color>
+    <color name="buttonColorPressed">#0a59ae</color>
+    <color name="transparent">#00000000</color>
 </resources>

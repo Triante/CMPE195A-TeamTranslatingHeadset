@@ -164,6 +164,7 @@ public class IBMSpeechToText {
         build.model(languageModel);
         build.interimResults(true);
         build.inactivityTimeout(2000);
+        build.profanityFilter(Language.isProfanityFilterActive());
         RecognizeOptions option = build.build();
         return option;
     }

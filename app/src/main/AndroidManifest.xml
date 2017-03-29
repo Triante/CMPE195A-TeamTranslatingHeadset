@@ -16,10 +16,14 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".DemoActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+
+        </activity>
         <activity
             android:name=".SettingsActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+
+        </activity>
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
@@ -32,6 +36,12 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait">
+
+        </activity>
+        <activity
+            android:name=".AmplitudeSettingsActivity"
+            android:screenOrientation="portrait">
+
         </activity>
     </application>
 

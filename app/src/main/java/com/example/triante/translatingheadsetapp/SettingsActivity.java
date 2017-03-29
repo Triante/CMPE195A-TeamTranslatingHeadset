@@ -1,21 +1,27 @@
 package com.example.triante.translatingheadsetapp;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 /* Activity used for allowing user to change languages*/
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
     private int myLanguage = 0; //User's preferred language
     private int respLanguage = 0; //Other party's preferred language
+    private boolean profanityFilter = true;
 
     private Spinner spinMyLang, spinRespLang; //Spinners used for displaying all possible languages
-    private Button bSave; //Button for saving preferences
+    private Button bAmplitudeSettings, bSave; //Button for saving preferences
+    private SwitchCompat switchCompat;
 
 
     @Override
@@ -27,13 +33,25 @@ public class SettingsActivity extends AppCompatActivity {
         
         /* Initializes the sae button*/
         bSave = (Button) findViewById(R.id.bSave);
+
+        /* Initiates filter switch*/
+        switchCompat = (SwitchCompat) findViewById(R.id.switchCompat);
+        switchCompat.setOnCheckedChangeListener(this);
         
         /* Initializes the spinners used to hold the language options*/
+        ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.MyLanguageArray, R.layout.spinner_item);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinMyLang = (Spinner) findViewById(R.id.spinMyLang);
+        spinMyLang.setAdapter(adapter);
+
+        adapter = ArrayAdapter.createFromResource(this, R.array.ResponseLanguageAvailable, R.layout.spinner_item);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinRespLang = (Spinner) findViewById(R.id.spinRespLang);
+        spinRespLang.setAdapter(adapter);
         initiateSpinnerPositionValues();
         spinMyLang.setSelection(myLanguage);
         spinRespLang.setSelection(respLanguage);
+        switchCompat.setChecked(profanityFilter);
         
         /* Sets the on click listeners for the button and spinners */
         spinMyLang.setOnItemSelectedListener(new SpinnerSelectionListener(true));
@@ -45,6 +63,15 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 save();
                 Toast.makeText(SettingsActivity.this, "Settings Saved", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        bAmplitudeSettings = (Button) findViewById(R.id.bAmplitude_settings);
+        bAmplitudeSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent ampActivity = new Intent(SettingsActivity.this, AmplitudeSettingsActivity.class);
+                startActivity(ampActivity); //Starts new settings activity
             }
         });
     }
@@ -112,6 +139,8 @@ public class SettingsActivity extends AppCompatActivity {
                 Language.setLanguage(false, Language.LanguageSelect.MXSPANISH);
                 break;
         }
+        Language.setProfanityFilter(profanityFilter);
+        Language.saveLanguageSettings(this);
     }
 
     /* Defines all the options for the spinners*/
@@ -178,6 +207,14 @@ public class SettingsActivity extends AppCompatActivity {
                 respLanguage = 11;
                 break;
         }
+
+        profanityFilter = Language.isProfanityFilterActive();
+
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        profanityFilter = isChecked;
     }
 
     /* Inner class for managing the data that is retrieved from each option of the spinners*/

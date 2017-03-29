@@ -1,6 +1,37 @@
 <resources>
     <string name="app_name">TranslaTa</string>
+    <string name="dialog_confirm">OK</string>
+    <string name="dialog_cancel">Cancel</string>
+
+    <!-- Buttons --> 
     <string name="button_connect">Connect</string>
+    <string name="button_amplitude_record">Record Amplitude Threshold</string>
+    <string name="button_amplitude_configure">Configure Amplitude Threshold</string>
+    <string name="button_amplitude_done">Done</string>
+
+
+    <!-- TextViews --> 
+    <string name="amplitude_settings_title">Amplitude Settings</string>
+    <string name="amplitude_settings_description">Change settings related to the amplitude threshold used to distinguish between you and who you\'re talking to.\nAny recorded audio with amplitude greater than the threshold was spoken by you, the user.</string>
+    <string name="amplitude_settings_amplitude_record">Speak into the mic to automatically configure and save amplitude threshold</string>
+    <string name="amplitude_settings_amplitude_config">Configure the amplitude threshold manually with sliders and mic</string>
+    <string name="amplitude_settings_amplitude_done">Save new configuration amplitude threshold</string>
+    <string name="amplitude_settings_max_label">Max Amplitude: </string>
+    <string name="amplitude_settings_current_label">Threshold Amplitude: </string>
+
+    <!-- Amplitude Settings Dialog --> 
+    <string name="amplitude_dialog_title">Automatic Threshold Configuration</string>
+    <string name="amplitude_dialog_message">The Microphone will begin to record for 10 seconds. Please
+        speak clearly when recording begins. Speak normally as if you are in a normal conversation while
+        using TranslaTa. Begin speaking immediately and continue speaking until the recording is
+        finished. Once ready press Record to begin.</string>
+    <string name="amplitude_dialog_confirm">Record</string>
+    <string name="recording_dialog_title">Creating Threshold</string>
+    <string name="recording_dialog_message">Continue speaking meanwhile your threshold is calculating. Why
+        not speak about your day? </string>
+    <string name="finish_dialog_title">Complete</string>
+    <string name="finish_dilog_message1">Automatic configuration complete. Your threshold was </string>
+    <string name="finish_dilog_message2">.\nFor more finer adjustments, please use Configure Amplitude Threshold. Press OK to save</string>
 
     <!--  speech-synthesis-credentials --> 
     <string name="SpeechSynthesisUsername">578750bf-9635-4dfc-8616-ca1b74cf80f8</string>
@@ -10,7 +41,7 @@
     <string name="SpeechRecognitionURLTokenFactory">https://stream.watsonplatform.net/speech-to-text/api</string>
 
     <!-- translate-credentials --> 
-    <string name="MicrosoftTranslateTranslatorURL">http://api.microsofttranslator.com/v2/Http.svc/Translate</string> 
+    <string name="MicrosoftTranslateTranslatorURL">http://api.microsofttranslator.com/v2/Http.svc/Translate</string>
     <string name="MicrosoftTranslateTokenURL">https://api.cognitive.microsoft.com/sts/v1.0/issueToken</string>
      
     <!-- language-options --> 

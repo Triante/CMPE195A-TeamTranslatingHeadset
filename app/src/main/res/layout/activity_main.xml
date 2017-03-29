@@ -57,7 +57,8 @@
         android:id="@+id/bConnect_main"
         android:layout_marginTop="@dimen/spacing_padding"
         android:layout_below="@+id/mainActivity_toolbar"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        />
 
     <Space
         android:layout_width="@dimen/spacing_padding"
