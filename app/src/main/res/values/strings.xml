@@ -78,4 +78,6 @@
         <item>Brazilian Portuguese</item>
     </string-array>
 
+    <string name="headset_key">04:88:E2:57:7F:E4</string>
+
 </resources>

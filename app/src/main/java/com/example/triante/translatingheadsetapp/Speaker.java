@@ -1,7 +1,9 @@
 package com.example.triante.translatingheadsetapp;
 
 import android.bluetooth.BluetoothDevice;
-
+import android.content.Context;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import com.ibm.watson.developer_cloud.text_to_speech.v1.model.Voice;
 
 /**
@@ -15,14 +17,33 @@ public class Speaker {
     private BluetoothDevice earpiece; //placeholder for Bluetooth data from the headset device
     private BluetoothDevice outSpeaker; //placeholder for Bluetooth data from the external speaker
     private Voice languageTo; //language to use for playback
+    private int headset_mode;
+    private int speaker_mode;
+    private AudioManager audioSwitch;
 
     public Speaker (DemoActivity instance) {
         textToSpeechConverter = new IBMTextToSpeech(instance);
+        audioSwitch = (AudioManager)instance.getSystemService(Context.AUDIO_SERVICE);
+        speaker_mode = audioSwitch.getMode();
+        headset_mode = audioSwitch.MODE_IN_COMMUNICATION;
+
+        audioSwitch.setMode(speaker_mode);
+        audioSwitch.startBluetoothSco();
     }
 
     /* Method used to find which device should perform playback (Not yet implemented)*/
-    public void playback() {
-
+    public void playback(String speech, int user) {
+        audioSwitch.setMicrophoneMute(true);
+        if (user == 1)
+        {
+            audioSwitch.stopBluetoothSco();
+            audioSwitch.setMode(headset_mode);
+        }
+        else {
+            audioSwitch.setMode(speaker_mode);
+            audioSwitch.startBluetoothSco();
+        }
+        textToSpeechConverter.synthesize(speech, languageTo, audioSwitch, headset_mode);
     }
 
     /* Method used to perform playback to a device*/
@@ -33,6 +54,8 @@ public class Speaker {
         else {
             languageTo = Language.getMyLanguageVoice();
         }
-        textToSpeechConverter.synthesize(speech, languageTo);
+
+        playback(speech, user);
+        //textToSpeechConverter.synthesize(speech, languageTo);
     }
 }

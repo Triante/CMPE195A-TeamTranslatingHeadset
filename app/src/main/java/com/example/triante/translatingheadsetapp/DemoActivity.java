@@ -114,7 +114,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.bSpeechSynthesis: //Speech synthesis button listener
-                tts.synthesize(translatedTextView.getText().toString(), Language.getResponseLanguageVoice()); //Performs speech synthesis on IBMTextToSpeech
+                //tts.synthesize(translatedTextView.getText().toString(), Language.getResponseLanguageVoice()); //Performs speech synthesis on IBMTextToSpeech
                 break;
             case R.id.bTranslate: //Translator button listener
                 final String input = translatedTextView.getText().toString(); //Gets contents of the translated text view

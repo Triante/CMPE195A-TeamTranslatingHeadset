@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bConnect_main:
+                /*
                if (!isGlow) {
                    isGlow = true;
                    changeSignals(headsetGlowImage, true);
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                    bConnect.setText(t);
                    isTranslating = true;
                }
+               */
                 break;
             case R.id.off_toolbarButton:
                 isGlow = false;
