@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Language.initiateSavedLanguageSettings(this);
+        TranslaTaSettings.initiateTranslaTaSettings(this);
         myToolBar = (Toolbar) findViewById(R.id.mainActivity_toolbar);
         setSupportActionBar(myToolBar);
         bConnect = (Button) findViewById(R.id.bConnect_main);
@@ -60,13 +60,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                    changeSignals(speakerGlowImage, true);
                    changeSignals(headsetImage, false);
                    changeSignals(speakerImage, false);
-                   String t = "Translate\n" + Language.getMyLanguageCode() + " to/from " + Language.getResponseLanguageCode();
+                   String t = "Translate\n" + LanguageSettings.getMyLanguageCode() + " to/from " + LanguageSettings.getResponseLanguageCode();
                    bConnect.setText(t);
                }
                 else {
                    bOff.setVisibility(View.VISIBLE);
                    bOff.setClickable(true);
-                   String t = "Translating\n" + Language.getMyLanguageCode() + " to/from " + Language.getResponseLanguageCode();
+                   String t = "Translating\n" + LanguageSettings.getMyLanguageCode() + " to/from " + LanguageSettings.getResponseLanguageCode();
                    bConnect.setText(t);
                    isTranslating = true;
                }
@@ -107,11 +107,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         if (isGlow) {
-            String t = "Translate\n" + Language.getMyLanguageCode() + " to/from " + Language.getResponseLanguageCode();
+            String t = "Translate\n" + LanguageSettings.getMyLanguageCode() + " to/from " + LanguageSettings.getResponseLanguageCode();
             bConnect.setText(t);
         }
         if (isTranslating) {
-            String t = "Translating\n" + Language.getMyLanguageCode() + " to/from " + Language.getResponseLanguageCode();
+            String t = "Translating\n" + LanguageSettings.getMyLanguageCode() + " to/from " + LanguageSettings.getResponseLanguageCode();
             bConnect.setText(t);
         }
         super.onResume();

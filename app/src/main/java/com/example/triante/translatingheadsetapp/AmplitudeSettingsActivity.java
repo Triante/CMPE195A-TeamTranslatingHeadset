@@ -5,24 +5,17 @@ import android.os.CountDownTimer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ibm.watson.developer_cloud.android.library.audio.AmplitudeListener;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class AmplitudeSettingsActivity extends AppCompatActivity implements AmplitudeListener, View.OnClickListener, SeekBar.OnSeekBarChangeListener, SeekBar.OnTouchListener{
 
@@ -44,8 +37,8 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_amplitude_settings);
-        thresholdSetting = Language.getThresholdAmplitude();
-        maxSetting = Language.getMaxAmplitude();
+        thresholdSetting = TranslaTaSettings.getThresholdAmplitude();
+        maxSetting = TranslaTaSettings.getMaxAmplitude();
 
         //TextViews for displaying SeekBar progress and ImageView for showing microphone status.
         micImage = (ImageView) findViewById(R.id.imageMic);
@@ -259,7 +252,7 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
     }
 
     private void save () {
-        Language.saveAmplitudeSettings(this, maxSetting, thresholdSetting);
+        TranslaTaSettings.saveAmplitudeSettings(this, maxSetting, thresholdSetting);
         //Toast.makeText(this, "saved", Toast.LENGTH_SHORT).show();
     }
 

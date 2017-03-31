@@ -20,4 +20,6 @@ public class Transcript {
     public String getSpeech() {
         return speech;
     }
+
+
 }

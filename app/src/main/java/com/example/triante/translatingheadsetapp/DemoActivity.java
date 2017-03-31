@@ -24,7 +24,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
     public TextView translatedTextView; //Shows translated text
     boolean isInRecording = false; //flag for checking if the system is currently recording speech
     MSTranslator translator; //Translator model
-    Language language; //Language model
+    LanguageSettings languageSettings; //LanguageSettings model
     private SpeechToSpeech speechToSpeech;
     private boolean isSTS = false;
 
@@ -114,7 +114,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.bSpeechSynthesis: //Speech synthesis button listener
-                tts.synthesize(translatedTextView.getText().toString(), Language.getResponseLanguageVoice()); //Performs speech synthesis on IBMTextToSpeech
+                tts.synthesize(translatedTextView.getText().toString(), LanguageSettings.getResponseLanguageVoice()); //Performs speech synthesis on IBMTextToSpeech
                 break;
             case R.id.bTranslate: //Translator button listener
                 final String input = translatedTextView.getText().toString(); //Gets contents of the translated text view
@@ -124,8 +124,8 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     protected Void doInBackground(Void... none) {
                         try {
-                            String myCode = Language.getMyLanguageCode(); //User's preferred language model
-                            String RespCode = Language.getResponseLanguageCode(); //Other party's preferred language model
+                            String myCode = LanguageSettings.getMyLanguageCode(); //User's preferred languageSettings model
+                            String RespCode = LanguageSettings.getResponseLanguageCode(); //Other party's preferred languageSettings model
                             final String output = translator.translate(input, myCode, RespCode); //translated text
                             
                             /* New task created to set translated text to the translated text view*/

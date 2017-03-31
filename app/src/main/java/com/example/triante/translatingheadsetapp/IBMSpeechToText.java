@@ -1,5 +1,7 @@
 package com.example.triante.translatingheadsetapp;
 
+import android.content.Context;
+
 import com.ibm.watson.developer_cloud.android.library.audio.AmplitudeListener;
 import com.ibm.watson.developer_cloud.android.library.audio.MicrophoneInputStream;
 import com.ibm.watson.developer_cloud.android.library.audio.utils.ContentType;
@@ -15,9 +17,9 @@ import java.util.ArrayList;
  * Created by Jorge Aguiniga on 10/7/2016.
  */
 
-/* Main class for converting speech input into text based on a user-specified language input */
+/* Main class for converting speech input into text based on a user-specified languageSettings input */
 public class IBMSpeechToText {
-    private DemoActivity instance; //instance of the main activity to send information from this class to the activity UI
+    private Context instance; //instance of the main activity to send information from this class to the activity UI
     private String message = ""; //placeholder for the speech being converted
     private ArrayList<Transcript> messagesRecognized;
     private double amplitude; //placeholder for the peak amplitude of the speech input
@@ -35,7 +37,7 @@ public class IBMSpeechToText {
     double amp = 0;
     double vol = 0;
 
-    public IBMSpeechToText(DemoActivity instance) {
+    public IBMSpeechToText(Context instance) {
         this.instance = instance;
         messagesRecognized = new ArrayList<>();
 
@@ -100,8 +102,8 @@ public class IBMSpeechToText {
         /*
         Could be used to create two different micInputs with different AmplitudeListeners, one for user and another for party
         Therefore two different speechToTextUser services running, one for user and another for party
-        One SpeechToText Service is needed for one language and another service for the second language
-        Each language will have therefore different Recognize options that only happen when a certain amplitude range is reached
+        One SpeechToText Service is needed for one languageSettings and another service for the second languageSettings
+        Each languageSettings will have therefore different Recognize options that only happen when a certain amplitude range is reached
         */
         AmplitudeListener listener = new AmplitudeListener() {
             @Override
@@ -153,18 +155,18 @@ public class IBMSpeechToText {
         //build.contentType(ContentType.OPUS.toString());
         build.contentType(ContentType.RAW.toString());
         
-        /* Set the language for speech-to-text */
+        /* Set the languageSettings for speech-to-text */
         String languageModel;
         if (user == 0) {
-            languageModel = Language.getMyLanguageModel();
+            languageModel = LanguageSettings.getMyLanguageModel();
         }
         else {
-            languageModel = Language.getResponseLanguageModel();
+            languageModel = LanguageSettings.getResponseLanguageModel();
         }
         build.model(languageModel);
         build.interimResults(true);
         build.inactivityTimeout(2000);
-        build.profanityFilter(Language.isProfanityFilterActive());
+        build.profanityFilter(TranslaTaSettings.isProfanityFilterActive());
         RecognizeOptions option = build.build();
         return option;
     }
@@ -226,13 +228,6 @@ public class IBMSpeechToText {
 
             /* Writes the text to a text field on the current activity UI */
             final String message = mes;
-            instance.runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run() {
-                    instance.translatedTextView.setText(message);
-                }
-            });
         }
     }
 }

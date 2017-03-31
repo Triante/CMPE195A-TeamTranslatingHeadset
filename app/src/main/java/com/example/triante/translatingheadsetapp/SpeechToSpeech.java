@@ -17,8 +17,8 @@ public class SpeechToSpeech {
     private Microphone microphone; //Microphone object for managing input device data retrieval
     private MSTranslator translator; //translator object model for using base methods from Microsoft's cognitive services
     private String speech; //speech gathered from microphone
-    private String languageFrom; //language to recognize/translate from
-    private String languageTo; //language to translate to/playback
+    private String languageFrom; //languageSettings to recognize/translate from
+    private String languageTo; //languageSettings to translate to/playback
     private ArrayList<Transcript> translatedTextList; //text ready to be translated
     private Executor executor;
     private SpeechToSpeechTranslationRunnable r1;
@@ -37,7 +37,7 @@ public class SpeechToSpeech {
         translatedTextList = new ArrayList<>();
     }
 
-    /* Delegated task for translating text from one language to another*/
+    /* Delegated task for translating text from one languageSettings to another*/
     private void translate (final Transcript transcript) {
         new TranslateTextTask().execute(transcript);
     }
@@ -137,10 +137,10 @@ public class SpeechToSpeech {
             String message = "";
             try {
                 if (params[0].getUser() == 0) {
-                    message = translator.translate(params[0].getSpeech(), Language.getMyLanguageCode(), Language.getResponseLanguageCode());
+                    message = translator.translate(params[0].getSpeech(), LanguageSettings.getMyLanguageCode(), LanguageSettings.getResponseLanguageCode());
                 }
                 else {
-                    message = translator.translate(params[0].getSpeech(), Language.getResponseLanguageCode(), Language.getMyLanguageCode());
+                    message = translator.translate(params[0].getSpeech(), LanguageSettings.getResponseLanguageCode(), LanguageSettings.getMyLanguageCode());
                 }
             } catch (IOException e) {
                 e.printStackTrace();

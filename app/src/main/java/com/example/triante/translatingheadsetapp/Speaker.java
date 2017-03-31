@@ -14,7 +14,7 @@ public class Speaker {
     private IBMTextToSpeech textToSpeechConverter; //Text-to-speech object to use base methods from IBM's Text-to-Speech service
     private BluetoothDevice earpiece; //placeholder for Bluetooth data from the headset device
     private BluetoothDevice outSpeaker; //placeholder for Bluetooth data from the external speaker
-    private Voice languageTo; //language to use for playback
+    private Voice languageTo; //languageSettings to use for playback
 
     public Speaker (DemoActivity instance) {
         textToSpeechConverter = new IBMTextToSpeech(instance);
@@ -28,10 +28,10 @@ public class Speaker {
     /* Method used to perform playback to a device*/
     public void synthesizeSpeech(String speech, int user) {
         if (user == 0) {
-            languageTo = Language.getResponseLanguageVoice();
+            languageTo = LanguageSettings.getResponseLanguageVoice();
         }
         else {
-            languageTo = Language.getMyLanguageVoice();
+            languageTo = LanguageSettings.getMyLanguageVoice();
         }
         textToSpeechConverter.synthesize(speech, languageTo);
     }

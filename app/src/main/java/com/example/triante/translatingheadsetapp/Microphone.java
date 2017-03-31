@@ -12,8 +12,8 @@ import java.io.IOException;
 public class Microphone {
     private IBMSpeechToText speechToTextConverter; //Speech-to-text object to use the base methods
     private BluetoothDevice microphone; //Bluetooth connection details for the microphone
-    private String languageFrom; //Language to recognize
-    private String languageTo; //Language to translate to
+    private String languageFrom; //LanguageSettings to recognize
+    private String languageTo; //LanguageSettings to translate to
 
     public Microphone (DemoActivity instance) {
         speechToTextConverter = new IBMSpeechToText(instance);

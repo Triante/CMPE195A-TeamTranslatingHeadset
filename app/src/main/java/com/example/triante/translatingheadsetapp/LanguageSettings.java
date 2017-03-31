@@ -5,49 +5,37 @@ import android.content.SharedPreferences;
 
 import com.ibm.watson.developer_cloud.text_to_speech.v1.model.Voice;
 
-import java.io.Serializable;
-
-import static com.example.triante.translatingheadsetapp.Language.LanguageSelect.ENGLISH_F;
-import static com.example.triante.translatingheadsetapp.Language.LanguageSelect.ENGLISH_M;
-import static com.example.triante.translatingheadsetapp.Language.LanguageSelect.FRENCH;
-import static com.example.triante.translatingheadsetapp.Language.LanguageSelect.GBENGLISH;
-import static com.example.triante.translatingheadsetapp.Language.LanguageSelect.GERMAN_F;
-import static com.example.triante.translatingheadsetapp.Language.LanguageSelect.GERMAN_M;
-import static com.example.triante.translatingheadsetapp.Language.LanguageSelect.ITALIAN;
-import static com.example.triante.translatingheadsetapp.Language.LanguageSelect.JAPANESE;
-import static com.example.triante.translatingheadsetapp.Language.LanguageSelect.MANDARIN;
-import static com.example.triante.translatingheadsetapp.Language.LanguageSelect.MXSPANISH;
-import static com.example.triante.translatingheadsetapp.Language.LanguageSelect.PORTUGUESE;
-import static com.example.triante.translatingheadsetapp.Language.LanguageSelect.SPANISH_F;
-import static com.example.triante.translatingheadsetapp.Language.LanguageSelect.SPANISH_M;
+import static com.example.triante.translatingheadsetapp.LanguageSettings.Language.ENGLISH_F;
+import static com.example.triante.translatingheadsetapp.LanguageSettings.Language.ENGLISH_M;
+import static com.example.triante.translatingheadsetapp.LanguageSettings.Language.FRENCH;
+import static com.example.triante.translatingheadsetapp.LanguageSettings.Language.GBENGLISH;
+import static com.example.triante.translatingheadsetapp.LanguageSettings.Language.GERMAN_F;
+import static com.example.triante.translatingheadsetapp.LanguageSettings.Language.GERMAN_M;
+import static com.example.triante.translatingheadsetapp.LanguageSettings.Language.ITALIAN;
+import static com.example.triante.translatingheadsetapp.LanguageSettings.Language.JAPANESE;
+import static com.example.triante.translatingheadsetapp.LanguageSettings.Language.MANDARIN;
+import static com.example.triante.translatingheadsetapp.LanguageSettings.Language.MXSPANISH;
+import static com.example.triante.translatingheadsetapp.LanguageSettings.Language.PORTUGUESE;
+import static com.example.triante.translatingheadsetapp.LanguageSettings.Language.SPANISH_F;
+import static com.example.triante.translatingheadsetapp.LanguageSettings.Language.SPANISH_M;
 
 /**
  * Created by Jorge Aguiniga on 10/7/2016.
  */
 
-/* Class for storing all the language preferences (language1: user language2: other party)*/
-public class Language implements Serializable {
+/* Class for storing all the languageSettings preferences (language1: user language2: other party)*/
+public class LanguageSettings {
 
-    /* Language specific enumarations to use for identification purposes*/
-    public static enum LanguageSelect {
+    /* LanguageSettings specific enumarations to use for identification purposes*/
+    public enum Language {
         ENGLISH_F, ENGLISH_M, GBENGLISH, FRENCH, GERMAN_F, GERMAN_M,
         ITALIAN, JAPANESE, PORTUGUESE, SPANISH_F, SPANISH_M, MXSPANISH, MANDARIN
     }
     
-    private static LanguageSelect myLanguage = ENGLISH_F; //placeholder for the user's preferred language
-    private static LanguageSelect responseLanguage = SPANISH_F; //placeholder for the other party's preferred language
-    private static boolean profanityFilter = true;
-    private static int maxAmplitude = 0;
-    private static int thresholdAmplitude = 0;
+    private static Language myLanguage = ENGLISH_F; //placeholder for the user's preferred languageSettings
+    private static Language responseLanguage = SPANISH_F; //placeholder for the other party's preferred languageSettings
 
-    private static final String SHARED_PREFERENCES_FILE_NAME = "TRANSLATA_SHARED_PREFERENCES";
-    private static final String SHARED_PREFERENCES_MY_LANGUAGE = "TRANSLATA_MY_LANGUAGE";
-    private static final String SHARED_PREFERENCES_RESPONSE_LANGUAGE = "TRANSLATA_RESPONSE_LANGUAGE";
-    private static final String SHARED_PREFERENCES_PROFANITY_FILTER_FLAG = "TRANSLATA_PROFANITY_FILTER";
-    private static final String SHARED_PREFERENCES_MAX_SETTINGS = "TRANSLATA_MAX_SETTINGS";
-    private static final String SHARED_PREFERENCES_THRESHOLD_SETTINGS = "TRANSLATA_THRESHOLD_SETTINGS";
-
-    /* Getter for the current language saved as the user's preferred language */
+    /* Getter for the current languageSettings saved as the user's preferred languageSettings */
     public static String getMyLanguageCode() {
         switch (myLanguage) {
             case ENGLISH_F: //Female English voice
@@ -76,7 +64,7 @@ public class Language implements Serializable {
         }
     }
 
-    /* Getter for the current language saved as the other party's preferred language */
+    /* Getter for the current languageSettings saved as the other party's preferred languageSettings */
     public static String getResponseLanguageCode() {
         switch (responseLanguage) {
             case ENGLISH_F: //Female English voice
@@ -105,7 +93,7 @@ public class Language implements Serializable {
         }
     }
 
-    /* Getter for the current language saved as the user's preferred language model for the translator */
+    /* Getter for the current languageSettings saved as the user's preferred languageSettings model for the translator */
     public static String getMyLanguageModel() {
         switch (myLanguage) {
             case ENGLISH_F: //Female English voice
@@ -135,7 +123,7 @@ public class Language implements Serializable {
         }
     }
 
-    /* Getter for the current language saved as the other party's preferred language model for the translator */
+    /* Getter for the current languageSettings saved as the other party's preferred languageSettings model for the translator */
     public static String getResponseLanguageModel() {
         switch (responseLanguage) {
             case ENGLISH_F: //Female English voice
@@ -233,23 +221,25 @@ public class Language implements Serializable {
         }
     }
     
-    /* Sets the language that is going to be used for either the user or the other party*/
-    public static void setLanguage(boolean toBeMyLanguage, LanguageSelect theLanguage) {
+    /* Sets the languageSettings that is going to be used for either the user or the other party*/
+    public static void setLanguage(boolean toBeMyLanguage, Language theLanguage) {
         if (toBeMyLanguage) {
             myLanguage = theLanguage;
         }
         else {
             responseLanguage = theLanguage;
         }
+
+        TranslaTaSettings.setLanguageSettingsCode(toBeMyLanguage, getLanguageIntCode(theLanguage));
     }
 
-    /* Getss the language that is currently being used for either the user or the other party*/
-    public static LanguageSelect getLanguage(boolean isMyLanguage) {
+    /* Getss the languageSettings that is currently being used for either the user or the other party*/
+    public static Language getLanguage(boolean isMyLanguage) {
         if (isMyLanguage) return myLanguage;
         else return responseLanguage;
     }
     
-    /* Checks if the current language model can be applied to the speech-to-speech translation session*/
+    /* Checks if the current languageSettings model can be applied to the speech-to-speech translation session*/
     public static boolean speechToSpeechPossible() {
         
         /* Languages not supported */
@@ -270,80 +260,7 @@ public class Language implements Serializable {
         return true;
     }
 
-    public static boolean isProfanityFilterActive() {
-        return profanityFilter;
-    }
-
-    public static boolean setProfanityFilter(boolean active) {
-        profanityFilter = active;
-        return profanityFilter;
-    }
-
-    public static boolean enableProfanity(int user) {
-        LanguageSelect key;
-        if (user == 0) {
-            key = myLanguage;
-        }
-        else {
-            key = responseLanguage;
-        }
-        switch (key) {
-            case ENGLISH_F:
-            case ENGLISH_M:
-            case GBENGLISH:
-                if (isProfanityFilterActive()) {
-                    return true;
-                }
-                break;
-        }
-        return false;
-    }
-
-    public static boolean initiateSavedLanguageSettings(Context context) {
-        SharedPreferences settings = context.getSharedPreferences(SHARED_PREFERENCES_FILE_NAME, 0);
-        int myLang = settings.getInt(SHARED_PREFERENCES_MY_LANGUAGE, 0);
-        int respLang = settings.getInt(SHARED_PREFERENCES_RESPONSE_LANGUAGE, 0);
-        myLanguage = getLanguageFromIntCode(myLang);
-        responseLanguage = getLanguageFromIntCode(respLang);
-        profanityFilter = settings.getBoolean(SHARED_PREFERENCES_PROFANITY_FILTER_FLAG, true);
-        maxAmplitude = settings.getInt(SHARED_PREFERENCES_MAX_SETTINGS, 0);
-        thresholdAmplitude = settings.getInt(SHARED_PREFERENCES_THRESHOLD_SETTINGS, 0);
-        return true;
-    }
-
-    public static boolean saveLanguageSettings(Context context) {
-        SharedPreferences settings = context.getSharedPreferences(SHARED_PREFERENCES_FILE_NAME, 0);
-        SharedPreferences.Editor editor = settings.edit();
-        int myLang = getLanguageIntCode(myLanguage);
-        int respLang = getLanguageIntCode(responseLanguage);
-        editor.putInt(SHARED_PREFERENCES_MY_LANGUAGE, myLang);
-        editor.putInt(SHARED_PREFERENCES_RESPONSE_LANGUAGE, respLang);
-        editor.putBoolean(SHARED_PREFERENCES_PROFANITY_FILTER_FLAG, isProfanityFilterActive());
-        editor.commit();
-        return true;
-    }
-
-    public static boolean saveAmplitudeSettings(Context context, int maxAmp, int thresholdAmp) {
-        maxAmplitude = maxAmp;
-        thresholdAmplitude = thresholdAmp;
-        SharedPreferences settings = context.getSharedPreferences(SHARED_PREFERENCES_FILE_NAME, 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putInt(SHARED_PREFERENCES_MAX_SETTINGS, maxAmplitude);
-        editor.putInt(SHARED_PREFERENCES_THRESHOLD_SETTINGS, thresholdAmplitude);
-        editor.commit();
-        return true;
-    }
-
-    public static int getMaxAmplitude() {
-        return maxAmplitude;
-    }
-
-    public static int getThresholdAmplitude() {
-        return thresholdAmplitude;
-    }
-
-
-    private static int getLanguageIntCode(LanguageSelect key) {
+    public static int getLanguageIntCode(Language key) {
         switch (key) {
             case ENGLISH_F:
                 return 1;
@@ -376,7 +293,7 @@ public class Language implements Serializable {
         }
     }
 
-    private static LanguageSelect getLanguageFromIntCode(int key) {
+    public static Language getLanguageFromIntCode(int key) {
         switch (key) {
             case 1:
                 return ENGLISH_F;
