@@ -172,10 +172,12 @@ public class IBMSpeechToText {
         return option;
     }
 
+    private static boolean userDomLock = true;
     /* Inner class for extracting the converted speech from the Speech-to-text object */
     private class MicrophoneRecognizeCallback extends BaseRecognizeCallback {
 
         private boolean isUser = false;
+
 
         public MicrophoneRecognizeCallback(int user) {
             if (user == 0) isUser = true;
@@ -192,13 +194,17 @@ public class IBMSpeechToText {
                 if (calculator.getAverageAmp() > userAmplitudeLevel - (userAmplitudeLevel * .15))
                 {
                     Log.d("ampAve", "Current Average:     " + calculator.getAverageAmp());
+                    userDomLock = true;
                     //streamOne.setBlockStatus(false);
                     //streamTwo.setBlockStatus(true);
                     getOnTranscript(speechResults);
                 }
+                else {
+                    userDomLock = false;
+                }
             }
             else {
-                if (calculator.getAverageAmp() <= userAmplitudeLevel - (userAmplitudeLevel * .15)) {
+                if (calculator.getAverageAmp() <= userAmplitudeLevel - (userAmplitudeLevel * .15) && calculator.countAboveOne() && !userDomLock) {
                     Log.d("ampAve", "Current Average:     " + calculator.getAverageAmp());
                     //streamOne.setBlockStatus(true);
                     //streamTwo.setBlockStatus(false);
@@ -225,6 +231,7 @@ public class IBMSpeechToText {
                 addToMessagesRecognized(temp, isUser);
                 mes = mes + "\nDID ENTER RESET CALC";
                 calculator.resetAmpVariables();
+                userDomLock = false;
             }
 
 
