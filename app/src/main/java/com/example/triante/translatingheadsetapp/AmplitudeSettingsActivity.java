@@ -159,6 +159,7 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
         else {
             micStream = new MultipleMicrophoneInputStream(0);
             micStream.setOnAmplitudeListener(this);
+            micStream.startRecording();
             microphoneRecording = true;
             //micImage.setImageResource(R.drawable.ic_microphone_glow);
         }
@@ -189,18 +190,19 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
         final ProgressBar recordingBar = (ProgressBar) progressBarView.findViewById(R.id.recordingProgressBar);
         recordingBar.setMax(10000);
         task.start();
-        CountDownTimer timer = new CountDownTimer(10000, 250) {
+        CountDownTimer timer = new CountDownTimer(10000, 100) {
            int progress = 0;
 
             @Override
             public void onTick(long millisUntilFinished) {
-                progress = progress + 250;
+                progress = progress + 100;
                 recordingBar.setProgress(progress);
             }
 
             @Override
             public void onFinish() {
                 task.stopRun();
+                int s = task.getCount();
                 double threshold = task.getAverageAmplitude();
                 thresholdSetting = (int) threshold;
                 recordingBar.setProgress(recordingBar.getMax());
@@ -235,8 +237,14 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
     }
 
     private void adjustSlidersAndBar(double threshold) {
-        int newMax = (int) (threshold / 1E7) + 1;
+        if (threshold > MAX_THRESHOLD) {
+            threshold = MAX_THRESHOLD;
+        }
+        int newMax = 2 * ((int) (threshold / 1E7) + 1);
         newMax = (int) (newMax * 1E7);
+        if (newMax > MAX_THRESHOLD) {
+            newMax = MAX_THRESHOLD;
+        }
         maxSetting = newMax;
         thresholdSetting = (int) threshold;
         thresholdBar.setMax(maxSetting);
@@ -274,6 +282,11 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
             updateBar = false;
             microphoneSwitch(); //turn on mic to start recording
             while (run) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 calculator.addAmpValue(currentAmp);
             }
         }
@@ -281,20 +294,21 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
         public void stopRun() {
             if (run) {
                 run = false;
-                microphoneSwitch(); //turn off microphone
-                while (run) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-
-                    }
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+                microphoneSwitch(); //turn off microphone
             }
 
         }
 
         public double getAverageAmplitude() {
             return calculator.getAverageAmp();
+        }
+        public int getCount() {
+            return calculator.getCount();
         }
     }
 

@@ -1,6 +1,7 @@
 package com.example.triante.translatingheadsetapp;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.ibm.watson.developer_cloud.android.library.audio.AmplitudeListener;
 import com.ibm.watson.developer_cloud.android.library.audio.MicrophoneInputStream;
@@ -185,10 +186,12 @@ public class IBMSpeechToText {
         public void onTranscription(SpeechResults speechResults) {
             /* Does not continue if the system is not recording */
             if(!isInRecording) return;
-            calculator.addAmpValue(amp);
             if (isUser) {
+                calculator.addAmpValue(amp);
+                Log.d("amp", "Current Amp:     " + amp);
                 if (calculator.getAverageAmp() > userAmplitudeLevel - (userAmplitudeLevel * .15))
                 {
+                    Log.d("ampAve", "Current Average:     " + calculator.getAverageAmp());
                     //streamOne.setBlockStatus(false);
                     //streamTwo.setBlockStatus(true);
                     getOnTranscript(speechResults);
@@ -196,6 +199,7 @@ public class IBMSpeechToText {
             }
             else {
                 if (calculator.getAverageAmp() <= userAmplitudeLevel - (userAmplitudeLevel * .15)) {
+                    Log.d("ampAve", "Current Average:     " + calculator.getAverageAmp());
                     //streamOne.setBlockStatus(true);
                     //streamTwo.setBlockStatus(false);
                     getOnTranscript(speechResults);
@@ -218,10 +222,8 @@ public class IBMSpeechToText {
                 mes = mes + "\nFINAL";
                 streamOne.setBlockStatus(false);
                 streamTwo.setBlockStatus(false);
-                if (calculator.countAboveOne()) {
-                    addToMessagesRecognized(temp, isUser);
-                    mes = mes + "\nDID ENTER RESET CALC";
-                }
+                addToMessagesRecognized(temp, isUser);
+                mes = mes + "\nDID ENTER RESET CALC";
                 calculator.resetAmpVariables();
             }
 

@@ -282,7 +282,7 @@ public final class MultipleMicrophoneInputStream extends InputStream implements 
          */
         public void end() {
             stop = true;
-            while (!stopped) {
+            while (!stop) {
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {

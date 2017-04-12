@@ -66,6 +66,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         bSettings.setOnClickListener(this);
         bTest = (Button) findViewById(R.id.bTest);
         bTest.setOnClickListener(this);
+        bTest.setText("S2S off");
     }
 
     /* Method to manage all the on click listeners for the buttons*/
@@ -148,6 +149,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 if (isSTS) {
                     try {
                         speechToSpeech.stopListening();
+                        bTest.setText("S2S off");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -155,6 +157,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 else {
                     speechToSpeech.beginListening();
+                    bTest.setText("S2S on");
                     isSTS = true;
                 }
                 break;

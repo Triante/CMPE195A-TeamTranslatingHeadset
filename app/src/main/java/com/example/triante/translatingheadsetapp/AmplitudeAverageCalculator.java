@@ -14,12 +14,18 @@ public class AmplitudeAverageCalculator implements Comparator<Integer> {
 
     public synchronized void addAmpValue(double amp) {
         if (amp > maxAmp) maxAmp = amp;
+        if (amp < 1000) return;
         int add = (int) amp;
         values.add(add);
     }
 
+    public int getCount() {
+        return values.size();
+    }
+
 
     public synchronized double getAverageAmp() {
+        if (!countAboveOne()) return 0;
         double ave = convertAverageAmp();
         return ave;
     }
@@ -37,14 +43,16 @@ public class AmplitudeAverageCalculator implements Comparator<Integer> {
     private double convertAverageAmp() {
         int total = 0;
         int amount = 0;
-        double mean = getMean();
-        double maxAllowed = mean + (mean * 0.3);
+        double mean = getMean();;
         double minAllowed = mean - (mean * 0.3);
         for (int value: values) {
-            if (minAllowed <= value && value <= maxAllowed) {
+            if (minAllowed <= value) {
                 total += value;
                 amount++;
             }
+        }
+        if (amount == 0) {
+            return 0;
         }
         int average = total / amount;
         return average;
