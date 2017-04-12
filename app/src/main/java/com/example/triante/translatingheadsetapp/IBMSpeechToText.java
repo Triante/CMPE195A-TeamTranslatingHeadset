@@ -114,7 +114,7 @@ public class IBMSpeechToText {
         };
         //micInput.setOnAmplitudeListener(listener);
         micDuelInput.setOnAmplitudeListener(listener);
-        
+        micDuelInput.startRecording();
         /* Make the recording its own separate process */
         new Thread(new Runnable() {
             @Override
@@ -185,9 +185,9 @@ public class IBMSpeechToText {
         public void onTranscription(SpeechResults speechResults) {
             /* Does not continue if the system is not recording */
             if(!isInRecording) return;
-            calculator.convertAverageAmp(amp);
+            calculator.addAmpValue(amp);
             if (isUser) {
-                if (calculator.getAverageAmp() > userAmplitudeLevel)
+                if (calculator.getAverageAmp() > userAmplitudeLevel - (userAmplitudeLevel * .15))
                 {
                     //streamOne.setBlockStatus(false);
                     //streamTwo.setBlockStatus(true);
@@ -195,7 +195,7 @@ public class IBMSpeechToText {
                 }
             }
             else {
-                if (calculator.getAverageAmp() <= userAmplitudeLevel) {
+                if (calculator.getAverageAmp() <= userAmplitudeLevel - (userAmplitudeLevel * .15)) {
                     //streamOne.setBlockStatus(true);
                     //streamTwo.setBlockStatus(false);
                     getOnTranscript(speechResults);

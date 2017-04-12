@@ -69,7 +69,6 @@ public final class MultipleMicrophoneInputStream extends InputStream implements 
                 Log.e(TAG, e.getMessage());
             }
         }
-        captureThread.start();
     }
 
     public MultipleMicrophoneInputStream(int amount, boolean opusEncoded) {
@@ -91,6 +90,9 @@ public final class MultipleMicrophoneInputStream extends InputStream implements 
                 Log.e(TAG, e.getMessage());
             }
         }
+    }
+
+    public void startRecording() {
         captureThread.start();
     }
 

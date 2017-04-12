@@ -26,7 +26,7 @@ import static com.example.triante.translatingheadsetapp.LanguageSettings.Languag
 /* Class for storing all the languageSettings preferences (language1: user language2: other party)*/
 public class LanguageSettings {
 
-    /* LanguageSettings specific enumarations to use for identification purposes*/
+    /* LanguageSettings specific enums to use for identification purposes*/
     public enum Language {
         ENGLISH_F, ENGLISH_M, GBENGLISH, FRENCH, GERMAN_F, GERMAN_M,
         ITALIAN, JAPANESE, PORTUGUESE, SPANISH_F, SPANISH_M, MXSPANISH, MANDARIN
@@ -233,7 +233,7 @@ public class LanguageSettings {
         TranslaTaSettings.setLanguageSettingsCode(toBeMyLanguage, getLanguageIntCode(theLanguage));
     }
 
-    /* Getss the languageSettings that is currently being used for either the user or the other party*/
+    /* Gets the languageSettings that is currently being used for either the user or the other party*/
     public static Language getLanguage(boolean isMyLanguage) {
         if (isMyLanguage) return myLanguage;
         else return responseLanguage;

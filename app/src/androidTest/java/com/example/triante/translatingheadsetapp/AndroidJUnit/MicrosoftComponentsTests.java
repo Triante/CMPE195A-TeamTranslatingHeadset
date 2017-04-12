@@ -1,8 +1,12 @@
-package com.example.triante.translatingheadsetapp;
+package com.example.triante.translatingheadsetapp.AndroidJUnit;
 
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+
+import com.example.triante.translatingheadsetapp.DemoActivity;
+import com.example.triante.translatingheadsetapp.MSAuthenticator;
+import com.example.triante.translatingheadsetapp.MSTranslator;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -35,10 +39,10 @@ public class MicrosoftComponentsTests {
     }
 
     @Test
-    public void test_tokenExpired() throws IOException {
-        authenticator = new MSAuthenticator(mActivityRule.getActivity());
-        boolean toBeExpired = authenticator.isExpired();
-        assertTrue("Expired AuthToken test", toBeExpired);
+    public void test_createValid() throws IOException {
+        authenticator.createAuthToken();
+        boolean toBeValid = authenticator.isExpired();
+        assertFalse("Valid AuthToken test", toBeValid);
     }
 
     @Test
@@ -46,6 +50,14 @@ public class MicrosoftComponentsTests {
         authenticator.createAuthToken();
         boolean toBeValid = authenticator.isExpired();
         assertFalse("Valid AuthToken test", toBeValid);
+    }
+
+    @Test
+    public void test_tokenExpired() throws IOException {
+        //have to wait 9 minutes before token expires, instead create new authentication class without creating token
+        authenticator = new MSAuthenticator(mActivityRule.getActivity());
+        boolean toBeExpired = authenticator.isExpired();
+        assertTrue("Expired AuthToken test", toBeExpired);
     }
 
     @Test

@@ -252,7 +252,9 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
     }
 
     private void save () {
-        TranslaTaSettings.saveAmplitudeSettings(this, maxSetting, thresholdSetting);
+        TranslaTaSettings.setMaxAmplitude(maxSetting);
+        TranslaTaSettings.setAmplitudeThreshold(thresholdSetting);
+        TranslaTaSettings.saveAmplitudeSettings(this);
         //Toast.makeText(this, "saved", Toast.LENGTH_SHORT).show();
     }
 
@@ -272,7 +274,7 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
             updateBar = false;
             microphoneSwitch(); //turn on mic to start recording
             while (run) {
-                calculator.convertAverageAmp(currentAmp);
+                calculator.addAmpValue(currentAmp);
             }
         }
 
@@ -294,5 +296,14 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
         public double getAverageAmplitude() {
             return calculator.getAverageAmp();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!lockSeek) {
+            lockSeek = true;
+            microphoneSwitch();
+        }
+        super.onBackPressed();
     }
 }

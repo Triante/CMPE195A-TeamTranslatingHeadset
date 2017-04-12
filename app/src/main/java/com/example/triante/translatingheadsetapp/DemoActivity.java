@@ -27,6 +27,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
     LanguageSettings languageSettings; //LanguageSettings model
     private SpeechToSpeech speechToSpeech;
     private boolean isSTS = false;
+    MSAuthenticator auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,14 +37,14 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_demo);
         myToolBar = (Toolbar) findViewById(R.id.mainActivity_toolbar);
         setSupportActionBar(myToolBar);
-        
+
         /* Attempt to initialize Translator model*/
         try {
             translator = new MSTranslator(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         /* Initialize IBM speech-to-text and text-to-speech*/
         stt = new IBMSpeechToText(this);
         tts = new IBMTextToSpeech(this);
@@ -158,9 +159,6 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.bOptions: //Settings button listener
-                Intent options = new Intent(this, SettingsActivity.class); 
-                startActivity(options); //Starts new settings activity
-                break;
         }
     }
 
