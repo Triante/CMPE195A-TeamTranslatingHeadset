@@ -187,7 +187,7 @@ public class IBMSpeechToText {
             if(!isInRecording) return;
             calculator.convertAverageAmp(amp);
             if (isUser) {
-                if (calculator.getAverageAmp() > userAmplitudeLevel)
+                if (calculator.getAverageAmp() > 0)
                 {
                     //streamOne.setBlockStatus(false);
                     //streamTwo.setBlockStatus(true);
@@ -195,7 +195,7 @@ public class IBMSpeechToText {
                 }
             }
             else {
-                if (calculator.getAverageAmp() <= userAmplitudeLevel) {
+                if (calculator.getAverageAmp() <= 0) {
                     //streamOne.setBlockStatus(true);
                     //streamTwo.setBlockStatus(false);
                     getOnTranscript(speechResults);

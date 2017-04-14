@@ -17,42 +17,42 @@ public class Speaker {
     private BluetoothDevice earpiece; //placeholder for Bluetooth data from the headset device
     private BluetoothDevice outSpeaker; //placeholder for Bluetooth data from the external speaker
     private Voice languageTo; //language to use for playback
-    private int headset_mode;
-    private int speaker_mode;
-    private AudioManager audioSwitch;
+    public static int headset_mode;
+    public static int speaker_mode;
+    private static AudioManager audioSwitch;
 
     public Speaker (DemoActivity instance) {
         textToSpeechConverter = new IBMTextToSpeech(instance);
-        audioSwitch = (AudioManager)instance.getSystemService(Context.AUDIO_SERVICE);
-        speaker_mode = audioSwitch.getMode();
-        headset_mode = audioSwitch.MODE_IN_COMMUNICATION;
 
-        audioSwitch.setMode(speaker_mode);
-        audioSwitch.startBluetoothSco();
+
+        audioSwitch = (AudioManager)instance.getSystemService(Context.AUDIO_SERVICE);
+        audioSwitch.setSpeakerphoneOn(false);
+        speaker_mode = audioSwitch.getMode();
+
+
+
     }
 
     /* Method used to find which device should perform playback (Not yet implemented)*/
     public void playback(String speech, int user) {
-        audioSwitch.setMicrophoneMute(true);
+
+
         if (user == 1)
         {
-            audioSwitch.stopBluetoothSco();
-            audioSwitch.setMode(headset_mode);
-        }
-        else {
-            audioSwitch.setMode(speaker_mode);
             audioSwitch.startBluetoothSco();
         }
-        textToSpeechConverter.synthesize(speech, languageTo, audioSwitch, headset_mode);
+
+        textToSpeechConverter.synthesize(speech, languageTo, audioSwitch);
+
     }
 
     /* Method used to perform playback to a device*/
     public void synthesizeSpeech(String speech, int user) {
         if (user == 0) {
-            languageTo = Language.getResponseLanguageVoice();
+            languageTo = LanguageSettings.getResponseLanguageVoice();
         }
         else {
-            languageTo = Language.getMyLanguageVoice();
+            languageTo = LanguageSettings.getMyLanguageVoice();
         }
 
         playback(speech, user);

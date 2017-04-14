@@ -8,6 +8,8 @@ import com.ibm.watson.developer_cloud.android.library.audio.StreamPlayer;
 import com.ibm.watson.developer_cloud.text_to_speech.v1.TextToSpeech;
 import com.ibm.watson.developer_cloud.text_to_speech.v1.model.Voice;
 
+import java.io.IOException;
+
 /**
  * Created by Jorge Aguiniga on 10/7/2016.
  */
@@ -33,30 +35,31 @@ public class IBMTextToSpeech {
         /* Begin session*/
         textToSpeech = new TextToSpeech();
         textToSpeech.setUsernameAndPassword(ttsUsername, ttsPass);
+
     }
     
     /* Method to convert text input to speech and project it to an audio output device*/
-    public void synthesize(String speech, Voice language, AudioManager manager, int mode) {
-        new SynthesizeTask(language, manager, mode).execute(speech);
+    public void synthesize(String speech, Voice language, AudioManager manager) {
+        new SynthesizeTask(language, manager).execute(speech);
     }
 
     /* Inner class for performing the text-to-speech process as a separate task from the main thread*/
     private class SynthesizeTask extends AsyncTask<String, Void, String> {
 
         private Voice voice;
-        private AudioManager audioSwitch;
-        private int audioMode;
+        private AudioManager manager;
 
-        public SynthesizeTask(Voice v, AudioManager theSwitch, int audio) {
+        public SynthesizeTask(Voice v, AudioManager audio_manager) {
             voice = v;
-            audioSwitch = theSwitch;
-            audioMode = audio;
+            manager = audio_manager;
         }
 
         @Override protected String doInBackground(String... params) {
+
             player.playStream(textToSpeech.synthesize(params[0], voice).execute()); //playback execution
-            audioSwitch.stopBluetoothSco();
-            audioSwitch.setMode(audioMode);
+
+            manager.stopBluetoothSco();
+
             return "Did syntesize";
         }
     }

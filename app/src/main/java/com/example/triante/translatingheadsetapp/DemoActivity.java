@@ -1,6 +1,9 @@
 package com.example.triante.translatingheadsetapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +13,8 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.ibm.watson.developer_cloud.alchemy.v1.model.Language;
 
 import java.io.IOException;
 
@@ -24,9 +29,13 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
     public TextView translatedTextView; //Shows translated text
     boolean isInRecording = false; //flag for checking if the system is currently recording speech
     MSTranslator translator; //Translator model
-    Language language; //Language model
+    LanguageSettings language; //Language model
     private SpeechToSpeech speechToSpeech;
     private boolean isSTS = false;
+    private boolean isOn = false;
+    private AudioManager audioSwitch;
+    private int speaker_mode;
+    private int headset_mode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +74,15 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         bSettings.setOnClickListener(this);
         bTest = (Button) findViewById(R.id.bTest);
         bTest.setOnClickListener(this);
+
+
+        /*
+        audioSwitch = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        speaker_mode = audioSwitch.getMode();
+        headset_mode = AudioManager.MODE_IN_COMMUNICATION;
+        audioSwitch.setSpeakerphoneOn(false);
+        audioSwitch.setBluetoothScoOn(true);
+        */
     }
 
     /* Method to manage all the on click listeners for the buttons*/
@@ -74,7 +92,8 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.bSpeechRecognition: //Speech Recognition button listener
                 
                 /* Checks if the system is currently recording speech */
-                if (isInRecording) { 
+
+                if (isInRecording) {
                     
                     /* New task created to end the recording session */
                     new AsyncTask<Void, Void, Void>() {
@@ -97,6 +116,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                             isInRecording = false;
                         }
                     });
+
                 }               
                 /* If the system is currently not recording */
                 else {
@@ -115,6 +135,23 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.bSpeechSynthesis: //Speech synthesis button listener
                 //tts.synthesize(translatedTextView.getText().toString(), Language.getResponseLanguageVoice()); //Performs speech synthesis on IBMTextToSpeech
+
+                    if (!isOn) {
+                        audioSwitch.startBluetoothSco();
+                        audioSwitch.setMicrophoneMute(false);
+                        isOn = true;
+                        System.out.println(audioSwitch.isMicrophoneMute());
+                    } else
+                    {
+                        audioSwitch.stopBluetoothSco();
+                        audioSwitch.setMode(speaker_mode);
+                        audioSwitch.setBluetoothScoOn(false);
+                        isOn = false;
+                        System.out.println(audioSwitch.isMicrophoneMute());
+                    }
+
+
+
                 break;
             case R.id.bTranslate: //Translator button listener
                 final String input = translatedTextView.getText().toString(); //Gets contents of the translated text view
@@ -124,8 +161,8 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     protected Void doInBackground(Void... none) {
                         try {
-                            String myCode = Language.getMyLanguageCode(); //User's preferred language model
-                            String RespCode = Language.getResponseLanguageCode(); //Other party's preferred language model
+                            String myCode = LanguageSettings.getMyLanguageCode(); //User's preferred language model
+                            String RespCode = LanguageSettings.getResponseLanguageCode(); //Other party's preferred language model
                             final String output = translator.translate(input, myCode, RespCode); //translated text
                             
                             /* New task created to set translated text to the translated text view*/
