@@ -41,7 +41,7 @@ public class AmplitudeAverageCalculator implements Comparator<Integer> {
     }
 
     private double convertAverageAmp() {
-        int total = 0;
+        double total = 0;
         int amount = 0;
         double mean = getMean();;
         double minAllowed = mean - (mean * 0.3);
@@ -54,7 +54,7 @@ public class AmplitudeAverageCalculator implements Comparator<Integer> {
         if (amount == 0) {
             return 0;
         }
-        int average = total / amount;
+        double average = total / amount;
         return average;
     }
 

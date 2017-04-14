@@ -5,6 +5,7 @@ import android.os.CountDownTimer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -204,6 +205,7 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
                 task.stopRun();
                 int s = task.getCount();
                 double threshold = task.getAverageAmplitude();
+                Log.d("Average: ", threshold + "");
                 thresholdSetting = (int) threshold;
                 recordingBar.setProgress(recordingBar.getMax());
                 try {
@@ -288,6 +290,7 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
                     e.printStackTrace();
                 }
                 calculator.addAmpValue(currentAmp);
+                Log.d("Amplitude Recorded: ", "" + currentAmp);
             }
         }
 
