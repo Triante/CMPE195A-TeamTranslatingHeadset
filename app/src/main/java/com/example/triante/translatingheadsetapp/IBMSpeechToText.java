@@ -24,7 +24,6 @@ public class IBMSpeechToText {
     private String message = ""; //placeholder for the speech being converted
     private ArrayList<Transcript> messagesRecognized;
     private double amplitude; //placeholder for the peak amplitude of the speech input
-    private double userAmplitudeLevel = 2E7;
 
     private SpeechToText speechToTextUser; //IBM-specific speech-to-text object
     private SpeechToText speechToTextParty;
@@ -188,6 +187,7 @@ public class IBMSpeechToText {
         public void onTranscription(SpeechResults speechResults) {
             /* Does not continue if the system is not recording */
             if(!isInRecording) return;
+            int userAmplitudeLevel = TranslaTaSettings.getMaxAmplitude();
             if (isUser) {
                 calculator.addAmpValue(amp);
                 Log.d("amp", "Current Amp:     " + amp);
@@ -236,7 +236,8 @@ public class IBMSpeechToText {
 
 
             /* Writes the text to a text field on the current activity UI */
-            final String message = mes;
+            messageForTesting = mes;
         }
     }
+    public String messageForTesting = "";
 }

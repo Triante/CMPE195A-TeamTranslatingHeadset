@@ -68,15 +68,11 @@ public class MicrophoneCaptureTests {
         bufferBytes.order(ByteOrder.LITTLE_ENDIAN); //save little-endian byte from short buffer
         bufferBytes.asShortBuffer().put(buffer2, 0, r);
         byte[] data = bufferBytes.array();
-        stream.consume(data, 20, 20);
+        stream.consume(data, 0, 0);
         int rData1 = reader1.read(buffer);
         stream.close();
 
-        boolean sameData = false;
-        if (rData1 == r) {
-            sameData = true;
-        }
-        assertTrue("Correct data read from input stream", sameData);
+        assertEquals("Correct data read from input stream", r, rData1/2, 0.0);
     }
 
     @Test

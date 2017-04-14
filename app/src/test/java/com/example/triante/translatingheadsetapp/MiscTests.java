@@ -16,9 +16,9 @@ public class MiscTests {
     public void test_calculatorCount() {
         calculator = new AmplitudeAverageCalculator();
         boolean noCount = calculator.countAboveOne();
-        calculator.addAmpValue(10);
+        calculator.addAmpValue(500000);
         boolean lessThanTwo = calculator.countAboveOne();
-        calculator.addAmpValue(10);
+        calculator.addAmpValue(500000);
         boolean greaterThanOne = calculator.countAboveOne();
 
         assertFalse("No values added count test", noCount);
@@ -29,19 +29,19 @@ public class MiscTests {
     @Test
     public void test_calculatorAverage() {
         calculator = new AmplitudeAverageCalculator();
-        calculator.addAmpValue(100);
-        calculator.addAmpValue(90);
-        calculator.addAmpValue(150);
-        calculator.addAmpValue(130);
+        calculator.addAmpValue(4568854);
+        calculator.addAmpValue(2155524);
+        calculator.addAmpValue(2648126);
+        calculator.addAmpValue(3456466);
         double average = calculator.getAverageAmp();
-        assertEquals("Calculating Average Test", average, 117.5, 0.0);
+        assertEquals("Calculating Average Test", average, 3207242, 0.0);
     }
 
     @Test
     public void test_calculatorReset() {
         calculator = new AmplitudeAverageCalculator();
         int temp;
-        for (int a = 0; a < 50; a++) {
+        for (int a = 10000; a < 10050; a++) {
             temp = (a * 7)+((a + 3) / 2);
             calculator.addAmpValue(temp);
         }
