@@ -22,7 +22,7 @@ import com.ibm.watson.developer_cloud.android.library.audio.utils.ContentType;
  * Created by Jorge Aguiniga on 2/14/2017.
  *
  * Based and modified from MicrophoneInputStream.java from IBM Watson Developer Cloud Android-SDK
- * to support being able to handle two objects to read from the microphone rather than one based
+ * to support being able to handle multiple objects to read from the microphone rather than one based
  * on the original source code provided in the IBM Watson Develop Cloud Android-SDK API.
  * https://github.com/watson-developer-cloud/android-sdk/blob/master/library/src/main/java/com/ibm/watson/developer_cloud/android/library/audio/MicrophoneInputStream.java
  * Taken on 2/24/2017
@@ -38,7 +38,7 @@ import com.ibm.watson.developer_cloud.android.library.audio.utils.ContentType;
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * See the License for the specific languageSettings governing permissions and
  * limitations under the License.
  */
 
@@ -178,7 +178,9 @@ public final class MultipleMicrophoneInputStream extends InputStream implements 
 
 
     /**
-     * MicrophoneCaptureThread.java from IBM Watson Developer Cloud Android-SDK
+     * Based and modified from MicrophoneCaptureThread.java from IBM Watson Developer Cloud Android-SDK
+     * to support being able to handle multiples objects to read from the microphone rather than one based
+     * on the original source code provided in the IBM Watson Develop Cloud Android-SDK API.
      * https://github.com/watson-developer-cloud/android-sdk/blob/master/library/src/main/java/com/ibm/watson/developer_cloud/android/library/audio/MicrophoneCaptureThread.java
      * Taken on 2/24/2017
      *
@@ -193,7 +195,7 @@ public final class MultipleMicrophoneInputStream extends InputStream implements 
      * Unless required by applicable law or agreed to in writing, software
      * distributed under the License is distributed on an "AS IS" BASIS,
      * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
+     * See the License for the specific languageSettings governing permissions and
      * limitations under the License.
      */
     private class MicrophoneCaptureThread extends Thread {

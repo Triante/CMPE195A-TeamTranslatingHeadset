@@ -11,22 +11,22 @@ import java.net.*;
  * Created by Jorge Aguiniga on 10/7/2016.
  */
 
-/* Class for translating text from one language to another*/
+/* Class for translating text from one languageSettings to another*/
 public class MSTranslator {
 
-    private String inputText; //placeholder for text in language retrieved from speech-to-text
+    private String inputText; //placeholder for text in languageSettings retrieved from speech-to-text
     private String outPutText; //placeholder for translated text
-    private String languageFrom; //language to translate from
-    private String languageTo; //language to translate to
+    private String languageFrom; //languageSettings to translate from
+    private String languageTo; //languageSettings to translate to
     private MSAuthenticator authenticator;
     private Context instance;
 
-    public MSTranslator(DemoActivity instance) throws IOException {
+    public MSTranslator(Context instance) throws IOException {
         this.instance = instance;
         authenticator = new MSAuthenticator(instance);
     }
 
-    /* Method that takes input text in one language and translates that text to another language */
+    /* Method that takes input text in one languageSettings and translates that text to another languageSettings */
     public String translate(String inputText, String languageFrom, String languageTo) throws IOException {
         
         /* Define text and languages*/

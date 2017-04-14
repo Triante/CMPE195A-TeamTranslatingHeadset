@@ -12,7 +12,7 @@ import com.ibm.watson.developer_cloud.text_to_speech.v1.model.Voice;
  * Created by Jorge Aguiniga on 10/7/2016.
  */
 
-/* Class to do the text-to-speech conversions when text has been translated from one language to another */
+/* Class to do the text-to-speech conversions when text has been translated from one languageSettings to another */
 public class IBMTextToSpeech {
 
     TextToSpeech textToSpeech; //IBM text-to-speech object to access all of its base methods

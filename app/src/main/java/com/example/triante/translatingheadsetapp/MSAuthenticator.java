@@ -22,7 +22,7 @@ public class MSAuthenticator implements Authenticator {
     
     private AdmAccessToken token; //Access token for the cloud service
 
-    public MSAuthenticator(DemoActivity instance) throws IOException {
+    public MSAuthenticator(Context instance) throws IOException {
         this.instance = instance;
         DATAMARKET_ACCESS = instance.getString(R.string.MicrosoftTranslateTokenURL);
         token = new AdmAccessToken();
@@ -36,10 +36,13 @@ public class MSAuthenticator implements Authenticator {
         token = token.getAdmAccessToken(subscriptionKey);
     }
 
-    /* Checks if the curent token has expired*/
+    /* Checks if the current token has expired*/
     @Override
     public boolean isExpired() {
-        return true;
+        if (token.expires_in < System.currentTimeMillis()) {
+            return true;
+        }
+        return false;
     }
 
     /* Get the token currently being used for the session*/
@@ -50,9 +53,10 @@ public class MSAuthenticator implements Authenticator {
 
     /* Inner class for token administration (retrieval and renewal)*/
     private class AdmAccessToken {
-        public String access_token; //token written in string format
+        private final long NINE_MINUTES = 540000;
+        public String access_token = ""; //token written in string format
         public String token_type; //type of token being used
-        public String expires_in; //exact time token expires
+        public long expires_in = 0; //exact time token expires
         public String scope; //token scope and access range
 
         /* Gets the access token from the Microsoft server*/
@@ -75,6 +79,7 @@ public class MSAuthenticator implements Authenticator {
                     buffer.append(line);
                 }
                 access_token = "Bearer " + buffer.toString();
+                expires_in = System.currentTimeMillis() + NINE_MINUTES;
             }
             return this;
         }
