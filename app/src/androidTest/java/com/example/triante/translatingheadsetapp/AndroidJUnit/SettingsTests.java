@@ -1,8 +1,12 @@
-package com.example.triante.translatingheadsetapp;
+package com.example.triante.translatingheadsetapp.AndroidJUnit;
 
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+
+import com.example.triante.translatingheadsetapp.DemoActivity;
+import com.example.triante.translatingheadsetapp.LanguageSettings;
+import com.example.triante.translatingheadsetapp.TranslaTaSettings;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -35,8 +39,40 @@ public class SettingsTests {
         LanguageSettings.setLanguage(true, defaultMyLanguage);
         LanguageSettings.setLanguage(false, defaultResponseLanguage);
         TranslaTaSettings.setProfanityFilter(defaultProfanityFilter);
-        TranslaTaSettings.saveAmplitudeSettings(mActivityRule.getActivity(), defaultMaxAmp, defaultThreshold);
+        TranslaTaSettings.setMaxAmplitude(defaultMaxAmp);
+        TranslaTaSettings.setAmplitudeThreshold(defaultThreshold);
+        TranslaTaSettings.saveAmplitudeSettings(mActivityRule.getActivity());
         TranslaTaSettings.saveLanguageSettings(mActivityRule.getActivity());
+    }
+
+    @Test
+    public void test_setProfanityTrue() {
+        TranslaTaSettings.setProfanityFilter(true);
+        boolean stillTrue = TranslaTaSettings.isProfanityFilterActive();
+        assertTrue("Profanity filter set true", stillTrue);
+    }
+
+    @Test
+    public void test_setProfanityFalse() {
+        TranslaTaSettings.setProfanityFilter(false);
+        boolean stillFalse = TranslaTaSettings.isProfanityFilterActive();
+        assertFalse("Profanity filter set false", stillFalse);
+    }
+
+    @Test
+    public void test_setAmplitudeThreshold(){
+        int thresholdToSet = 225000;
+        TranslaTaSettings.setAmplitudeThreshold(thresholdToSet);
+        int thresholdRetrieved = TranslaTaSettings.getThresholdAmplitude();
+        assertEquals("Threshold set properly", thresholdRetrieved, thresholdToSet, 0);
+    }
+
+    @Test
+    public void test_setAmplitudeMax(){
+        int maxToSet = 3500253;
+        TranslaTaSettings.setMaxAmplitude(maxToSet);
+        int maxRetrieved = TranslaTaSettings.getMaxAmplitude();
+        assertEquals("Max amplitude set properly", maxToSet, maxRetrieved, 0);
     }
 
     @Test
@@ -57,14 +93,18 @@ public class SettingsTests {
         TranslaTaSettings.saveLanguageSettings(mActivityRule.getActivity());
         TranslaTaSettings.setProfanityFilter(true);
         TranslaTaSettings.initiateTranslaTaSettings(mActivityRule.getActivity());
-        assertFalse("Profanity filter save and soad test", TranslaTaSettings.isProfanityFilterActive());
+        assertFalse("Profanity filter save and load test", TranslaTaSettings.isProfanityFilterActive());
     }
 
     @Test
     public void test_saveAndLoadAmplitudeSettings() {
         int threshold = 15000000;
         int max = 25000000;
-        TranslaTaSettings.saveAmplitudeSettings(mActivityRule.getActivity(), max, threshold);
+        TranslaTaSettings.setMaxAmplitude(max);
+        TranslaTaSettings.setAmplitudeThreshold(threshold);
+        TranslaTaSettings.saveAmplitudeSettings(mActivityRule.getActivity());
+        TranslaTaSettings.setMaxAmplitude(threshold);
+        TranslaTaSettings.setAmplitudeThreshold(max);
         TranslaTaSettings.initiateTranslaTaSettings(mActivityRule.getActivity());
         assertEquals("Save and Load threshold settings", threshold, TranslaTaSettings.getThresholdAmplitude());
         assertEquals("Save and Load max amplitude settings", max, TranslaTaSettings.getMaxAmplitude());

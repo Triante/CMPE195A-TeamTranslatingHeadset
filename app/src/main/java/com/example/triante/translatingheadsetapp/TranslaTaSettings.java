@@ -63,9 +63,7 @@ public class TranslaTaSettings {
         return true;
     }
 
-    public static boolean saveAmplitudeSettings(Context context, int maxAmp, int thresholdAmp) {
-        maxAmplitude = maxAmp;
-        thresholdAmplitude = thresholdAmp;
+    public static boolean saveAmplitudeSettings(Context context) {
         SharedPreferences settings = context.getSharedPreferences(SHARED_PREFERENCES_FILE_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(SHARED_PREFERENCES_MAX_SETTINGS, maxAmplitude);
@@ -80,6 +78,14 @@ public class TranslaTaSettings {
 
     public static int getThresholdAmplitude() {
         return thresholdAmplitude;
+    }
+
+    public static void setMaxAmplitude(int maxAmp) {
+        maxAmplitude = maxAmp;
+    }
+
+    public static void setAmplitudeThreshold(int thresholdAmp) {
+        thresholdAmplitude = thresholdAmp;
     }
 
 }

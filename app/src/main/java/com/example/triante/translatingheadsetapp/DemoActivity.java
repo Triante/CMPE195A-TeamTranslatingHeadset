@@ -29,9 +29,10 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
     public TextView translatedTextView; //Shows translated text
     boolean isInRecording = false; //flag for checking if the system is currently recording speech
     MSTranslator translator; //Translator model
-    LanguageSettings language; //Language model
+    LanguageSettings languageSettings; //LanguageSettings model
     private SpeechToSpeech speechToSpeech;
     private boolean isSTS = false;
+    MSAuthenticator auth;
     private boolean isOn = false;
     private AudioManager audioSwitch;
     private int speaker_mode;
@@ -45,14 +46,14 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_demo);
         myToolBar = (Toolbar) findViewById(R.id.mainActivity_toolbar);
         setSupportActionBar(myToolBar);
-        
+
         /* Attempt to initialize Translator model*/
         try {
             translator = new MSTranslator(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         /* Initialize IBM speech-to-text and text-to-speech*/
         stt = new IBMSpeechToText(this);
         tts = new IBMTextToSpeech(this);
@@ -74,6 +75,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         bSettings.setOnClickListener(this);
         bTest = (Button) findViewById(R.id.bTest);
         bTest.setOnClickListener(this);
+        bTest.setText("S2S off");
 
 
         /*
@@ -117,7 +119,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     });
 
-                }               
+                }
                 /* If the system is currently not recording */
                 else {
                     stt.record(); //Start recording
@@ -161,8 +163,8 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     protected Void doInBackground(Void... none) {
                         try {
-                            String myCode = LanguageSettings.getMyLanguageCode(); //User's preferred language model
-                            String RespCode = LanguageSettings.getResponseLanguageCode(); //Other party's preferred language model
+                            String myCode = LanguageSettings.getMyLanguageCode(); //User's preferred languageSettings model
+                            String RespCode = LanguageSettings.getResponseLanguageCode(); //Other party's preferred languageSettings model
                             final String output = translator.translate(input, myCode, RespCode); //translated text
                             
                             /* New task created to set translated text to the translated text view*/
@@ -184,6 +186,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 if (isSTS) {
                     try {
                         speechToSpeech.stopListening();
+                        bTest.setText("S2S off");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -191,13 +194,11 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 else {
                     speechToSpeech.beginListening();
+                    bTest.setText("S2S on");
                     isSTS = true;
                 }
                 break;
             case R.id.bOptions: //Settings button listener
-                Intent options = new Intent(this, SettingsActivity.class); 
-                startActivity(options); //Starts new settings activity
-                break;
         }
     }
 

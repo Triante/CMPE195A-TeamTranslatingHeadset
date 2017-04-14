@@ -50,5 +50,9 @@ public class MicrophoneInputStreamReader extends InputStream {
         blocked = status;
     }
 
+    public int getReaderID() {
+        return READER_ID;
+    }
+
 
 }

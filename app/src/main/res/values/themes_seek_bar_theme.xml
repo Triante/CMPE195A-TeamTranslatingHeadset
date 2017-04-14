@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="seek_bar_theme" parent="@style/_seek_bar_theme"/>
+
+  <style name="_seek_bar_theme" parent="Theme.AppCompat.Light">
+
+    <item name="android:seekBarStyle">@style/SeekBarseek_bar_theme</item>
+
+  </style>
+
+</resources>
