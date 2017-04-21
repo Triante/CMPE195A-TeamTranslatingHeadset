@@ -128,9 +128,44 @@
     <WebView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:id="@+id/wvChatHistory"
-        android:layout_below="@id/menu_splitter"
-        android:layout_marginTop="5dp"/>
+        android:layout_below="@id/menu_splitter">
+    </WebView>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/activity_horizontal_margin"
+        app:srcCompat="@drawable/divider_vertical"
+        android:id="@+id/menu_splitter_R"
+        android:layout_alignTop="@+id/wvChatHistory"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        app:srcCompat="@drawable/divider_vertical"
+        android:id="@+id/menu_splitter_L"
+        android:layout_alignTop="@+id/wvChatHistory"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        app:srcCompat="@drawable/divider_horizontal"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/menu_splitter_below" />
 
 
 </RelativeLayout>
