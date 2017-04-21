@@ -34,9 +34,6 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
     private boolean isSTS = false;
     MSAuthenticator auth;
     private boolean isOn = false;
-    private AudioManager audioSwitch;
-    private int speaker_mode;
-    private int headset_mode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,15 +73,6 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         bTest = (Button) findViewById(R.id.bTest);
         bTest.setOnClickListener(this);
         bTest.setText("S2S off");
-
-
-        /*
-        audioSwitch = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-        speaker_mode = audioSwitch.getMode();
-        headset_mode = AudioManager.MODE_IN_COMMUNICATION;
-        audioSwitch.setSpeakerphoneOn(false);
-        audioSwitch.setBluetoothScoOn(true);
-        */
     }
 
     /* Method to manage all the on click listeners for the buttons*/
@@ -137,23 +125,6 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.bSpeechSynthesis: //Speech synthesis button listener
                 //tts.synthesize(translatedTextView.getText().toString(), Language.getResponseLanguageVoice()); //Performs speech synthesis on IBMTextToSpeech
-
-                    if (!isOn) {
-                        audioSwitch.startBluetoothSco();
-                        audioSwitch.setMicrophoneMute(false);
-                        isOn = true;
-                        System.out.println(audioSwitch.isMicrophoneMute());
-                    } else
-                    {
-                        audioSwitch.stopBluetoothSco();
-                        audioSwitch.setMode(speaker_mode);
-                        audioSwitch.setBluetoothScoOn(false);
-                        isOn = false;
-                        System.out.println(audioSwitch.isMicrophoneMute());
-                    }
-
-
-
                 break;
             case R.id.bTranslate: //Translator button listener
                 final String input = translatedTextView.getText().toString(); //Gets contents of the translated text view
@@ -209,5 +180,17 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
+        if (isInRecording)
+        {
+            try {
+                speechToSpeech.stopListening();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
