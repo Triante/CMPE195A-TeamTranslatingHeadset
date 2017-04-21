@@ -1,6 +1,7 @@
 package com.example.triante.translatingheadsetapp;
 
 import android.os.AsyncTask;
+import android.support.v7.app.AppCompatActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,8 +24,9 @@ public class SpeechToSpeech {
     private Executor executor;
     private SpeechToSpeechTranslationRunnable r1;
     private SpeechToSpeechSynthesizeSpeechRunnable r2;
+    private MainActivity.ChatHistoryAppender appender;
 
-    public SpeechToSpeech (DemoActivity instance) {
+    public SpeechToSpeech (AppCompatActivity instance, MainActivity.ChatHistoryAppender appender) {
         /* Initialize all objects*/
         speaker = new Speaker(instance);
         microphone = new Microphone(instance);
@@ -35,6 +37,7 @@ public class SpeechToSpeech {
         }
         speech = "";
         translatedTextList = new ArrayList<>();
+        this.appender = appender;
     }
 
     /* Delegated task for translating text from one languageSettings to another*/
@@ -138,9 +141,13 @@ public class SpeechToSpeech {
             try {
                 if (params[0].getUser() == 0) {
                     message = translator.translate(params[0].getSpeech(), LanguageSettings.getMyLanguageCode(), LanguageSettings.getResponseLanguageCode());
+                    appender.onAddUserText("User (Spoken):  " + params[0].getSpeech());
+                    appender.onAddUserText("User (Translated):  " + message);
                 }
                 else {
                     message = translator.translate(params[0].getSpeech(), LanguageSettings.getResponseLanguageCode(), LanguageSettings.getMyLanguageCode());
+                    appender.onAddPartyText("Party (Spoken):  " + params[0].getSpeech());
+                    appender.onAddPartyText("Party (Translated):  " + message);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -154,4 +161,5 @@ public class SpeechToSpeech {
             addToTranslatedList(mes);
         }
     }
+
 }

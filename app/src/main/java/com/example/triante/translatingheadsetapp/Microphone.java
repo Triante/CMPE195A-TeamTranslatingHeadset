@@ -1,6 +1,7 @@
 package com.example.triante.translatingheadsetapp;
 
 import android.bluetooth.BluetoothDevice;
+import android.support.v7.app.AppCompatActivity;
 
 import java.io.IOException;
 
@@ -15,7 +16,7 @@ public class Microphone {
     private String languageFrom; //LanguageSettings to recognize
     private String languageTo; //LanguageSettings to translate to
 
-    public Microphone (DemoActivity instance) {
+    public Microphone (AppCompatActivity instance) {
         speechToTextConverter = new IBMSpeechToText(instance);
     }
 

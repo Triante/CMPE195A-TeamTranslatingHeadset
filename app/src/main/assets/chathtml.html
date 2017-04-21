@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat History</title>
+    <script type="text/javascript">
+        function addUserText(content)
+        {
+            var newLine = "<p style=\"color:red\">" + content + "</p>"
+            document.getElementById("html_chat").innerHTML = newLine + document.getElementById("html_chat").innerHTML;
+        }
+
+        function addPartyText(content)
+        {
+            var newLine = "<p style=\"color:blue\" align=\"right\">" + content + "</p>"
+            document.getElementById("html_chat").innerHTML = newLine + document.getElementById("html_chat").innerHTML;
+        }
+
+    </script>
+</head>
+<body>
+    <div id="html_chat" style="border:1px solid black;">
+        Hi there, how are you.
+    </div>
+</body>
+</html>

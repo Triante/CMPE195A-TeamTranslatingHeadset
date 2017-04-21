@@ -45,69 +45,92 @@
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:textSize="30sp"
-        android:text="@string/app_name"/>
+        android:text="@string/app_name"
+        android:id="@+id/textView12" />
+
 
     <Button
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:background="@drawable/round_button"
         android:gravity="center_vertical|center_horizontal"
         android:text="@string/button_connect"
         android:textColor="#fff"
         android:id="@+id/bConnect_main"
-        android:layout_marginTop="@dimen/spacing_padding"
+        android:layout_marginTop="68dp"
         android:layout_below="@+id/mainActivity_toolbar"
-        android:layout_centerHorizontal="true"
-        />
-
-    <Space
-        android:layout_width="@dimen/spacing_padding"
-        android:layout_height="@dimen/spacing_padding"
-        android:layout_below="@+id/bConnect_main"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/spacing_padding"
-        android:id="@+id/space_main"/>
-
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:id="@+id/headset_glow_mainImage"
-        android:background="@drawable/ic_headset_glow"
-        android:layout_alignTop="@+id/space_main"
-        android:layout_toLeftOf="@+id/space_main"
-        android:layout_toStartOf="@+id/space_main"
-        android:visibility="invisible"/>
+        android:layout_centerHorizontal="true" />
 
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:id="@+id/headset_mainImage"
         android:background="@drawable/ic_headset"
-        android:layout_alignTop="@+id/space_main"
-        android:layout_toLeftOf="@+id/space_main"
-        android:layout_toStartOf="@+id/space_main"/>
-
-
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:id="@+id/speaker_mainImage"
-        android:background="@drawable/ic_speaker"
-        android:layout_alignTop="@+id/space_main"
-        android:layout_toRightOf="@id/space_main"
-        android:layout_toEndOf="@id/space_main"
-        />
+        android:layout_alignTop="@+id/bConnect_main"
+        android:layout_toLeftOf="@+id/textView12"
+        android:layout_toStartOf="@+id/textView12" />
 
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:id="@+id/speaker_glow_mainImage"
         android:background="@drawable/ic_speaker_glow"
-        android:layout_alignTop="@+id/space_main"
-        android:layout_toRightOf="@id/space_main"
-        android:layout_toEndOf="@id/space_main"
         android:visibility="invisible"
+        android:layout_alignTop="@+id/bConnect_main"
+        android:layout_toRightOf="@+id/textView12"
+        android:layout_toEndOf="@+id/textView12" />
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/speaker_mainImage"
+        android:background="@drawable/ic_speaker"
+        android:layout_alignTop="@+id/speaker_glow_mainImage"
+        android:layout_alignLeft="@+id/speaker_glow_mainImage"
+        android:layout_alignStart="@+id/speaker_glow_mainImage" />
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/headset_glow_mainImage"
+        android:background="@drawable/ic_headset_glow"
+        android:visibility="invisible"
+        android:layout_alignTop="@+id/headset_mainImage"
+        android:layout_alignLeft="@+id/headset_mainImage"
+        android:layout_alignStart="@+id/headset_mainImage" />
+
+    <Space
+        android:layout_width="@dimen/spacing_padding"
+        android:layout_height="@dimen/spacing_padding"
+        android:id="@+id/space_main"
+        android:layout_below="@+id/bConnect_main"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chat History"
+        android:textSize="20sp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/historyTitle"
+        android:layout_below="@+id/space_main"
         />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        app:srcCompat="@drawable/divider_horizontal"
+        android:layout_below="@+id/historyTitle"
+        android:id="@+id/menu_splitter" />
+
+    <WebView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/wvChatHistory"
+        android:layout_below="@id/menu_splitter"
+        android:layout_marginTop="5dp"/>
 
 
 </RelativeLayout>

@@ -5,21 +5,36 @@ import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Toolbar myToolBar;
+    private WebView hBox;
     private Button bConnect, bOff;
     private ImageView headsetImage, headsetGlowImage, speakerImage, speakerGlowImage;
     private static boolean isGlow = false;
     private static boolean isTranslating = false;
+    private SpeechToSpeech s2s;
+
+    private int test = 1;
 
 
     @Override
@@ -27,6 +42,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         TranslaTaSettings.initiateTranslaTaSettings(this);
+        s2s = new SpeechToSpeech(this, new ChatHistoryAppender() {
+            @Override
+            public void onAddUserText(String text) {
+                final String fText = text;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        addUserTextToWebView(fText);
+                    }
+                });
+
+            }
+
+            @Override
+            public void onAddPartyText(String text) {
+                final String fText = text;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        addPartyTextToWebView(fText);
+                    }
+                });
+            }
+        });
         myToolBar = (Toolbar) findViewById(R.id.mainActivity_toolbar);
         setSupportActionBar(myToolBar);
         bConnect = (Button) findViewById(R.id.bConnect_main);
@@ -35,11 +74,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bOff.setOnClickListener(this);
         bOff.setVisibility(View.INVISIBLE);
         bOff.setClickable(false);
+        //scroll = (ScrollView) findViewById(R.id.menuChatScrollView);
         headsetImage = (ImageView) findViewById(R.id.headset_mainImage);
         headsetGlowImage = (ImageView) findViewById(R.id.headset_glow_mainImage);
         speakerImage = (ImageView) findViewById(R.id.speaker_mainImage);
         speakerGlowImage = (ImageView) findViewById(R.id.speaker_glow_mainImage);
-
+        hBox = (WebView) findViewById(R.id.wvChatHistory);
+        hBox.loadUrl("file:///android_asset/chathtml.html");
+        hBox.getSettings().setJavaScriptEnabled(true);
+        hBox.setWebViewClient(new WebViewClient() {
+            public void onPageFinished(WebView view, String url) {
+//                while (test < 15) {
+//                    addUserTextToWebView("Is this question number "+ test +  "?");
+//                    addPartyTextToWebView("Yes, this is answer number " + test + "?");
+//                    test++;
+//                    hBox.scrollTo(0, 0);
+//                }
+            }
+        });
     }
 
     @Override
@@ -54,24 +106,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bConnect_main:
-                /*
                if (!isGlow) {
                    isGlow = true;
                    changeSignals(headsetGlowImage, true);
                    changeSignals(speakerGlowImage, true);
                    changeSignals(headsetImage, false);
                    changeSignals(speakerImage, false);
-                   String t = "Translate\n" + LanguageSettings.getMyLanguageCode() + " to/from " + LanguageSettings.getResponseLanguageCode();
-                   bConnect.setText(t);
-               }
-                else {
                    bOff.setVisibility(View.VISIBLE);
                    bOff.setClickable(true);
-                   String t = "Translating\n" + LanguageSettings.getMyLanguageCode() + " to/from " + LanguageSettings.getResponseLanguageCode();
+                   String t = "Translating";
                    bConnect.setText(t);
                    isTranslating = true;
+                   s2s.beginListening();
                }
-               */
                 break;
             case R.id.off_toolbarButton:
                 isGlow = false;
@@ -83,6 +130,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 bOff.setVisibility(View.INVISIBLE);
                 bOff.setClickable(false);
                 bConnect.setText(R.string.button_connect);
+                try {
+                    s2s.stopListening();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
             default:
                 break;
@@ -94,10 +146,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (item.getItemId()) {
             case R.id.action_settings:
                 Intent options = new Intent(this, SettingsActivity.class);
+                if (isTranslating) {
+                    bOff.performClick();
+                }
                 startActivity(options); //Starts new settings activity
                 break;
             case R.id.action_demo:
                 Intent demo = new Intent(this, DemoActivity.class);
+                if (isTranslating) {
+                    bOff.performClick();
+                }
                 startActivity(demo); //Starts new settings activity
                 break;
             default:
@@ -109,15 +167,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         if (isGlow) {
-            String t = "Translate\n" + LanguageSettings.getMyLanguageCode() + " to/from " + LanguageSettings.getResponseLanguageCode();
+            String t = "Translate";
             bConnect.setText(t);
         }
         if (isTranslating) {
-            String t = "Translating\n" + LanguageSettings.getMyLanguageCode() + " to/from " + LanguageSettings.getResponseLanguageCode();
+            String t = "Translating";
             bConnect.setText(t);
         }
         super.onResume();
     }
+
 
     private void changeSignals(final ImageView view, final boolean toOn) {
         if (toOn) {
@@ -142,5 +201,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void addUserTextToWebView(String text) {
+        String userT = "User:  " + text;
+        String url = "javascript:addUserText('"+ userT +"')";
+        hBox.loadUrl(url);
+    }
+
+    private void addPartyTextToWebView(String text) {
+        String partyT = "Party:  " + text;
+        String url = "javascript:addPartyText('"+ partyT +"')";
+        hBox.loadUrl(url);
+    }
+
+
+
+    interface ChatHistoryAppender {
+
+        void onAddUserText(String text);
+        void onAddPartyText(String text);
+
+    }
 
 }

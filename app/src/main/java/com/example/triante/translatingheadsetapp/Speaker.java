@@ -4,6 +4,8 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.support.v7.app.AppCompatActivity;
+
 import com.ibm.watson.developer_cloud.text_to_speech.v1.model.Voice;
 
 /**
@@ -21,9 +23,8 @@ public class Speaker {
     public static int speaker_mode;
     private static AudioManager audioSwitch;
 
-    public Speaker (DemoActivity instance) {
+    public Speaker (AppCompatActivity instance) {
         textToSpeechConverter = new IBMTextToSpeech(instance);
-
 
         audioSwitch = (AudioManager)instance.getSystemService(Context.AUDIO_SERVICE);
         audioSwitch.setSpeakerphoneOn(false);
@@ -35,7 +36,6 @@ public class Speaker {
 
     /* Method used to find which device should perform playback (Not yet implemented)*/
     public void playback(String speech, int user) {
-
 
         if (user == 1)
         {

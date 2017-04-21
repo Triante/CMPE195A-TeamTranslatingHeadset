@@ -1,5 +1,7 @@
 package com.example.triante.translatingheadsetapp.AndroidJUnit;
 
+        import android.content.Context;
+        import android.media.AudioManager;
         import android.support.test.InstrumentationRegistry;
         import android.support.test.rule.ActivityTestRule;
         import android.support.test.runner.AndroidJUnit4;
@@ -27,6 +29,8 @@ public class IBMTextToSpeechTests {
 
     DemoActivity act;
     private IBMTextToSpeech t2s;
+    private AudioManager audioSwitch;
+
 
     @Rule
     public ActivityTestRule<DemoActivity> mActivityRule = new ActivityTestRule<>(
@@ -36,6 +40,7 @@ public class IBMTextToSpeechTests {
     public void initiateIBMComponent() {
         act = mActivityRule.getActivity();
         t2s = new IBMTextToSpeech(act);
+        audioSwitch = (AudioManager) act.getApplicationContext().getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
     }
 
     //IBM Speech Synthesis Tests
@@ -43,7 +48,7 @@ public class IBMTextToSpeechTests {
     public void test_speechSynthesis1() throws InterruptedException {
         String toSpeech = "This is speech converted by IBM";
         Voice voice = Voice.EN_MICHAEL;
-        t2s.synthesize(toSpeech, voice);
+        t2s.synthesize(toSpeech, voice, audioSwitch);
         Thread.sleep(10000);
         assertTrue("Audio cannot be JUnit tested. Verify manually that the following sentence was output: ENGLISH" +
                 toSpeech, true);
@@ -53,7 +58,7 @@ public class IBMTextToSpeechTests {
     public void test_speechSynthesis2() throws InterruptedException {
         String toSpeech = "Con mi amigo";
         Voice voice = Voice.ES_ENRIQUE;
-        t2s.synthesize(toSpeech, voice);
+        t2s.synthesize(toSpeech, voice, audioSwitch);
         Thread.sleep(10000);
         assertTrue("Audio cannot be JUnit tested. Verify manually that the following sentence was output: SPANISH" +
                 toSpeech, true);
@@ -63,7 +68,7 @@ public class IBMTextToSpeechTests {
     public void test_speechSynthesis3() throws InterruptedException {
         String toSpeech = "このはにほんごです";
         Voice voice = Voice.JA_EMI;
-        t2s.synthesize(toSpeech, voice);
+        t2s.synthesize(toSpeech, voice, audioSwitch);
         Thread.sleep(10000);
         assertTrue("Audio cannot be JUnit tested. Verify manually that the following sentence was output: JAPANESE" +
                 toSpeech, true);

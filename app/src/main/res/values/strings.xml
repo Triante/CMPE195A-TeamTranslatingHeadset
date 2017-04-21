@@ -11,6 +11,8 @@
 
 
     <!-- TextViews --> 
+    <string name="settings_title">TranslaTa Settings</string>
+    <string name="settings_amplitude_description">Open amplitude threshold settings</string>
     <string name="amplitude_settings_title">Amplitude Settings</string>
     <string name="amplitude_settings_description">Change settings related to the amplitude threshold used to distinguish between you and who you\'re talking to.\nAny recorded audio with amplitude greater than the threshold was spoken by you, the user.</string>
     <string name="amplitude_settings_amplitude_record">Speak into the mic to automatically configure and save amplitude threshold</string>
@@ -18,6 +20,7 @@
     <string name="amplitude_settings_amplitude_done">Save new configuration amplitude threshold</string>
     <string name="amplitude_settings_max_label">Max Amplitude: </string>
     <string name="amplitude_settings_current_label">Threshold Amplitude: </string>
+
 
     <!-- Amplitude Settings Dialog --> 
     <string name="amplitude_dialog_title">Automatic Threshold Configuration</string>
