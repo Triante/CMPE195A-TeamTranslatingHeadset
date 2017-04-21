@@ -26,7 +26,7 @@ public class Speaker {
     private static AudioManager audioSwitch;
     private static MediaRecorder recorder;
 
-    public Speaker (DemoActivity instance) {
+    public Speaker (Context instance) {
         textToSpeechConverter = new IBMTextToSpeech(instance);
 
         audioSwitch = (AudioManager)instance.getSystemService(Context.AUDIO_SERVICE);
@@ -40,7 +40,6 @@ public class Speaker {
 
     /* Method used to find which device should perform playback (Not yet implemented)*/
     public void playback(String speech, int user) {
-
 
         if (user == 1)
         {

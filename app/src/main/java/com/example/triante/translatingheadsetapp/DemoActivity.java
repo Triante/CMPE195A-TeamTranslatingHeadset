@@ -54,7 +54,17 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         /* Initialize IBM speech-to-text and text-to-speech*/
         stt = new IBMSpeechToText(this);
         tts = new IBMTextToSpeech(this);
-        speechToSpeech = new SpeechToSpeech(this);
+        speechToSpeech = new SpeechToSpeech(this, new MainActivity.ChatHistoryAppender() {
+            @Override
+            public void onAddUserText(String text) {
+
+            }
+
+            @Override
+            public void onAddPartyText(String text) {
+
+            }
+        });
 
         /* Initialize buttons*/
         bSpeechRecognition = (Button) findViewById(R.id.bSpeechRecognition);

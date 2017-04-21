@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_settings"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,15 +12,37 @@
     tools:context="com.example.triante.translatingheadsetapp.SettingsActivity">
 
     <TextView
-        android:text="My Language:"
+        android:text="@string/settings_title"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/height_spinner_label"
+        android:layout_height="@dimen/height_option_title"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="@dimen/spacing_first_option_settings"
+        android:id="@+id/settingsTitle"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:textSize="35sp"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        app:srcCompat="@drawable/divider_horizontal"
+        android:layout_below="@+id/settingsTitle"
+        android:id="@+id/settings_splitter" />
+
+    <TextView
+        android:text="My Language:"
+        android:layout_below="@+id/settings_splitter"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_spinner_label"
+        android:layout_marginTop="5dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:layout_alignParentLeft="true"
         android:id="@+id/textView" />
 
     <Spinner
@@ -103,18 +126,34 @@
 
     <Button
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_option_selections"
+        android:layout_height="@dimen/height_amplitude_option"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:layout_below="@+id/textView3"
+        android:layout_below="@+id/textView4"
         android:background="@drawable/amplitude_settings_button"
         android:layout_marginTop="@dimen/spacing_option_settings"
         android:text="Amplitude Settings"
         android:textAllCaps="false"
-        android:gravity="start|center_vertical"
+        android:gravity="top|start"
         android:textSize="16sp"
         android:textStyle="normal"
         android:id="@+id/bAmplitude_settings"/>
+
+    <TextView
+        android:text="@string/settings_amplitude_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/height_spinner_label"
+        android:id="@+id/textViewX"
+        android:layout_alignTop="@+id/bAmplitude_settings"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/bAmplitude_settings" />
 
     <Button
         android:text="save"
@@ -125,5 +164,6 @@
         android:layout_below="@+id/textView3"
         android:layout_centerHorizontal="true"
         />
+
 
 </RelativeLayout>
