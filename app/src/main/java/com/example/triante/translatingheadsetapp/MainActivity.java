@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.bConnect_main:
 
-                if(!onHeadset && !onSpeaker) {
+                if(bConnect.getText().toString().equalsIgnoreCase("Connect")) {
                     btconnection.checkConnection();
                 }
                 else if (bConnect.getText().toString().equalsIgnoreCase("Translate"))
@@ -123,11 +124,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     s2s.beginListening();
                 }
 
+
                 break;
             case R.id.off_toolbarButton:
                 onHeadset = false;
                 onSpeaker = false;
-                isTranslating = false;
                 changeSignals(headsetGlowImage, false);
                 changeSignals(speakerGlowImage, false);
                 changeSignals(headsetImage, true);
@@ -135,10 +136,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 bOff.setVisibility(View.INVISIBLE);
                 bOff.setClickable(false);
                 bConnect.setText(R.string.button_connect);
-                try {
-                    s2s.stopListening();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if(isTranslating) {
+                    try {
+                        isTranslating = false;
+                        s2s.stopListening();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
             default:
@@ -205,6 +209,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             String t = "Translate";
             bConnect.setText(t);
+        }
+    }
+
+    public void turnOff(String profile)
+    {
+        if (profile.equalsIgnoreCase("headset"))
+        {
+            changeSignals(headsetGlowImage, false);
+            changeSignals(headsetImage, true);
+            onHeadset = false;
+        }
+        else if (profile.equalsIgnoreCase("speaker"))
+        {
+            changeSignals(speakerGlowImage, false);
+            changeSignals(speakerImage, true);
+            onSpeaker = false;
+        }
+        else if (profile.equalsIgnoreCase("both"))
+        {
+            if(onHeadset)
+            {
+                changeSignals(headsetGlowImage, false);
+                changeSignals(headsetImage, true);
+            }
+            if(onSpeaker)
+            {
+                changeSignals(speakerGlowImage, false);
+                changeSignals(speakerImage, true);
+            }
+            onHeadset = false;
+            onSpeaker = false;
+        }
+        else
+        {
+
         }
     }
     private void changeSignals(final ImageView view, final boolean toOn) {
