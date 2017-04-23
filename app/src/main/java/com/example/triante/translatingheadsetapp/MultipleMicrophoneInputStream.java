@@ -162,10 +162,8 @@ public final class MultipleMicrophoneInputStream extends InputStream implements 
     }
 
     public int assignID() {
-        int id = currentUnusedID;
-        currentUnusedID++;
         try {
-            if (id == os.length-1) {
+            if (currentUnusedID == os.length) {
                 throw new Exception("An extra MicrophoneInputStreamReader was assigned over the limit assigned: " + os.length);
             }
         }
@@ -173,7 +171,8 @@ public final class MultipleMicrophoneInputStream extends InputStream implements 
             Log.e(TAG, e.getMessage());
             e.printStackTrace();
         }
-
+        int id = currentUnusedID;
+        currentUnusedID++;
         return id;
     }
 

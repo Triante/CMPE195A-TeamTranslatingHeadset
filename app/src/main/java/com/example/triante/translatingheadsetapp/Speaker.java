@@ -2,9 +2,11 @@ package com.example.triante.translatingheadsetapp;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.media.AudioFormat;
 import android.media.AudioManager;
+import android.media.AudioRecord;
 import android.media.MediaPlayer;
-import android.support.v7.app.AppCompatActivity;
+import android.media.MediaRecorder;
 
 import com.ibm.watson.developer_cloud.text_to_speech.v1.model.Voice;
 
@@ -22,15 +24,17 @@ public class Speaker {
     public static int headset_mode;
     public static int speaker_mode;
     private static AudioManager audioSwitch;
+    private static MediaRecorder recorder;
 
-    public Speaker (AppCompatActivity instance) {
+    public Speaker (Context instance) {
         textToSpeechConverter = new IBMTextToSpeech(instance);
 
         audioSwitch = (AudioManager)instance.getSystemService(Context.AUDIO_SERVICE);
+        recorder = new MediaRecorder();
         audioSwitch.setSpeakerphoneOn(false);
         speaker_mode = audioSwitch.getMode();
-
-
+        audioSwitch.setBluetoothScoOn(true);
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 
     }
 
@@ -42,7 +46,9 @@ public class Speaker {
             audioSwitch.startBluetoothSco();
         }
 
+
         textToSpeechConverter.synthesize(speech, languageTo, audioSwitch);
+        System.out.println(audioSwitch.getMode() + " " + AudioManager.MODE_NORMAL);
 
     }
 
@@ -56,6 +62,5 @@ public class Speaker {
         }
 
         playback(speech, user);
-        //textToSpeechConverter.synthesize(speech, languageTo);
     }
 }

@@ -59,6 +59,7 @@ public class IBMTextToSpeech {
             player.playStream(textToSpeech.synthesize(params[0], voice).execute()); //playback execution
 
             manager.stopBluetoothSco();
+            manager.setBluetoothScoOn(false);
 
             return "Did syntesize";
         }

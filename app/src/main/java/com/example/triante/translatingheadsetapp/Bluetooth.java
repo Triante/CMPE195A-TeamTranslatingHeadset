@@ -1,19 +1,24 @@
 package com.example.triante.translatingheadsetapp;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothHeadset;
+import android.bluetooth.BluetoothProfile;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,37 +34,20 @@ public class Bluetooth {
 
     private MainActivity main;
     private BluetoothAdapter adapter;
-    private BluetoothDevice headset;
-    private BluetoothDevice speaker;
     public static final int BLUETOOTH_REQUEST = 21220;
-    private BroadcastReceiver discoveryReceiver;
+    private boolean isOnHeadset;
+    private boolean isOnSpeaker;
+    private boolean isDoneChecking;
 
     public Bluetooth (MainActivity home)
     {
         main = home;
-
-        discoveryReceiver = new BroadcastReceiver() {
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
-                    if (device.getAddress().equalsIgnoreCase(main.getString(R.string.headset_key)))
-                    {
-                        headset = device;
-                        adapter.cancelDiscovery();
-                        beginConnectionIntent();
-                    }
-
-                }
-            }
-        };
-
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        main.registerReceiver(discoveryReceiver, filter);
+        isOnHeadset = false;
+        isOnSpeaker = false;
+        isDoneChecking = false;
     }
 
-    public void connect()
+    public void checkConnection()
     {
         adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter == null) {
@@ -73,178 +61,77 @@ public class Bluetooth {
         }
         else
         {
+            System.out.println("Begin search!");
             search();
         }
     }
 
     public void search()
     {
-        Set<BluetoothDevice> pairedDevices = adapter.getBondedDevices();
-
-        if (pairedDevices.size() > 0) {
-            for (BluetoothDevice device : pairedDevices) {
-                if (device.getAddress().equalsIgnoreCase(main.getString(R.string.headset_key)))
-                {
-                    headset = device;
-                    beginConnectionIntent();
-                    return;
-                }
-                if (device.getAddress().equalsIgnoreCase(""))
-                {
-
-                }
-            }
-
-        }
-
-        adapter.startDiscovery();
-
-    }
-
-    private void beginConnectionIntent()
-    {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
-        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
-        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-        main.registerReceiver(connectionReceiver, filter);
-
-        BluetoothServer phone = new BluetoothServer("Android Phone");
-        phone.run();
-        BluetoothClient head_piece = new BluetoothClient(headset, phone.idFromServer());
-        head_piece.run();
-    }
-
-    public void unregisterReceiver ()
-    {
-        main.unregisterReceiver(discoveryReceiver);
-    }
-
-    private class BluetoothServer extends Thread {
-        private final BluetoothServerSocket serverSocket;
-        private String name;
-        private UUID serverID;
-
-        public BluetoothServer(String btName) {
-            // Use a temporary object that is later assigned to mmServerSocket
-            // because mmServerSocket is final.
-            BluetoothServerSocket tmp = null;
-            name = btName;
-            serverID = UUID.randomUUID();
-            try {
-                // MY_UUID is the app's UUID string, also used by the client code.
-                tmp = adapter.listenUsingRfcommWithServiceRecord(btName, serverID);
-            } catch (IOException e) {
-                Log.e(TAG, "Socket's listen() method failed", e);
-            }
-            serverSocket = tmp;
-        }
-
-        public void run() {
-            BluetoothSocket socket = null;
-            // Keep listening until exception occurs or a socket is returned.
-            while (true) {
-                try {
-                    socket = serverSocket.accept();
-                } catch (IOException e) {
-                    Log.e(TAG, "Socket's accept() method failed", e);
-                    break;
-                }
-
-                if (socket != null) {
-                    try {
-                        serverSocket.close();
-                    }catch(IOException ioTrouble)
-                    {
-                        Log.e(TAG, "Could not close the connect socket", ioTrouble);
+        final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        final BluetoothProfile.ServiceListener mProfileListener = new BluetoothProfile.ServiceListener() {
+            public void onServiceConnected(int profile, BluetoothProfile proxy) {
+                if (profile == BluetoothProfile.A2DP) {
+                    BluetoothA2dp btA2dp = (BluetoothA2dp) proxy;
+                    List<BluetoothDevice> a2dpConnectedDevices = btA2dp.getConnectedDevices();
+                    if (a2dpConnectedDevices.size() != 0) {
+                        for (BluetoothDevice device : a2dpConnectedDevices) {
+                            if (device.getName().equalsIgnoreCase("speaker"))
+                            {
+                                main.turnOn("speaker");
+                                isOnSpeaker = true;
+                                continue;
+                            }
+                        }
                     }
-                    break;
+                    mBluetoothAdapter.closeProfileProxy(BluetoothProfile.A2DP, btA2dp);
+                }
+                else if (profile == BluetoothProfile.HEADSET)
+                {
+                    BluetoothHeadset headset = (BluetoothHeadset) proxy;
+                    List<BluetoothDevice> headsetConnectedDevices = headset.getConnectedDevices();
+                    if (headsetConnectedDevices.size() != 0) {
+                        for (BluetoothDevice device : headsetConnectedDevices) {
+                            if (device.getName().equalsIgnoreCase("RN52-0201")) {
+                                main.turnOn("headset");
+                                isOnHeadset = true;
+                                break;
+                            }
+                        }
+                    }
+                    isDoneChecking = true;
+                    mBluetoothAdapter.closeProfileProxy(BluetoothProfile.HEADSET, headset);
+                    onServiceDisconnected(0);
                 }
             }
-        }
 
-        // Closes the connect socket and causes the thread to finish.
-        public void cancel() {
-            try {
-                serverSocket.close();
-            } catch (IOException ioTrouble) {
-                Log.e(TAG, "Could not close the connect socket", ioTrouble);
+            public void onServiceDisconnected(int profile) {
+                new CountDownTimer(500,100)
+                {
+
+                    @Override
+                    public void onTick(long l) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        if (isDoneChecking) {
+                            if (!isOnHeadset || !isOnSpeaker) {
+                                isOnHeadset = false;
+                                isOnSpeaker = false;
+                                isDoneChecking = false;
+                                main.turnOff("both");
+                                Toast.makeText(main, "BOTH DEVICES NEED TO BE CONNECTED", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                }.start();
             }
-        }
+        };
 
-        public UUID idFromServer ()
-        {
-            return serverID;
-        }
+        mBluetoothAdapter.getProfileProxy(main, mProfileListener, BluetoothProfile.A2DP);
+        mBluetoothAdapter.getProfileProxy(main, mProfileListener, BluetoothProfile.HEADSET);
+
     }
-
-    private class BluetoothClient extends Thread {
-        private final BluetoothSocket clientSocket;
-        private final BluetoothDevice desiredDevice;
-
-
-        public BluetoothClient(BluetoothDevice device, UUID server_client_id) {
-            BluetoothSocket tmp = null;
-            desiredDevice = device;
-
-            try {
-                tmp = device.createRfcommSocketToServiceRecord(server_client_id);
-            } catch (IOException e) {
-                Log.e(TAG, "Socket's create() method failed", e);
-            }
-            clientSocket = tmp;
-        }
-
-        public void run() {
-            adapter.cancelDiscovery();
-
-            try {
-                clientSocket.connect();
-            } catch (IOException connectException) {
-                // Unable to connect; close the socket and return.
-                try {
-                    clientSocket.close();
-                } catch (IOException closeException) {
-                    Log.e(TAG, "Could not close the client socket", closeException);
-                }
-                return;
-            }
-
-            Toast.makeText(main, "Device connected!", Toast.LENGTH_LONG).show();
-        }
-
-        // Closes the client socket and causes the thread to finish.
-        public void cancel() {
-            try {
-                clientSocket.close();
-            } catch (IOException e) {
-                Log.e(TAG, "Could not close the client socket", e);
-            }
-        }
-    }
-
-    private final BroadcastReceiver connectionReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                //Device found
-            }
-            else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
-                //Device is now connected
-            }
-            else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                //Done searching
-            }
-            else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
-                //Device is about to disconnect
-            }
-            else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
-                //Device has disconnected
-            }
-        }
-    };
-
 }

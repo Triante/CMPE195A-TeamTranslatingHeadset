@@ -317,10 +317,11 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
+
         if (!lockSeek) {
             lockSeek = true;
             microphoneSwitch();
         }
-        super.onBackPressed();
     }
 }

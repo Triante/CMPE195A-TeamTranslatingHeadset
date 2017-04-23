@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -30,8 +31,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private WebView hBox;
     private Button bConnect, bOff;
     private ImageView headsetImage, headsetGlowImage, speakerImage, speakerGlowImage;
-    private static boolean isGlow = false;
+    private static boolean onHeadset = false;
+    private static boolean onSpeaker = false;
     private static boolean isTranslating = false;
+    private Bluetooth btconnection;
     private SpeechToSpeech s2s;
 
     private int test = 1;
@@ -74,11 +77,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bOff.setOnClickListener(this);
         bOff.setVisibility(View.INVISIBLE);
         bOff.setClickable(false);
-        //scroll = (ScrollView) findViewById(R.id.menuChatScrollView);
         headsetImage = (ImageView) findViewById(R.id.headset_mainImage);
         headsetGlowImage = (ImageView) findViewById(R.id.headset_glow_mainImage);
         speakerImage = (ImageView) findViewById(R.id.speaker_mainImage);
         speakerGlowImage = (ImageView) findViewById(R.id.speaker_glow_mainImage);
+        btconnection = new Bluetooth(this);
+
         hBox = (WebView) findViewById(R.id.wvChatHistory);
         hBox.loadUrl("file:///android_asset/chathtml.html");
         hBox.getSettings().setJavaScriptEnabled(true);
@@ -106,23 +110,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bConnect_main:
-               if (!isGlow) {
-                   isGlow = true;
-                   changeSignals(headsetGlowImage, true);
-                   changeSignals(speakerGlowImage, true);
-                   changeSignals(headsetImage, false);
-                   changeSignals(speakerImage, false);
-                   bOff.setVisibility(View.VISIBLE);
-                   bOff.setClickable(true);
-                   String t = "Translating";
-                   bConnect.setText(t);
-                   isTranslating = true;
-                   s2s.beginListening();
-               }
+
+                if(bConnect.getText().toString().equalsIgnoreCase("Connect")) {
+                    btconnection.checkConnection();
+                }
+                else if (bConnect.getText().toString().equalsIgnoreCase("Translate"))
+                {
+                    String t = "Translating";
+                    bConnect.setText(t);
+                    isTranslating = true;
+                    bOff.setVisibility(View.VISIBLE);
+                    bOff.setClickable(true);
+                    s2s.beginListening();
+                }
+
+
                 break;
             case R.id.off_toolbarButton:
-                isGlow = false;
-                isTranslating = false;
+                onHeadset = false;
+                onSpeaker = false;
                 changeSignals(headsetGlowImage, false);
                 changeSignals(speakerGlowImage, false);
                 changeSignals(headsetImage, true);
@@ -130,10 +136,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 bOff.setVisibility(View.INVISIBLE);
                 bOff.setClickable(false);
                 bConnect.setText(R.string.button_connect);
-                try {
-                    s2s.stopListening();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if(isTranslating) {
+                    try {
+                        isTranslating = false;
+                        s2s.stopListening();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
             default:
@@ -166,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onResume() {
-        if (isGlow) {
+        if (onHeadset && onSpeaker) {
             String t = "Translate";
             bConnect.setText(t);
         }
@@ -177,7 +186,66 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onResume();
     }
 
+    public void turnOn (String device)
+    {
+        if (device.equalsIgnoreCase("headset") && !onHeadset)
+        {
+            changeSignals(headsetGlowImage, true);
+            changeSignals(headsetImage, false);
+            onHeadset = true;
+        }
+        else if (device.equalsIgnoreCase("speaker"))
+        {
+            changeSignals(speakerGlowImage, true);
+            changeSignals(speakerImage, false);
+            onSpeaker = true;
+        }
+        else
+        {
+            return;
+        }
 
+        if (onHeadset && onSpeaker)
+        {
+            String t = "Translate";
+            bConnect.setText(t);
+        }
+    }
+
+    public void turnOff(String profile)
+    {
+        if (profile.equalsIgnoreCase("headset"))
+        {
+            changeSignals(headsetGlowImage, false);
+            changeSignals(headsetImage, true);
+            onHeadset = false;
+        }
+        else if (profile.equalsIgnoreCase("speaker"))
+        {
+            changeSignals(speakerGlowImage, false);
+            changeSignals(speakerImage, true);
+            onSpeaker = false;
+        }
+        else if (profile.equalsIgnoreCase("both"))
+        {
+            if(onHeadset)
+            {
+                changeSignals(headsetGlowImage, false);
+                changeSignals(headsetImage, true);
+            }
+            if(onSpeaker)
+            {
+                changeSignals(speakerGlowImage, false);
+                changeSignals(speakerImage, true);
+            }
+            onHeadset = false;
+            onSpeaker = false;
+        }
+        else
+        {
+
+        }
+    }
     private void changeSignals(final ImageView view, final boolean toOn) {
         if (toOn) {
             AlphaAnimation swap = new AlphaAnimation(0,1);
