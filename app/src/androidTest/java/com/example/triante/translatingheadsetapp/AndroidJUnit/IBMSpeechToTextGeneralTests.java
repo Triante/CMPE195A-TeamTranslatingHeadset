@@ -46,8 +46,8 @@ public class IBMSpeechToTextGeneralTests {
     public void initiateIBMComponent() {
         act = mActivityRule.getActivity();
         s2t = new IBMSpeechToText(act);
-        LanguageSettings.setLanguage(true, LanguageSettings.Language.ENGLISH_F);
-        LanguageSettings.setLanguage(false, LanguageSettings.Language.ENGLISH_F);
+        LanguageSettings.setLanguage(true, LanguageSettings.Language.ENGLISH_GB_KATE);
+        LanguageSettings.setLanguage(false, LanguageSettings.Language.ENGLISH_GB_KATE);
         s2t.record();
     }
 

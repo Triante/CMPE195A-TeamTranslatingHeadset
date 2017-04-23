@@ -45,8 +45,8 @@ public class IBMSpeechToTextUserTests {
         act = mActivityRule.getActivity();
         TranslaTaSettings.setProfanityFilter(false);
         TranslaTaSettings.setAmplitudeThreshold(100000);
-        LanguageSettings.setLanguage(true, LanguageSettings.Language.ENGLISH_F);
-        LanguageSettings.setLanguage(false, LanguageSettings.Language.JAPANESE);
+        LanguageSettings.setLanguage(true, LanguageSettings.Language.ENGLISH_US_ALLISON);
+        LanguageSettings.setLanguage(false, LanguageSettings.Language.JAPANESE_EMI);
         s2t = new IBMSpeechToText(act);
         s2t.record();
     }

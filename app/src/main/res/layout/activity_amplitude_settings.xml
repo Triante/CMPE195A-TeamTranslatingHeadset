@@ -19,7 +19,7 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/textView5"
+        android:id="@+id/amplitudeSettingsTitleText"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:gravity="center"
@@ -31,10 +31,10 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:layout_below="@+id/textView5"
+        android:layout_below="@+id/amplitudeSettingsTitleText"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/textView6" />
+        android:id="@+id/amplitudeSettingsActivityDescriptionText" />
 
 
     <ImageView
@@ -44,8 +44,8 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         app:srcCompat="@drawable/divider_horizontal"
-        android:layout_below="@+id/textView6"
-        android:id="@+id/imageView" />
+        android:layout_below="@+id/amplitudeSettingsActivityDescriptionText"
+        android:id="@+id/amplitudeSettingsActivitySplitter" />
 
     <Button
         android:text="@string/button_amplitude_record"
@@ -58,7 +58,7 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="5dp"
         android:id="@+id/bRecordAmplitude"
-        android:layout_below="@+id/imageView"
+        android:layout_below="@+id/amplitudeSettingsActivitySplitter"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
@@ -77,7 +77,7 @@
         android:layout_alignBottom="@+id/bRecordAmplitude"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/textView7"
+        android:id="@+id/bRecordAmplitudeSubText"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/bRecordAmplitude" />
@@ -112,7 +112,7 @@
         android:layout_alignBottom="@+id/bConfigAmplitude"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/textView8"
+        android:id="@+id/bConfigAmplitudeSubText"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/bConfigAmplitude" />
@@ -149,7 +149,7 @@
         android:layout_alignBottom="@+id/bDoneAmplitude"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/text_done"
+        android:id="@+id/bDoneAmplitudeSubText"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/bDoneAmplitude"
@@ -162,7 +162,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:id="@+id/textView10"
+        android:id="@+id/thresholdTextView"
         android:layout_above="@+id/seekBar_threshold"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -172,8 +172,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/seekBar_threshold"
-        android:layout_toRightOf="@+id/textView10"
-        android:layout_toEndOf="@+id/textView10"
+        android:layout_toRightOf="@+id/thresholdTextView"
+        android:layout_toEndOf="@+id/thresholdTextView"
         android:id="@+id/text_current" />
 
     <SeekBar
@@ -182,7 +182,7 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:id="@+id/seekBar_threshold"
-        android:layout_above="@+id/textView9"
+        android:layout_above="@+id/maxTextView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
@@ -210,7 +210,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:id="@+id/textView9"
+        android:id="@+id/maxTextView"
         android:layout_above="@+id/seekBar_max"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -220,8 +220,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/seekBar_max"
-        android:layout_toRightOf="@+id/textView9"
-        android:layout_toEndOf="@+id/textView9"
+        android:layout_toRightOf="@+id/maxTextView"
+        android:layout_toEndOf="@+id/maxTextView"
         android:id="@+id/text_max" />
 
     <ProgressBar
@@ -246,7 +246,7 @@
         android:layout_below="@+id/bDoneAmplitude"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/textView10">
+        android:layout_above="@+id/thresholdTextView">
             <ImageView
                 android:layout_width="65dp"
                 android:layout_height="65dp"

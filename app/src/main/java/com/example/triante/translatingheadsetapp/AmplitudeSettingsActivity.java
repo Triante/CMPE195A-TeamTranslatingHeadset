@@ -45,7 +45,7 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
         micImage = (ImageView) findViewById(R.id.imageMic);
         thresholdText = (TextView) findViewById(R.id.text_current);
         maxText = (TextView) findViewById(R.id.text_max);
-        doneText = (TextView) findViewById(R.id.text_done);
+        doneText = (TextView) findViewById(R.id.bDoneAmplitudeSubText);
 
         //SeekBars and ProgressBars
         thresholdBar = (SeekBar) findViewById(R.id.seekBar_threshold);
