@@ -35,15 +35,44 @@
         android:id="@+id/settings_splitter" />
 
     <TextView
-        android:text="My Language:"
+        android:text="@string/settings_my_lang"
         android:layout_below="@+id/settings_splitter"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/height_spinner_label"
         android:layout_marginTop="5dp"
         android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
         android:layout_alignParentLeft="true"
-        android:id="@+id/textView" />
+        android:textColor="#000"
+        android:id="@+id/myLangText" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_spinner_items"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:id="@+id/spinMyLang"
+        android:entries="@array/LanguageArray"
+        android:layout_below="@+id/myLangText" />
+
+
+    <Space
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/userVoiceSpace"
+        android:layout_below="@+id/spinMyLang"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="@string/settings_my_voice"
+        android:layout_below="@+id/spinMyLang"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_spinner_label"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/userVoiceSpace"
+        android:layout_toEndOf="@id/userVoiceSpace"
+        android:textColor="#000"
+        android:id="@+id/userVoiceText" />
 
     <Spinner
 
@@ -51,19 +80,21 @@
         android:layout_height="@dimen/height_spinner_items"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:id="@+id/spinMyLang"
-        android:entries="@array/MyLanguageArray"
-        android:layout_below="@+id/textView" />
+        android:layout_toRightOf="@id/userVoiceSpace"
+        android:layout_toEndOf="@id/userVoiceSpace"
+        android:id="@+id/spinMyVoice"
+        android:entries="@array/EnglishVoiceArray"
+        android:layout_below="@+id/userVoiceText" />
 
     <TextView
-        android:text="Response Language"
+        android:text="@string/settings_party_lang"
+        android:textColor="#000"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/height_spinner_label"
         android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:id="@+id/textView2"
+        android:id="@+id/partyLangText"
         android:layout_marginTop="@dimen/spacing_option_settings"
-        android:layout_below="@+id/spinMyLang"
+        android:layout_below="@+id/spinMyVoice"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -72,43 +103,50 @@
         android:layout_height="@dimen/height_spinner_items"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:layout_below="@+id/textView2"
+        android:layout_below="@+id/partyLangText"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:id="@+id/spinRespLang"
-        android:entries="@array/ResponseLanguageAvailable" />
+        android:entries="@array/LanguageArray" />
 
     <TextView
+        android:text="@string/settings_party_voice"
+        android:textColor="#000"
+        android:layout_below="@+id/spinRespLang"
         android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_spinner_label"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/userVoiceSpace"
+        android:layout_toEndOf="@id/userVoiceSpace"
+        android:id="@+id/partyVoiceText" />
+
+    <Spinner
+
+        android:layout_width="match_parent"
         android:layout_height="@dimen/height_spinner_items"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:layout_below="@+id/spinRespLang"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="@dimen/spacing_option_settings"
-        android:id="@+id/textView3"
-        android:gravity="bottom"
-        android:text="Profanity Filter"
-        android:textSize="16sp"
-        android:textColor="#000"
-        />
+        android:layout_toRightOf="@id/userVoiceSpace"
+        android:layout_toEndOf="@id/userVoiceSpace"
+        android:id="@+id/spinResVoice"
+        android:entries="@array/EnglishVoiceArray"
+        android:layout_below="@+id/partyVoiceText" />
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/height_spinner_label"
+        android:layout_height="wrap_content"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:layout_below="@+id/textView3"
+        android:layout_below="@+id/spinResVoice"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/textView4"
-        android:gravity="top|end"
-        android:text="English Only"
-        android:textSize="10sp"
+        android:layout_marginTop="@dimen/spacing_option_settings"
+        android:id="@+id/profanityTitleText"
+        android:gravity="bottom"
+        android:text="@string/settings_profanity_filter"
+        android:textSize="16sp"
         android:textColor="#000"
-        android:layout_alignRight="@+id/textView"
-        android:layout_alignEnd="@+id/textView" />
+        />
 
     <android.support.v7.widget.SwitchCompat
         android:layout_width="wrap_content"
@@ -116,9 +154,9 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:theme="@style/SCBSwitch"
-        android:layout_toRightOf="@+id/textView3"
-        android:layout_toEndOf="@+id/textView3"
-        android:layout_below="@+id/spinRespLang"
+        android:layout_toRightOf="@+id/profanityTitleText"
+        android:layout_toEndOf="@+id/profanityTitleText"
+        android:layout_below="@+id/spinResVoice"
         android:layout_marginTop="@dimen/spacing_option_settings"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -129,10 +167,10 @@
         android:layout_height="@dimen/height_amplitude_option"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:layout_below="@+id/textView4"
+        android:layout_below="@+id/switchCompat"
         android:background="@drawable/amplitude_settings_button"
         android:layout_marginTop="@dimen/spacing_option_settings"
-        android:text="Amplitude Settings"
+        android:text="@string/settings_amplitude_button"
         android:textAllCaps="false"
         android:gravity="top|start"
         android:textSize="16sp"
@@ -147,7 +185,7 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/height_spinner_label"
-        android:id="@+id/textViewX"
+        android:id="@+id/bAmplitudeSettingsDesc"
         android:layout_alignTop="@+id/bAmplitude_settings"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -161,9 +199,62 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_save_settings"
         android:id="@+id/bSave"
-        android:layout_below="@+id/textView3"
+        android:layout_below="@+id/profanityTitleText"
         android:layout_centerHorizontal="true"
         />
+
+    <TextView
+        android:text="@string/settings_my_lang_sub"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_spinner_label"
+        android:layout_alignTop="@+id/myLangText"
+        android:layout_toRightOf="@+id/myLangText"
+        android:layout_toEndOf="@+id/myLangText"
+        android:id="@+id/userLangSubText"
+        android:layout_above="@+id/spinMyLang" />
+
+    <TextView
+        android:text="@string/settings_my_voice_sub"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_spinner_label"
+        android:layout_alignTop="@+id/userVoiceText"
+        android:layout_toRightOf="@+id/userVoiceText"
+        android:layout_toEndOf="@+id/userVoiceText"
+        android:id="@+id/userVoiceSubText" />
+
+    <TextView
+        android:text="@string/settings_party_lang_sub"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_spinner_label"
+        android:layout_alignTop="@+id/partyLangText"
+        android:layout_toRightOf="@+id/partyLangText"
+        android:layout_toEndOf="@+id/partyLangText"
+        android:id="@+id/partyLangSubText" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:id="@+id/profanitySubText"
+        android:gravity="top"
+        android:text="@string/settings_profanity_description"
+        android:textSize="12sp"
+        android:layout_below="@+id/profanityTitleText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/userVoiceSubText"
+        android:layout_alignEnd="@+id/userVoiceSubText" />
+
+    <TextView
+        android:text="@string/settings_party_voice_sub"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_spinner_label"
+        android:id="@+id/partyVoiceSubText"
+        android:layout_alignBaseline="@+id/partyVoiceText"
+        android:layout_alignBottom="@+id/partyVoiceText"
+        android:layout_toRightOf="@+id/partyVoiceText"
+        android:layout_toEndOf="@+id/partyVoiceText" />
 
 
 </RelativeLayout>

@@ -24,8 +24,8 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class SettingsTests {
 
-    final private LanguageSettings.Language defaultMyLanguage = LanguageSettings.Language.ENGLISH_F;
-    final private LanguageSettings.Language defaultResponseLanguage = LanguageSettings.Language.SPANISH_F;
+    final private LanguageSettings.Language defaultMyLanguage = LanguageSettings.Language.ENGLISH_US_ALLISON;
+    final private LanguageSettings.Language defaultResponseLanguage = LanguageSettings.Language.SPANISH_MX_SOFIA;
     final private int defaultThreshold = 0;
     final private int defaultMaxAmp = 0;
     final private boolean defaultProfanityFilter = true;
@@ -77,14 +77,14 @@ public class SettingsTests {
 
     @Test
     public void test_saveAndLoadLanguageSettings() {
-        LanguageSettings.setLanguage(true, LanguageSettings.Language.FRENCH);
-        LanguageSettings.setLanguage(false, LanguageSettings.Language.JAPANESE);
+        LanguageSettings.setLanguage(true, LanguageSettings.Language.FRENCH_RENEE);
+        LanguageSettings.setLanguage(false, LanguageSettings.Language.JAPANESE_EMI);
         TranslaTaSettings.saveLanguageSettings(mActivityRule.getActivity());
         LanguageSettings.setLanguage(true, defaultMyLanguage);
         LanguageSettings.setLanguage(false, defaultResponseLanguage);
         TranslaTaSettings.initiateTranslaTaSettings(mActivityRule.getActivity());
-        assertEquals("Save and Load my language test", LanguageSettings.getLanguage(true), LanguageSettings.Language.FRENCH);
-        assertEquals("Save and Load response language test", LanguageSettings.getLanguage(false), LanguageSettings.Language.JAPANESE);
+        assertEquals("Save and Load my language test", LanguageSettings.getLanguage(true), LanguageSettings.Language.FRENCH_RENEE);
+        assertEquals("Save and Load response language test", LanguageSettings.getLanguage(false), LanguageSettings.Language.JAPANESE_EMI);
     }
 
     @Test

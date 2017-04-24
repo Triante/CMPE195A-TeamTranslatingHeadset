@@ -20,6 +20,18 @@
     <string name="amplitude_settings_amplitude_done">Save new configuration amplitude threshold</string>
     <string name="amplitude_settings_max_label">Max Amplitude: </string>
     <string name="amplitude_settings_current_label">Threshold Amplitude: </string>
+    <string name="settings_my_lang">My Language</string>
+    <string name="settings_my_lang_sub">: the language you speak</string>
+    <string name="settings_my_voice">My Response Voice</string>
+    <string name="settings_my_voice_sub">: the voice you hear</string>
+    <string name="settings_party_lang">Party Language</string>
+    <string name="settings_party_lang_sub">: the language the party speaks</string>
+    <string name="settings_party_voice">Party Response Voice</string>
+    <string name="settings_party_voice_sub">: the voice the party will hear</string>
+    <string name="settings_profanity_filter">Profanity Filter</string>
+    <string name="settings_profanity_description">ENGLISH ONLY. Filters out profanity from the conversation</string>
+    <string name="settings_amplitude_button">Amplitude Settings</string>
+
 
 
     <!-- Amplitude Settings Dialog --> 
@@ -48,39 +60,42 @@
     <string name="MicrosoftTranslateTokenURL">https://api.cognitive.microsoft.com/sts/v1.0/issueToken</string>
      
     <!-- language-options --> 
-    <string-array name="MyLanguageArray">
-        <item>US English</item>
-        <item>UK English</item>
+    <string-array name="LanguageArray">
+        <item>English</item>
         <item>Spanish</item>
         <item>French</item>
         <item>Japanese</item>
-        <item>Brazilian Portuguese</item>
-        <item>Mandarin Chinese</item>
-    </string-array>
-    <string-array name="ResponseLanguageAvailable">
-        <item>US English-Male</item>
-        <item>US English-Female</item>
-        <item>UK English</item>
-        <item>French</item>
-        <item>German-Male</item>
-        <item>German-Female</item>
-        <item>Italian</item>
-        <item>Japanese</item>
-        <item>Brazilian Portuguese</item>
-        <item>Castilian Spanish-Male</item>
-        <item>Castilian Spanish-Female</item>
-        <item>Mexican Spanish</item>
-    </string-array>
-    <string-array name="LanguageArray">
-        <item>US English</item>
-        <item>UK English</item>
-        <item>SP Spanish</item>
-        <item>MX Spanish</item>
-        <item>French</item>
-        <item>Japanese</item>
-        <item>Brazilian Portuguese</item>
+        <item>Portuguese (Brazilian)</item>
     </string-array>
 
+    <string-array name="EnglishVoiceArray">
+        <item>Allison (US)</item>
+        <item>Lisa (US)</item>
+        <item>Micheal (US)</item>
+        <item>Kate (British)</item>
+    </string-array>
+
+    <string-array name="SpanishVoiceArray">
+        <item>Sofia (Latin)</item>
+        <item>Sofia (US)</item>
+        <item>Laura (Castilian)</item>
+        <item>Enrique (Castilian)</item>
+    </string-array>
+
+    <string-array name="FrenchVoiceArray">
+        <item>Renee</item>
+    </string-array>
+
+    <string-array name="JapaneseVoiceArray">
+        <item>Emi</item>
+    </string-array>
+
+    <string-array name="PortugueseVoiceArray">
+        <item>Isabela</item>
+    </string-array>
+
+
+    <!-- Luis Stuff --> 
     <string name="headset_key">04:88:E2:57:7F:E4</string>
 
 </resources>
