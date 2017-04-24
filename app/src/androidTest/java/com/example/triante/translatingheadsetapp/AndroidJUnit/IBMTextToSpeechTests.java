@@ -11,6 +11,7 @@ package com.example.triante.translatingheadsetapp.AndroidJUnit;
         import com.example.triante.translatingheadsetapp.IBMSpeechToText;
         import com.example.triante.translatingheadsetapp.IBMTextToSpeech;
         import com.example.triante.translatingheadsetapp.LanguageSettings;
+        import com.example.triante.translatingheadsetapp.MainActivity;
         import com.example.triante.translatingheadsetapp.Transcript;
         import com.example.triante.translatingheadsetapp.TranslaTaSettings;
         import com.ibm.watson.developer_cloud.text_to_speech.v1.model.Voice;
@@ -27,20 +28,20 @@ package com.example.triante.translatingheadsetapp.AndroidJUnit;
 @RunWith(AndroidJUnit4.class)
 public class IBMTextToSpeechTests {
 
-    DemoActivity act;
+    MainActivity act;
     private IBMTextToSpeech t2s;
     private AudioManager audioSwitch;
 
 
     @Rule
-    public ActivityTestRule<DemoActivity> mActivityRule = new ActivityTestRule<>(
-            DemoActivity.class);
+    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
+            MainActivity.class);
 
     @Before
     public void initiateIBMComponent() {
         act = mActivityRule.getActivity();
         t2s = new IBMTextToSpeech(act);
-        audioSwitch = (AudioManager) act.getApplicationContext().getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        audioSwitch = (AudioManager) act.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
     }
 
     //IBM Speech Synthesis Tests

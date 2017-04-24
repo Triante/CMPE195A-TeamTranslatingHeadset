@@ -5,11 +5,10 @@ import java.util.Collections;
 import java.util.Comparator;
 
 /**
- * Created by Jorge Aguiniga on 2/24/2017.
+ * @author by Jorge Aguiniga on 2/24/2017.
  */
-
-public class AmplitudeAverageCalculator implements Comparator<Integer> {
-    ArrayList<Integer> values = new ArrayList<>();
+ public class AmplitudeAverageCalculator implements Comparator<Integer> {
+    private ArrayList<Integer> values = new ArrayList<>();
     private double maxAmp = 0;
 
     public synchronized void addAmpValue(double amp) {
@@ -26,24 +25,23 @@ public class AmplitudeAverageCalculator implements Comparator<Integer> {
 
     public synchronized double getAverageAmp() {
         if (!countAboveOne()) return 0;
-        double ave = convertAverageAmp();
-        return ave;
+        return convertAverageAmp();
     }
 
-    public synchronized void resetAmpVariables() {
+    private synchronized void resetAmpVariables() {
         values = new ArrayList<>();
         maxAmp = 0;
     }
 
-    public boolean countAboveOne() {
-        if (values.size() > 1) return true;
-        return false;
+    private boolean countAboveOne() {
+
+        return (values.size() > 1);
     }
 
     private double convertAverageAmp() {
         double total = 0;
         int amount = 0;
-        double mean = getMean();;
+        double mean = getMean();
         double minAllowed = mean - (mean * 0.3);
         for (int value: values) {
             if (minAllowed <= value) {
@@ -54,8 +52,7 @@ public class AmplitudeAverageCalculator implements Comparator<Integer> {
         if (amount == 0) {
             return 0;
         }
-        double average = total / amount;
-        return average;
+        return total / amount;
     }
 
     private double getMean() {

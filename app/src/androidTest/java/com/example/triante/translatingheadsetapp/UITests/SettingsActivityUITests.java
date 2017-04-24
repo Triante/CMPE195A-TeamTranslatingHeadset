@@ -1,21 +1,13 @@
 package com.example.triante.translatingheadsetapp.UITests;
 
-
-import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 
 import com.example.triante.translatingheadsetapp.LanguageSettings;
 import com.example.triante.translatingheadsetapp.MainActivity;
 import com.example.triante.translatingheadsetapp.R;
-import com.example.triante.translatingheadsetapp.SettingsActivity;
 import com.example.triante.translatingheadsetapp.TranslaTaSettings;
 
-import org.hamcrest.core.AllOf;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +28,7 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.*;
 
 /**
- * Created by Jorge Aguiniga on 4/23/2017.
+ * @author by Jorge Aguiniga on 4/23/2017.
  */
 @RunWith(AndroidJUnit4.class)
 public class SettingsActivityUITests {
