@@ -1,5 +1,7 @@
 package com.example.triante.translatingheadsetapp;
 
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
@@ -68,6 +70,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
             }
+
+            @Override
+            public void onAddErrorText(String text) {
+                final String fText = text;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        addErrorTextToWebView(fText);
+                    }
+                });
+            }
+
         });
         myToolBar = (Toolbar) findViewById(R.id.mainActivity_toolbar);
         setSupportActionBar(myToolBar);
@@ -81,7 +95,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         headsetGlowImage = (ImageView) findViewById(R.id.headset_glow_mainImage);
         speakerImage = (ImageView) findViewById(R.id.speaker_mainImage);
         speakerGlowImage = (ImageView) findViewById(R.id.speaker_glow_mainImage);
-        btconnection = new Bluetooth(this);
+        btconnection = new Bluetooth(this,  new ChatHistoryAppender() {
+            @Override
+            public void onAddUserText(String text) {
+            }
+
+            @Override
+            public void onAddPartyText(String text) {
+            }
+
+            @Override
+            public void onAddErrorText(String text) {
+                final String fText = text;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        addErrorTextToWebView(fText);
+                    }
+                });
+            }
+
+        });
 
         hBox = (WebView) findViewById(R.id.wvChatHistory);
         hBox.loadUrl("file:///android_asset/chathtml.html");
@@ -241,10 +275,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             onHeadset = false;
             onSpeaker = false;
         }
-        else
-        {
-
-        }
     }
     private void changeSignals(final ImageView view, final boolean toOn) {
         if (toOn) {
@@ -281,13 +311,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         hBox.loadUrl(url);
     }
 
+    private void addErrorTextToWebView(String text)
+    {
+        String errorT = "Error:  " + text;
+        String url = "javascript:addErrorText('"+ errorT +"')";
+        hBox.loadUrl(url);
+    }
 
 
-    interface ChatHistoryAppender {
+    public interface ChatHistoryAppender {
 
         void onAddUserText(String text);
         void onAddPartyText(String text);
-
+        void onAddErrorText(String text);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == Bluetooth.BLUETOOTH_REQUEST)
+        {
+            if (resultCode == Activity.RESULT_OK)
+            {
+                btconnection.checkConnection();
+            }
+        }
+    }
 }

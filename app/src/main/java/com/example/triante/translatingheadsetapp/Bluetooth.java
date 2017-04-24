@@ -1,6 +1,5 @@
 package com.example.triante.translatingheadsetapp;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -38,35 +37,40 @@ public class Bluetooth {
     private boolean isOnHeadset;
     private boolean isOnSpeaker;
     private boolean isDoneChecking;
+    private MainActivity.ChatHistoryAppender error;
 
-    public Bluetooth (MainActivity home)
+    public Bluetooth (MainActivity home, MainActivity.ChatHistoryAppender appender)
     {
         main = home;
         isOnHeadset = false;
         isOnSpeaker = false;
         isDoneChecking = false;
+        error = appender;
     }
 
-    public void checkConnection()
+    public String checkConnection()
     {
         adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter == null) {
-            Toast.makeText(main, "This device does not support Bluetooth. " +
-                    "Use another device that has Bluetooth 2.0 or higher enabled.", Toast.LENGTH_LONG).show();
+            error.onAddErrorText("This device does not support Bluetooth. " +
+                    "Use another device that has Bluetooth 2.0 or higher enabled.");
+            return "NOSUPPORT";
         }
 
-        if (!adapter.isEnabled()) {
+        if (!adapter.isEnabled())
+        {
             Intent enabler = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             main.startActivityForResult(enabler, BLUETOOTH_REQUEST);
+            return "ADAPTERENABLEINPROGRESS";
         }
         else
         {
-            System.out.println("Begin search!");
             search();
+            return "SEARCHBEGIN";
         }
     }
 
-    public void search()
+    private void search()
     {
         final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         final BluetoothProfile.ServiceListener mProfileListener = new BluetoothProfile.ServiceListener() {
@@ -84,6 +88,11 @@ public class Bluetooth {
                             }
                         }
                     }
+                    if(!isOnSpeaker)
+                    {
+                        error.onAddErrorText("External speaker not connected. If the speaker is connected, make sure it is only connected" +
+                                " to the media channel.");
+                    }
                     mBluetoothAdapter.closeProfileProxy(BluetoothProfile.A2DP, btA2dp);
                 }
                 else if (profile == BluetoothProfile.HEADSET)
@@ -92,12 +101,17 @@ public class Bluetooth {
                     List<BluetoothDevice> headsetConnectedDevices = headset.getConnectedDevices();
                     if (headsetConnectedDevices.size() != 0) {
                         for (BluetoothDevice device : headsetConnectedDevices) {
-                            if (device.getName().equalsIgnoreCase("RN52-0201")) {
+                            if (device.getAddress().equalsIgnoreCase(main.getString(R.string.headset_key))) {
                                 main.turnOn("headset");
                                 isOnHeadset = true;
                                 break;
                             }
                         }
+                    }
+                    if(!isOnHeadset)
+                    {
+                        error.onAddErrorText("RN52 headset not connected. If the headset is connected, make sure it is only connected" +
+                                " to the call/communication channel.");
                     }
                     isDoneChecking = true;
                     mBluetoothAdapter.closeProfileProxy(BluetoothProfile.HEADSET, headset);
@@ -122,7 +136,6 @@ public class Bluetooth {
                                 isOnSpeaker = false;
                                 isDoneChecking = false;
                                 main.turnOff("both");
-                                Toast.makeText(main, "BOTH DEVICES NEED TO BE CONNECTED", Toast.LENGTH_LONG).show();
                             }
                         }
                     }
@@ -133,5 +146,15 @@ public class Bluetooth {
         mBluetoothAdapter.getProfileProxy(main, mProfileListener, BluetoothProfile.A2DP);
         mBluetoothAdapter.getProfileProxy(main, mProfileListener, BluetoothProfile.HEADSET);
 
+    }
+
+    public boolean isOnHeadset()
+    {
+        return isOnHeadset;
+    }
+
+    public boolean isOnSpeaker()
+    {
+        return isOnSpeaker;
     }
 }

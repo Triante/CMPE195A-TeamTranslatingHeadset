@@ -5,13 +5,19 @@
     <script type="text/javascript">
         function addUserText(content)
         {
-            var newLine = "<p style=\"color:red\">" + content + "</p>"
+            var newLine = "<p style=\"color:green\">" + content + "</p>"
             document.getElementById("html_chat").innerHTML = newLine + document.getElementById("html_chat").innerHTML;
         }
 
         function addPartyText(content)
         {
             var newLine = "<p style=\"color:blue\" align=\"right\">" + content + "</p>"
+            document.getElementById("html_chat").innerHTML = newLine + document.getElementById("html_chat").innerHTML;
+        }
+
+        function addErrorText(content)
+        {
+            var newLine = "<p style=\"color:red\">" + content + "</p>"
             document.getElementById("html_chat").innerHTML = newLine + document.getElementById("html_chat").innerHTML;
         }
 

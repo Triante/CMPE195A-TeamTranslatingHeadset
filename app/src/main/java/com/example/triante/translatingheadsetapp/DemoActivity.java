@@ -64,6 +64,11 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
             public void onAddPartyText(String text) {
 
             }
+
+            @Override
+            public void onAddErrorText(String text) {
+
+            }
         });
 
         /* Initialize buttons*/
