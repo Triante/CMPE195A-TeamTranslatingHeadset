@@ -1,4 +1,4 @@
-package com.example.triante.translatingheadsetapp;
+package com.example.triante.translatingheadsetapp.AndroidJUnit;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

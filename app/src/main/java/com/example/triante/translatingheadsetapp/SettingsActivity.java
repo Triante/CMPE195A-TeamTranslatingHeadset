@@ -33,6 +33,8 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     private int myVoice = 0;
     private int respVoice = 0;
     private boolean profanityFilter = true;
+    private boolean ignoreFirstRunForMyLanguage = true;
+    private boolean ignoreFirstRunForRespLanguage = true;
 
     private Spinner spinMyLang, spinRespLang, spinMyVoice, spinRespVoice; //Spinners used for displaying all possible languages
     private Button bAmplitudeSettings, bSave; //Button for saving preferences
@@ -65,21 +67,19 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         spinRespLang.setAdapter(adapter);
 
         spinMyVoice = (Spinner) findViewById(R.id.spinMyVoice);
+        spinMyVoice.setAdapter(adapter);
         spinRespVoice = (Spinner) findViewById(R.id.spinResVoice);
+        spinRespVoice.setAdapter(adapter);
 
         initiateSpinnerPositionValues();
         Log.d("Load", myLanguage + ":" + myVoice);
         Log.d("Load", respLanguage + ":" + respVoice);
         setVoiceSpinner(myLanguage, true);
-        setVoiceSpinner(respLanguage, false);
-        int tempMV = myVoice;
-        int tempRV = respVoice;
-        spinMyLang.setSelection(myLanguage);
-        myVoice = tempMV;
-        spinRespLang.setSelection(respLanguage);
-        respVoice = tempRV;
         spinMyVoice.setSelection(myVoice);
+        setVoiceSpinner(respLanguage, false);
         spinRespVoice.setSelection(respVoice);
+        spinMyLang.setSelection(myLanguage);
+        spinRespLang.setSelection(respLanguage);
         switchCompat.setChecked(profanityFilter);
         Log.d("Load After Init", myLanguage + ":" + myVoice);
         Log.d("Load After Init", respLanguage + ":" + respVoice);
@@ -352,16 +352,26 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if (spinnerID == 0)
             {
-                myLanguage = position;
-                myVoice = 0;
-                setVoiceSpinner(myLanguage, true);
+                if (ignoreFirstRunForMyLanguage) {
+                    ignoreFirstRunForMyLanguage = false;
+                }
+                else {
+                    myLanguage = position;
+                    myVoice = 0;
+                    setVoiceSpinner(myLanguage, true);
+                }
             }
             else if (spinnerID == 1) myVoice = position;
             else if (spinnerID == 2)
             {
-                respLanguage = position;
-                respVoice = 0;
-                setVoiceSpinner(respLanguage, false);
+                if (ignoreFirstRunForRespLanguage) {
+                    ignoreFirstRunForRespLanguage = false;
+                }
+                else {
+                    respLanguage = position;
+                    respVoice = 0;
+                    setVoiceSpinner(respLanguage, false);
+                }
             }
             else respVoice = position;
         }

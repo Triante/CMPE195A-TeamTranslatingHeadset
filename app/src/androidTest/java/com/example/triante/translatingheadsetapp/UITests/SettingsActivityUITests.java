@@ -39,7 +39,7 @@ public class SettingsActivityUITests {
 
 
     @Test
-    public void test_Layout() {
+    public void test_correctLayout() {
         onView(withId(R.id.action_settings)).perform(click());
         onView(withId(R.id.spinMyVoice)).check(matches(isDisplayed()));
         onView(withId(R.id.spinMyLang)).check(matches(isDisplayed()));
