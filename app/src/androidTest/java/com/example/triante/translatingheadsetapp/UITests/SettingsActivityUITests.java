@@ -10,7 +10,6 @@ import android.util.Log;
 import com.example.triante.translatingheadsetapp.LanguageSettings;
 import com.example.triante.translatingheadsetapp.MainActivity;
 import com.example.triante.translatingheadsetapp.R;
-import com.example.triante.translatingheadsetapp.SettingsActivity;
 import com.example.triante.translatingheadsetapp.TranslaTaSettings;
 
 import org.hamcrest.core.AllOf;
@@ -47,7 +46,7 @@ public class SettingsActivityUITests {
 
 
     @Test
-    public void test_Layout() {
+    public void test_correctLayout() {
         onView(withId(R.id.action_settings)).perform(click());
         onView(withId(R.id.spinMyVoice)).check(matches(isDisplayed()));
         onView(withId(R.id.spinMyLang)).check(matches(isDisplayed()));

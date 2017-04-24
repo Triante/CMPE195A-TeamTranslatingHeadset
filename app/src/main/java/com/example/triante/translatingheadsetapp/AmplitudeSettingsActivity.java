@@ -69,7 +69,6 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
         thresholdBar.setOnTouchListener(this);
         lockSeek = true;
         adjustSlidersAndBar(thresholdSetting);
-
     }
 
     @Override
