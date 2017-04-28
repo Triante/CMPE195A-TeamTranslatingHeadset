@@ -25,13 +25,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVi
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 /**
  * Created by Jorge Aguiniga on 4/23/2017.
@@ -42,6 +35,20 @@ public class MainActivityUITests {
     @Rule
     public ActivityTestRule<MainActivity> mainActivityRule = new ActivityTestRule<>(
             MainActivity.class);
+
+    @Test
+    public void test_initialLayout()
+    {
+        onView(withId(R.id.bConnect_main)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+        onView(withId(R.id.wvChatHistory)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+        onView(withId(R.id.off_toolbarButton)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
+        onView(withId(R.id.action_settings)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+        onView(withId(R.id.headset_mainImage)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+        onView(withId(R.id.headset_glow_mainImage)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
+        onView(withId(R.id.speaker_mainImage)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+        onView(withId(R.id.speaker_glow_mainImage)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
+        onView(withId(R.id.bConnect_main)).check(matches(withText("Connect")));
+    }
 
     @Test
     public void test_connectButtonBTOFF() {
@@ -76,7 +83,6 @@ public class MainActivityUITests {
         onView(withId(R.id.headset_glow_mainImage)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
         onView(withId(R.id.speaker_mainImage)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
         onView(withId(R.id.speaker_glow_mainImage)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
-        //onView(withId(R.id.wvChatHistory)).check(matches(withText(chat)));
         onView(withId(R.id.off_toolbarButton)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
 
         //step two begin translation
@@ -86,7 +92,6 @@ public class MainActivityUITests {
         onView(withId(R.id.headset_glow_mainImage)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
         onView(withId(R.id.speaker_mainImage)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
         onView(withId(R.id.speaker_glow_mainImage)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
-        //onView(withId(R.id.wvChatHistory)).check(matches(withText(chat)));
         onView(withId(R.id.off_toolbarButton)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
 
         //step three stop translation
