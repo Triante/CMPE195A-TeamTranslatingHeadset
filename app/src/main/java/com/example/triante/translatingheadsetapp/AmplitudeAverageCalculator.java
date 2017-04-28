@@ -28,12 +28,12 @@ import java.util.Comparator;
         return convertAverageAmp();
     }
 
-    private synchronized void resetAmpVariables() {
+    public synchronized void resetAmpVariables() {
         values = new ArrayList<>();
         maxAmp = 0;
     }
 
-    private boolean countAboveOne() {
+    public boolean countAboveOne() {
 
         return (values.size() > 1);
     }
