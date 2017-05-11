@@ -2,7 +2,6 @@
     <string name="app_name">TranslaTa</string>
     <string name="dialog_confirm">OK</string>
     <string name="dialog_cancel">Cancel</string>
-
     <!-- Buttons --> 
     <string name="button_connect">Connect</string>
     <string name="button_amplitude_record">Record Amplitude Threshold</string>

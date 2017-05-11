@@ -125,8 +125,8 @@ public final class MultipleMicrophoneInputStream extends InputStream implements 
     public void close() throws IOException {
         captureThread.end();
         for (int i = 0; i < os.length; i++) {
-            os[i].close();
             is[i].close();
+            os[i].close();
         }
     }
 

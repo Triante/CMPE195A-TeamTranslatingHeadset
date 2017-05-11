@@ -10,12 +10,27 @@ import java.util.Comparator;
  public class AmplitudeAverageCalculator implements Comparator<Integer> {
     private ArrayList<Integer> values = new ArrayList<>();
     private double maxAmp = 0;
+    private ArrayList<Integer> mode;
+    private final int TO_MODE_WITH = 10000000;
 
-    public synchronized void addAmpValue(double amp) {
+    public AmplitudeAverageCalculator() {
+        initMode();
+    }
+
+    public synchronized double addAmpValue(double amp) {
         if (amp > maxAmp) maxAmp = amp;
-        if (amp < 1000) return;
+        if (amp < 1000) return 0;
         int add = (int) amp;
         values.add(add);
+        int temp = (int) amp;
+        int i = temp/TO_MODE_WITH;
+        if (i > 9) {
+            i = 9;
+        }
+        int v = mode.get(i);
+        v++;
+        mode.set(i, v);
+        return amp;
     }
 
     public int getCount() {
@@ -31,6 +46,7 @@ import java.util.Comparator;
     public synchronized void resetAmpVariables() {
         values = new ArrayList<>();
         maxAmp = 0;
+        initMode();
     }
 
     public boolean countAboveOne() {
@@ -55,7 +71,8 @@ import java.util.Comparator;
         return total / amount;
     }
 
-    private double getMean() {
+    public double getMean() {
+        if (values.size() < 2) return 0;
         Collections.sort(values, this);
         int middle = values.size() / 2;
         if (middle%2 == 1) {
@@ -64,6 +81,32 @@ import java.util.Comparator;
         else {
             return (values.get(middle) + values.get(middle - 1))/2;
         }
+    }
+
+    public int getMode() {
+        int max = 0;
+        for (int i = 0; i < mode.size(); i++) {
+            if (max < mode.get(i)) {
+                max = mode.get(i);
+            }
+        }
+        return max;
+    }
+
+    public int getModeNext() {
+        int max = 0;
+        int last = 0;
+        for (int i = 0; i < mode.size(); i++) {
+            if (max < mode.get(i)) {
+                last = max;
+                max = mode.get(i);
+            }
+        }
+        return last;
+    }
+
+    public String print() {
+        return values.toString() + "   " + mode.toString() +  "  done";
     }
 
     @Override
@@ -75,5 +118,12 @@ import java.util.Comparator;
             return 1;
         }
         return 0;
+    }
+
+    private void initMode() {
+        mode = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            mode.add(0);
+        }
     }
 }

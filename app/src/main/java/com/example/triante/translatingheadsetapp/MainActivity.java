@@ -147,7 +147,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.bConnect_main:
 
                 if(bConnect.getText().toString().equalsIgnoreCase("Connect")) {
-                    btconnection.checkConnection();
+                    //btconnection.checkConnection();
+                    turnOn("speaker");
+                    turnOn("headset");
+                    bConnect.setText("Translate");
                 }
                 else if (bConnect.getText().toString().equalsIgnoreCase("Translate"))
                 {

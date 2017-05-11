@@ -17,11 +17,7 @@ public class SpeechToSpeech {
     private Speaker speaker; //Speaker object for managing output device playback
     private Microphone microphone; //Microphone object for managing input device data retrieval
     private MSTranslator translator; //translator object model for using base methods from Microsoft's cognitive services
-    private String speech; //speech gathered from microphone
-    private String languageFrom; //languageSettings to recognize/translate from
-    private String languageTo; //languageSettings to translate to/playback
     private ArrayList<Transcript> translatedTextList; //text ready to be translated
-    private Executor executor;
     private SpeechToSpeechTranslationRunnable r1;
     private SpeechToSpeechSynthesizeSpeechRunnable r2;
     private MainActivity.ChatHistoryAppender appender;
@@ -35,7 +31,6 @@ public class SpeechToSpeech {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        speech = "";
         translatedTextList = new ArrayList<>();
         this.appender = appender;
     }
@@ -61,11 +56,11 @@ public class SpeechToSpeech {
     }
 
     /* Delegated method to stop recording speech*/
-    public void stopListening () throws IOException {
+    public boolean stopListening () throws IOException {
         microphone.end();
         r1.stop();
         r2.stop();
-
+        return true;
     }
 
     private synchronized void addToTranslatedList(Transcript transcript) {

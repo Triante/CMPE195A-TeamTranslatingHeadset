@@ -12,6 +12,7 @@ package com.example.triante.translatingheadsetapp.AndroidJUnit;
         import com.example.triante.translatingheadsetapp.IBMTextToSpeech;
         import com.example.triante.translatingheadsetapp.LanguageSettings;
         import com.example.triante.translatingheadsetapp.MainActivity;
+        import com.example.triante.translatingheadsetapp.R;
         import com.example.triante.translatingheadsetapp.Transcript;
         import com.example.triante.translatingheadsetapp.TranslaTaSettings;
         import com.ibm.watson.developer_cloud.text_to_speech.v1.model.Voice;

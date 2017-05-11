@@ -37,6 +37,7 @@ public class IBMSpeechToText {
     double amp = 0;
     double vol = 0;
 
+
     public IBMSpeechToText(Context instance) {
         this.instance = instance;
         messagesRecognized = new ArrayList<>();
@@ -187,10 +188,10 @@ public class IBMSpeechToText {
         public void onTranscription(SpeechResults speechResults) {
             /* Does not continue if the system is not recording */
             if(!isInRecording) return;
-            int userAmplitudeLevel = TranslaTaSettings.getMaxAmplitude();
+            int userAmplitudeLevel = TranslaTaSettings.getThresholdAmplitude();
             if (isUser) {
-                calculator.addAmpValue(amp);
-                Log.d("amp", "Current Amp:     " + amp);
+                double a = calculator.addAmpValue(amp);
+                Log.d("amp", "Added Amp:     " + a);
                 if (calculator.getAverageAmp() > userAmplitudeLevel - (userAmplitudeLevel * .15))
                 {
                     Log.d("ampAve", "Current Average:     " + calculator.getAverageAmp());
@@ -229,7 +230,16 @@ public class IBMSpeechToText {
                 streamOne.setBlockStatus(false);
                 streamTwo.setBlockStatus(false);
                 addToMessagesRecognized(temp, isUser);
+                int userAmplitudeLevel = TranslaTaSettings.getThresholdAmplitude();
                 mes = mes + "\nDID ENTER RESET CALC";
+                Log.d("finalAmpAve", "User Saved Average:     " + userAmplitudeLevel);
+                Log.d("finalAmpAve", "Acceptable Range for Average:     " + (userAmplitudeLevel - (userAmplitudeLevel * .15)));
+                Log.d("finalAmpAve", "Final Amplitude Average:     " + calculator.getAverageAmp());
+                Log.d("finalAmpAve", "Final Amplitude Mean:     " + calculator.getMean());
+                Log.d("finalAmpAve", "Final Amplitude Count:     " + calculator.getCount());
+                Log.d("finalAmpAve", "Final Amplitude Mode:     " + calculator.getMode());
+                Log.d("finalAmpAve", "Final Amplitude Mode Next:     " + calculator.getModeNext());
+                Log.d("finalAmpAve", "Final Amplitude Values:     " + calculator.print());
                 calculator.resetAmpVariables();
                 userDomLock = false;
             }
@@ -240,4 +250,5 @@ public class IBMSpeechToText {
         }
     }
     public String messageForTesting = "";
+
 }

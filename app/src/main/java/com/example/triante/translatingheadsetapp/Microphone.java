@@ -12,9 +12,6 @@ import java.io.IOException;
 /* Class responsible for taking all the input from the microphone and storing it for use in the IBMSpeechToText class */
 public class Microphone {
     private IBMSpeechToText speechToTextConverter; //Speech-to-text object to use the base methods
-    private BluetoothDevice microphone; //Bluetooth connection details for the microphone
-    private String languageFrom; //LanguageSettings to recognize
-    private String languageTo; //LanguageSettings to translate to
 
     public Microphone (AppCompatActivity instance) {
         speechToTextConverter = new IBMSpeechToText(instance);
@@ -23,7 +20,6 @@ public class Microphone {
     /* Method used to start recording speech */
     public void convertSpeechToText() {
         speechToTextConverter.record();
-        //return speechToTextConverter.speech();
     }
 
     public Transcript retrieveConvertedTranscript() {
@@ -38,10 +34,5 @@ public class Microphone {
     /* Method to end the speech recording process */
     public void end() throws IOException {
         speechToTextConverter.end();
-    }
-
-    /* Method to let system know if a microphone source has been found*/
-    public boolean identifySource() {
-        return true;
     }
 }
