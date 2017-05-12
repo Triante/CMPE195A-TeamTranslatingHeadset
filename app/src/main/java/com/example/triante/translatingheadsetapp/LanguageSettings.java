@@ -20,12 +20,14 @@ import static com.example.triante.translatingheadsetapp.LanguageSettings.Languag
 
 /**
  * Created by Jorge Aguiniga on 10/7/2016.
+ * Class for storing all the languageSettings preferences (myLanguage: user responseLanguage: other party)
  */
 
-/* Class for storing all the languageSettings preferences (language1: user language2: other party)*/
 public class LanguageSettings {
 
-    /* LanguageSettings specific enums to use for identification purposes*/
+    /**
+     *  LanguageSettings specific enums to use for identification purposes
+     */
     public enum Language {
         ENGLISH_GB_KATE, ENGLISH_US_ALLISON, ENGLISH_US_LISA, ENGLISH_US_MICHEAL,
         SPANISH_ES_ENRIQUE, SPANISH_ES_LAURA, SPANISH_MX_SOFIA, SPANISH_US_SOFIA,
@@ -35,7 +37,10 @@ public class LanguageSettings {
     private static Language myLanguage = ENGLISH_US_ALLISON; //placeholder for the user's preferred languageSettings
     private static Language responseLanguage = SPANISH_MX_SOFIA; //placeholder for the other party's preferred languageSettings
 
-    /* Getter for the current languageSettings saved as the user's preferred languageSettings */
+    /**
+     * Getter string language code for the user's language to be used for Microsoft's Translator service
+     * @return user string language code for Microsoft's Translator service
+     */
     public static String getMyLanguageCode() {
         switch (myLanguage) {
             case ENGLISH_GB_KATE:
@@ -59,7 +64,10 @@ public class LanguageSettings {
         }
     }
 
-    /* Getter for the current languageSettings saved as the other party's preferred languageSettings */
+    /**
+     * Getter string language code for the party's language to be used for Microsoft's Translator service
+     * @return party string language code for Microsoft's Translator service
+     */
     public static String getResponseLanguageCode() {
         switch (responseLanguage) {
             case ENGLISH_GB_KATE:
@@ -83,7 +91,10 @@ public class LanguageSettings {
         }
     }
 
-    /* Getter for the current languageSettings saved as the user's preferred languageSettings model for the translator */
+    /**
+     * Getter String language model for the user's language to be used for recognizing speech in IBM's SpeechToText
+     * @return user string language model for IBM's SpeechToText
+     */
     public static String getMyLanguageModel() {
         switch (myLanguage) {
             case ENGLISH_GB_KATE:
@@ -109,7 +120,10 @@ public class LanguageSettings {
         }
     }
 
-    /* Getter for the current languageSettings saved as the other party's preferred languageSettings model for the translator */
+    /**
+     * Getter String language model for the party's language to be used for recognizing speech in IBM's SpeechToText
+     * @return party string language model for IBM's SpeechToText
+     */
     public static String getResponseLanguageModel() {
         switch (responseLanguage) {
             case ENGLISH_GB_KATE:
@@ -134,7 +148,10 @@ public class LanguageSettings {
         }
     }
 
-    /* Getter for the voice that will be used to speak to the user*/
+    /**
+     * Getter Voice model for the user's language to be used in IBM's TexToSpeech
+     * @return user Voice model for IBM's TextToSpeech
+     */
     public static Voice getMyLanguageVoice() {
         switch (myLanguage) {
             case ENGLISH_GB_KATE:
@@ -164,7 +181,10 @@ public class LanguageSettings {
         }
     }
 
-    /* Getter for the voice that will be used to speak to the other party*/
+    /**
+     * Getter Voice model for the party's language to be used in IBM's TexToSpeech
+     * @return party Voice model for IBM's TextToSpeech
+     */
     public static Voice getResponseLanguageVoice() {
         switch (responseLanguage) {
             case ENGLISH_GB_KATE:
@@ -193,8 +213,12 @@ public class LanguageSettings {
                 return Voice.EN_ALLISON;
         }
     }
-    
-    /* Sets the languageSettings that is going to be used for either the user or the other party*/
+
+    /**
+     * Sets the language variable for the specified user
+     * @param toBeMyLanguage true if user, false if party
+     * @param theLanguage the language to be set
+     */
     public static void setLanguage(boolean toBeMyLanguage, Language theLanguage) {
         if (toBeMyLanguage) {
             myLanguage = theLanguage;
@@ -206,14 +230,24 @@ public class LanguageSettings {
         TranslaTaSettings.setLanguageSettingsCode(toBeMyLanguage, getLanguageIntCode(theLanguage));
     }
 
-    /* Gets the languageSettings that is currently being used for either the user or the other party*/
+    /**
+     * Gets the language of the user specified
+     * @param isMyLanguage true for user, false for party
+     * @return the language for the specified user
+     */
     public static Language getLanguage(boolean isMyLanguage) {
         if (isMyLanguage) return myLanguage;
         else return responseLanguage;
     }
 
-    public static int getLanguageIntCode(Language key) {
-        switch (key) {
+    /**
+     * Gets the Language based off the integer value used for storing the user's preference into the phones
+     * shared preferences (phones app memory)
+     * @param language the language to be stored in shared preferences
+     * @return the integer key based off the language
+     */
+    public static int getLanguageIntCode(Language language) {
+        switch (language) {
             case ENGLISH_GB_KATE:
                 return 0;
             case ENGLISH_US_ALLISON:
@@ -241,6 +275,11 @@ public class LanguageSettings {
         }
     }
 
+    /**
+     * Gets the integer key to be used to store a language value into the phones shared preferences
+     * @param key the integer key for the language to be retrieved
+     * @return the language based off the key
+     */
     public static Language getLanguageFromIntCode(int key) {
         switch (key) {
             case 0:

@@ -117,7 +117,11 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
         }
     }
 
-
+    /**
+     * Listern function for using amplitude and volume values which are passed from another location
+     * @param amplitude the amplitude value
+     * @param volume the volume value
+     */
     @Override
     public void onSample(double amplitude, double volume) {
         if (updateBar) {
@@ -126,6 +130,12 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
         currentAmp = amplitude;
     }
 
+    /**
+     * Listiner function that runs specific actions when the progress is changes in a SeekBar
+     * @param seekBar the seekBar that had it's progress changed
+     * @param progress the new progress value
+     * @param fromUser true of the user changes the value, false otherwise
+     */
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if (!fromUser) return;
@@ -151,22 +161,32 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
         }
     }
 
+    /**
+     * not used
+     * @param seekBar not used
+     */
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
         //do nothing
     }
 
+    /**
+     * Not used
+     * @param seekBar not used
+     */
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         //do nothing
     }
 
+    /**
+     * Turns the microphone on from off, or from off to on.
+     */
     private void microphoneSwitch() {
         if (microphoneRecording) {
             try {
                 micStream.close();
                 microphoneRecording = false;
-                //micImage.setImageResource(R.drawable.ic_microphone);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -176,10 +196,13 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
             micStream.setOnAmplitudeListener(this);
             micStream.startRecording();
             microphoneRecording = true;
-            //micImage.setImageResource(R.drawable.ic_microphone_glow);
         }
     }
 
+    /**
+     * Creates and displays the dialog for messaging the user about creating the amplitude threshold automatically,
+     * Calls automaticCreateThresholdAction when user accepts the perform the action
+     */
     private void automaticCreateThresholdDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyAlertDialogStyle);
         builder.setTitle(R.string.amplitude_dialog_title);
@@ -194,6 +217,12 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
         builder.show();
     }
 
+    /**
+     * Creates and displays the dialog for notifying the user that their voice is being recorded to calculate
+     * their average amplitude threshold for 10 seconds. Runs, records, and calculates the user average threshold.
+     * This method is called from automaticCreateThresholdDialog. Calls automaticCreateThresholdFinish
+     * when calculating is finished.
+     */
     private void automaticCreateThresholdAction() {
         final AmplitudeThresholdTask task = new AmplitudeThresholdTask();
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyAlertDialogStyle);
@@ -234,6 +263,11 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
         timer.start();
     }
 
+    /**
+     * Creates and displays a dialog to notify the user that their average threshold was created and saved.
+     * This method is called from automaticCreateThresholdFinish.
+     * @param threshold the calculated average value
+     */
     private void automaticCreateThresholdFinish(final double threshold) {
         String part1 = getString(R.string.finish_dilog_message1);
         String part2 = getString(R.string.finish_dilog_message2);
@@ -252,6 +286,12 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
         builder.show();
     }
 
+    /**
+     * Adjusts the sliders on the screen to their positions based on the threshold value that is passed.
+     * Sets the threshold value to the correct position based on the max value calculated from the
+     * value passed.
+     * @param threshold the based value to set the slider progress positions too
+     */
     private void adjustSlidersAndBar(double threshold) {
         if (threshold > MAX_THRESHOLD) {
             threshold = MAX_THRESHOLD;
@@ -275,6 +315,9 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
 
     }
 
+    /**
+     * Saves the current amplitude threshold and max values to TranslaTa's user settings
+     */
     private void save () {
         TranslaTaSettings.setMaxAmplitude(maxSetting);
         TranslaTaSettings.setAmplitudeThreshold(thresholdSetting);
@@ -282,17 +325,30 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
         //Toast.makeText(this, "saved", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Listener function that allows the slider to be changed based on a set internal flag in the amplitude settings activity
+     * Allows the sliders to be selectable and movable if the user is in manual amplitude config mode, otherwise not
+     * @param v the slider being selected as a view (not used)
+     * @param event The motion event om the slider (not user)
+     * @return true if the sliders should not be selectable by the user, false otherwise
+     */
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         return lockSeek;
     }
 
-
+    /**
+     * Thread to capture audio from the microphone and convert the average amplitude until the
+     * thread is called to stop.
+     */
     private class AmplitudeThresholdTask extends Thread {
 
         private boolean run = true;
         private AmplitudeAverageCalculator calculator = new AmplitudeAverageCalculator();
 
+        /**
+         * Starts the thread. begins to capture audio and add values to a amplitude average calculator
+         */
         @Override
         public void run() {
             updateBar = false;
@@ -308,6 +364,9 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
             }
         }
 
+        /**
+         * Stops the thread from capturing audio and adding to the average amplitude calculator
+         */
         public void stopRun() {
             if (run) {
                 run = false;
@@ -321,14 +380,27 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
 
         }
 
+        /**
+         * Retrieves the calculated average amplitude value
+         * @return the average amplitude threshold
+         */
         public double getAverageAmplitude() {
             return calculator.getAverageAmp();
         }
+
+        /**
+         * Retrieves the amount of values which where added to the calculator
+         * @return the count of values in the calculator
+         */
         public int getCount() {
             return calculator.getCount();
         }
     }
 
+    /**
+     * Take care of popping the fragment back stack or finishing the activity as appropriate.
+     * Stops the microphone from capturing audio before it finishes the activity
+     */
     @Override
     public void onBackPressed() {
         super.onBackPressed();
