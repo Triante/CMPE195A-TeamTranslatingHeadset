@@ -36,7 +36,10 @@ public class IBMSpeechToText {
     double amp = 0;
     double vol = 0;
 
-
+    /**
+     * IBM SpeechToText constructor
+     * @param instance context from the main activity to access TranslaTa assets
+     */
     public IBMSpeechToText(Context instance) {
         this.instance = instance;
         messagesRecognized = new ArrayList<>();

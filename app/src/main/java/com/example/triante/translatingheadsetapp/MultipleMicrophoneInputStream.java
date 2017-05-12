@@ -19,7 +19,7 @@ import com.ibm.watson.developer_cloud.android.library.audio.opus.OggOpusEnc;
 import com.ibm.watson.developer_cloud.android.library.audio.utils.ContentType;
 
 /**
- * Created by Jorge Aguiniga on 2/14/2017.
+ * Modified by Jorge Aguiniga on 2/14/2017.
  *
  * Based and modified from MicrophoneInputStream.java from IBM Watson Developer Cloud Android-SDK
  * to support being able to handle multiple objects to read from the microphone rather than one based
@@ -54,7 +54,10 @@ public final class MultipleMicrophoneInputStream extends InputStream implements 
     private boolean hasAmplitudeLister = false;
     private int currentUnusedID = 0;
 
-
+    /**
+     * Constructor for MultipleMicrophoneInputStream
+     * @param amount the amount of MicrophoneInputStreamReaders that are going to read from this stream
+     */
     public MultipleMicrophoneInputStream(int amount) {
         captureThread = new MicrophoneCaptureThread(this, false);
         CONTENT_TYPE = ContentType.RAW;
@@ -71,6 +74,11 @@ public final class MultipleMicrophoneInputStream extends InputStream implements 
         }
     }
 
+    /**
+     * Constructor for MultipleMicrophoneInputStream
+     * @param amount the amount of MicrophoneInputStreamReaders that are going to read from this stream
+     * @param opusEncoded true if the audio will be Opus encoded, false otherwise
+     */
     public MultipleMicrophoneInputStream(int amount, boolean opusEncoded) {
         captureThread = new MicrophoneCaptureThread(this, opusEncoded);
         if (opusEncoded) {
@@ -92,35 +100,68 @@ public final class MultipleMicrophoneInputStream extends InputStream implements 
         }
     }
 
+    /**
+     * Starts the audio capture thread
+     */
     public void startRecording() {
         captureThread.start();
     }
 
+    /**
+     * Not Supported, Call read(int readerID, byte[]) or read(int readerID, byte[] buffer, int byteOffset, int byteCount)
+     * @return UnsupportedOperationException
+     * @throws UnsupportedOperationException
+     */
     @Override
     public int read() throws IOException {
         throw new UnsupportedOperationException("Call read(int readerID, byte[]) or read(int readerID, byte[] buffer, int byteOffset, int byteCount)");
     }
 
+    /**
+     * Not Supported, Call read(int readerID, byte[]) or read(int readerID, byte[] buffer, int byteOffset, int byteCount)
+     * @return UnsupportedOperationException
+     * @throws UnsupportedOperationException
+     */
     @Override
     public int read(byte[] buffer, int byteOffset, int byteCount) throws IOException {
         throw new UnsupportedOperationException("Call read(int readerID, byte[]) or read(int readerID, byte[] buffer, int byteOffset, int byteCount)");
-        //return is.read(buffer, byteOffset, byteCount);
     }
 
+    /**
+     * Reads the bytes from byteOffset to byteCount from captured audio and stores them in the byte array buffer
+     * @param readerID the MicrophoneInputStreamReader's ID to read from the correct buffer
+     * @return the number of bytes actually read or -1 if the end of the stream
+     * @throws IOException
+     */
     public int read(int readerID, byte[] buffer, int byteOffset, int byteCount) throws IOException {
         return is[readerID].read(buffer, byteOffset, byteCount);
     }
 
+    /**
+     * Not Supported, Call read(int readerID, byte[]) or read(int readerID, byte[] buffer, int byteOffset, int byteCount)
+     * @return UnsupportedOperationException
+     * @throws UnsupportedOperationException
+     */
     @Override
     public int read(byte[] buffer) throws IOException {
         throw new UnsupportedOperationException("Call read(int readerID, byte[]) or read(int readerID, byte[] buffer, int byteOffset, int byteCount)");
         //return read(buffer, 0, buffer.length);
     }
 
+    /**
+     * Reads the bytes from captured audio and stores them in the byte array buffer
+     * @param readerID the MicrophoneInputStreamReader's ID to read from the correct buffer
+     * @return the number of bytes actually read or -1 if the end of the stream
+     * @throws IOException
+     */
     public int read(int readerID, byte[] buffer) throws IOException {
         return read(readerID, buffer, 0, buffer.length);
     }
 
+    /**
+     * Ends the audio capture thread and safely closes the input stream
+     * @throws IOException
+     */
     @Override
     public void close() throws IOException {
         captureThread.end();
@@ -130,6 +171,13 @@ public final class MultipleMicrophoneInputStream extends InputStream implements 
         }
     }
 
+    /**
+     * Consumes the data from the audio capture and adds it to different buffers to allow the MicrophoneInputStreamReaders
+     * to read from one audio capture thread
+     * @param data the data to be consumed
+     * @param amplitude the amplitude of the audio data
+     * @param volume the volume of the audio data
+     */
     @Override
     public void consume(byte[] data, double amplitude, double volume) {
         try {
@@ -141,6 +189,11 @@ public final class MultipleMicrophoneInputStream extends InputStream implements 
         }
     }
 
+    /**
+     * Consumes the data from the audio capture and adds it to different buffers to allow the MicrophoneInputStreamReaders
+     * to read from one audio capture thread
+     * @param data the data to be consumed
+     */
     @Override
     public void consume(byte[] data) {
         try {
@@ -152,15 +205,22 @@ public final class MultipleMicrophoneInputStream extends InputStream implements 
         }
     }
 
+    /**
+     * Set the amplitude listener to allow other classes to handle the amplitude and volume data
+     * @param listener the amplitude listener
+     */
     public void setOnAmplitudeListener(AmplitudeListener listener) {
         amplitudeListener = listener;
         hasAmplitudeLister = true;
     }
 
-    public String getContentType() {
-        return CONTENT_TYPE.toString();
-    }
-
+    /**
+     * Returns the next ID available to be assigned for a MicrophoneInputStreamReaders allowing it
+     * to read from a specified buffer in the MultipleMicrophoneInputStream. The amount of IDs issued
+     * are equal to the amount specified when MultipleMicrophoneInputStream was initialized.
+     * @return the next integer ID available to read from a buffer
+     * @throws Exception If a new ID is attempted to be assigned after all have been used, an exception will be thrown
+     */
     public int assignID() {
         try {
             if (currentUnusedID == os.length) {
@@ -175,8 +235,6 @@ public final class MultipleMicrophoneInputStream extends InputStream implements 
         currentUnusedID++;
         return id;
     }
-
-
 
     /**
      * Based and modified from MicrophoneCaptureThread.java from IBM Watson Developer Cloud Android-SDK
@@ -208,15 +266,25 @@ public final class MultipleMicrophoneInputStream extends InputStream implements 
 
         private final AudioConsumer consumer;
         private boolean stop;
-        private boolean stopped;
 
+        /**
+         * Constructor for the MicrophoneCaptureThread
+         * @param consumer the object (MultipleMicrophoneInputStream) that will consume the audio data
+         * @param opusEncoded true if the audio needs to be opusEncoded, false otherwise
+         */
         public MicrophoneCaptureThread(AudioConsumer consumer, boolean opusEncoded) {
             android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_AUDIO);
             this.consumer = consumer;
             this.opusEncoded = opusEncoded;
         }
 
-        @Override public void run() {
+        /**
+         * Captures audio from the mobile devices microphone. The audio data is consumed by the
+         * AudioConsumer object to be used outside of the audio capture thread. The audio amplitude and
+         * volume data is also passed to the listener from the audio capture thread.
+         */
+        @Override
+        public void run() {
             int bufferSize = Math.max(SAMPLE_RATE / 2, AudioRecord.getMinBufferSize(SAMPLE_RATE,
                     AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT));
             short[] buffer = new short[bufferSize]; // use short to hold 16-bit PCM encoding
@@ -273,7 +341,6 @@ public final class MultipleMicrophoneInputStream extends InputStream implements 
             }
             record.stop();
             record.release();
-            stopped = true;
         }
         /**
          * Gracefully stops recording microphone data. Make sure this is called when data no longer needs
