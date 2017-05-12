@@ -7,4 +7,5 @@
 /build
 /captures
 .externalNativeBuild
-/app/src/main/res/values/api_keys.xml
+/app/build.gradle
+build.gradle
