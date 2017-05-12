@@ -31,32 +31,29 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
 
     private int myLanguage = 0; //User's preferred languageSettings
     private int respLanguage = 0; //Other party's preferred languageSettings
-    private int myVoice = 0;
-    private int respVoice = 0;
-    private boolean profanityFilter = true;
-    private boolean ignoreFirstRunForMyLanguage = true;
-    private boolean ignoreFirstRunForRespLanguage = true;
-
+    private int myVoice = 0; //User's preferred voice for the language chosen
+    private int respVoice = 0; //Other party's voice for the language chosen
+    private boolean profanityFilter = true; //flag for checking if profanity filter is on or not
+    private boolean ignoreFirstRunForMyLanguage = true; //flag for ignoring start-up language for user at first launch
+    private boolean ignoreFirstRunForRespLanguage = true; //flag for ignoring start-up language for other party at first launch
     private Spinner spinMyLang, spinRespLang, spinMyVoice, spinRespVoice; //Spinners used for displaying all possible languages
     private Button bAmplitudeSettings, bSave; //Button for saving preferences
-    private SwitchCompat switchCompat;
+    private SwitchCompat switchCompat; //switchCompat instance
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        
-        /* Initializes and starts the view*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         
-        /* Initializes the sae button*/
+        // Initializes the save button
         bSave = (Button) findViewById(R.id.bSave);
 
-        /* Initiates filter switch*/
+        // Initiates filter switch
         switchCompat = (SwitchCompat) findViewById(R.id.switchCompat);
         switchCompat.setOnCheckedChangeListener(this);
         
-        /* Initializes the spinners used to hold the languageSettings options*/
+        // Initializes the spinners used to hold the languageSettings options
         ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.LanguageArray, R.layout.spinner_item);
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinMyLang = (Spinner) findViewById(R.id.spinMyLang);
@@ -87,7 +84,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
 
 
         
-        /* Defines the on click listener for the save button*/
+        // Defines the on click listener for the save button
         bSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,7 +102,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
             }
         });
 
-        /* Sets the on click listeners for the button and spinners */
+        // Sets the on click listeners for the button and spinners
         spinMyLang.setOnItemSelectedListener(new SpinnerSelectionListener(0));
         spinMyVoice.setOnItemSelectedListener(new SpinnerSelectionListener(1));
         spinRespLang.setOnItemSelectedListener(new SpinnerSelectionListener(2));
@@ -116,6 +113,8 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     @Override
     protected void onStart() {
         super.onStart();
+
+        //First launch of the settings activity, show language and voice settings
         Log.d("spinMyVoice", myVoice + "");
         Log.d("spinRespVoice", respVoice + "");
         Log.d("Load Pos After Init", spinMyVoice.getSelectedItemPosition() + "");
@@ -123,20 +122,20 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
 
     }
 
-    /* Method to save the languageSettings settings for the session*/
+    /**
+     * Saves the language settings for the session
+     */
     private void save() {
+
         //save user language preferences
         if (myLanguage == 0) {
             if (myVoice == 0) {
                 LanguageSettings.setLanguage(true, ENGLISH_US_ALLISON);
-            }
-            else if (myVoice == 1) {
+            } else if (myVoice == 1) {
                 LanguageSettings.setLanguage(true, ENGLISH_US_LISA);
-            }
-            else if (myVoice == 2) {
+            } else if (myVoice == 2) {
                 LanguageSettings.setLanguage(true, ENGLISH_US_MICHEAL);
-            }
-            else if (myVoice == 3) {
+            } else if (myVoice == 3) {
                 LanguageSettings.setLanguage(true, ENGLISH_GB_KATE);
             }
         }
@@ -158,7 +157,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         else if (myLanguage == 3) LanguageSettings.setLanguage(true, JAPANESE_EMI);
         else if (myLanguage == 4) LanguageSettings.setLanguage(true, PORTUGUESE_BR_IABELA);
 
-        //save user language preferences
+        //save other party language preferences
         if (respLanguage == 0) {
             if (respVoice == 0) {
                 LanguageSettings.setLanguage(false, ENGLISH_US_ALLISON);
@@ -200,9 +199,13 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         TranslaTaSettings.saveLanguageSettings(this);
     }
 
-    /* Defines all the options for the spinners*/
+    /**
+     * Defines all the options for the spinners
+     */
     private void initiateSpinnerPositionValues() {
-        switch (LanguageSettings.getLanguage(true)) { //Sets the languageSettings values for the user's languageSettings preference
+
+        //Sets the language settings values for the user on the screen
+        switch (LanguageSettings.getLanguage(true)) {
             case ENGLISH_GB_KATE:
                 myVoice = 3;
                 myLanguage = 0;
@@ -250,7 +253,8 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                 break;
         }
 
-        switch (LanguageSettings.getLanguage(false)) { //Sets the languageSettings values for the other party's languageSettings preference
+        //Sets the language settings values for the other party on the screen
+        switch (LanguageSettings.getLanguage(false)) {
             case ENGLISH_GB_KATE:
                 respVoice = 3;
                 respLanguage = 0;
@@ -298,10 +302,16 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                 break;
         }
 
+        //sets flag for the profanity filter
         profanityFilter = TranslaTaSettings.isProfanityFilterActive();
 
     }
 
+    /**
+     * Sets the spinner values for the voice attribute of the settings
+     * @param lang (language to extract voices for)
+     * @param myLang (whether it is user's language or other party's language)
+     */
     private void setVoiceSpinner(int lang, boolean myLang) {
         ArrayAdapter adapter;
         if (lang == 0) {
@@ -333,24 +343,25 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         profanityFilter = isChecked;
     }
 
-    /* Inner class for managing the data that is retrieved from each option of the spinners*/
+    /**
+     * Inner class for managing the data that is retrieved from each option of the spinners
+     */
     private class SpinnerSelectionListener implements AdapterView.OnItemSelectedListener {
 
-        /**
-         * 0: my lang
-         * 1: my voice
-         * 2: party lang
-         * 3: party voice
-         */
-        private int spinnerID;
+        private int spinnerID; // 0: my language, 1: my voice, 2: party language, 3: party voice
 
+        /**
+         * Constructor for SpinnerSelectionListener
+         * @param ID (id of the spinner menu item)
+         */
         public SpinnerSelectionListener(int ID) {
             spinnerID = ID;
         }
-        
-        /* Method to store the languageSettings chosen when user selects one of the options*/
+
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+            // Stores the language settings chosen when user selects one of the options
             if (spinnerID == 0)
             {
                 if (ignoreFirstRunForMyLanguage) {
@@ -376,11 +387,10 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
             }
             else respVoice = position;
         }
-        
-        /* Method to contorl what happens when none of the options are selected */
+
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
-            //No implementation yet
+            // Controls what happens when none of the options are selected. Nothing needed to be changed here
         }
     }
 }
