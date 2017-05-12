@@ -18,6 +18,9 @@ import com.ibm.watson.developer_cloud.android.library.audio.AmplitudeListener;
 
 import java.io.IOException;
 
+/**
+ * Class for rendering the Settings Ativity for the TranslaTa application
+ */
 public class AmplitudeSettingsActivity extends AppCompatActivity implements AmplitudeListener, View.OnClickListener, SeekBar.OnSeekBarChangeListener, SeekBar.OnTouchListener{
 
     private ProgressBar amplitudeBar;
@@ -34,6 +37,12 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
     private boolean lockSeek = false;
     private boolean updateBar = false;
 
+    /**
+     * Perform initialization for the Translata's Amplitude Settings activity
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down
+     *                           then this Bundle contains the data it most recently supplied in onSaveInstanceState.
+     *                           Note: Otherwise it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +80,11 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
         adjustSlidersAndBar(thresholdSetting);
     }
 
+    /**
+     * Listener function that provides the actions for the Amplitude Setting activity whener one of the following buttons are clicked:
+     * bRecordAmplitude, bConfigAmplitude, bDone
+     * @param v the button clicked as a view
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -102,6 +116,7 @@ public class AmplitudeSettingsActivity extends AppCompatActivity implements Ampl
                 break;
         }
     }
+
 
     @Override
     public void onSample(double amplitude, double volume) {

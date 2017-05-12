@@ -235,7 +235,7 @@ public class IBMSpeechToText {
                 Log.d("finalAmpAve", "User Saved Average:     " + userAmplitudeLevel);
                 Log.d("finalAmpAve", "Acceptable Range for Average:     " + (userAmplitudeLevel - (userAmplitudeLevel * .15)));
                 Log.d("finalAmpAve", "Final Amplitude Average:     " + calculator.getAverageAmp());
-                Log.d("finalAmpAve", "Final Amplitude Mean:     " + calculator.getMean());
+                Log.d("finalAmpAve", "Final Amplitude Mean:     " + calculator.getMedium());
                 Log.d("finalAmpAve", "Final Amplitude Count:     " + calculator.getCount());
                 Log.d("finalAmpAve", "Final Amplitude Mode:     " + calculator.getMode());
                 Log.d("finalAmpAve", "Final Amplitude Mode Next:     " + calculator.getModeNext());
