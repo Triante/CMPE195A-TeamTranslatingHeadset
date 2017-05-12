@@ -1,15 +1,11 @@
 package com.example.triante.translatingheadsetapp;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,34 +15,32 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ScrollView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 
+/**
+ * Main Activity for showing the application
+ */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Toolbar myToolBar;
-    private WebView hBox;
-    private Button bConnect, bOff;
-    private ImageView headsetImage, headsetGlowImage, speakerImage, speakerGlowImage;
-    private static boolean onHeadset = false;
-    private static boolean onSpeaker = false;
-    private static boolean isTranslating = false;
-    private Bluetooth btconnection;
-    private SpeechToSpeech s2s;
-
-    private int test = 1;
-
+    private Toolbar myToolBar; //toolbar button
+    private WebView hBox; //chat history view
+    private Button bConnect, bOff; //Connect and Off buttons
+    private ImageView headsetImage, headsetGlowImage, speakerImage, speakerGlowImage; //headset and speaker images
+    private static boolean onHeadset = false; //if headset is on
+    private static boolean onSpeaker = false; //if speaker is on
+    private static boolean isTranslating = false; //if app is in translating state
+    private Bluetooth btconnection; //checks for Bluetooth headset and speaker
+    private SpeechToSpeech s2s; //begins the speech-to-speech system
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Set-up settings
         TranslaTaSettings.initiateTranslaTaSettings(this);
+
+        //initialize speech-to-speech system
         s2s = new SpeechToSpeech(this, new ChatHistoryAppender() {
             @Override
             public void onAddUserText(String text) {
@@ -83,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         });
+
+        //initialize all views for the main activity
         myToolBar = (Toolbar) findViewById(R.id.mainActivity_toolbar);
         setSupportActionBar(myToolBar);
         bConnect = (Button) findViewById(R.id.bConnect_main);
@@ -96,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         headsetGlowImage = (ImageView) findViewById(R.id.headset_glow_mainImage);
         speakerImage = (ImageView) findViewById(R.id.speaker_mainImage);
         speakerGlowImage = (ImageView) findViewById(R.id.speaker_glow_mainImage);
+
+        //initialize the Bluetooth connection check
         btconnection = new Bluetooth(this,  new ChatHistoryAppender() {
             @Override
             public void onAddUserText(String text) {
@@ -118,17 +116,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         });
 
+        //Initialize the web view for chat history
         hBox = (WebView) findViewById(R.id.wvChatHistory);
         hBox.loadUrl("file:///android_asset/chathtml.html");
         hBox.getSettings().setJavaScriptEnabled(true);
         hBox.setWebViewClient(new WebViewClient() {
             public void onPageFinished(WebView view, String url) {
-//                while (test < 15) {
-//                    addUserTextToWebView("Is this question number "+ test +  "?");
-//                    addPartyTextToWebView("Yes, this is answer number " + test + "?");
-//                    test++;
-//                    hBox.scrollTo(0, 0);
-//                }
+
             }
         });
     }
@@ -144,14 +138,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+
+            // When connect button is pressed
             case R.id.bConnect_main:
 
+                //Condition to start checking for Bluetooth devices
                 if(bConnect.getText().toString().equalsIgnoreCase("Connect")) {
                     //btconnection.checkConnection();
                     turnOn("speaker");
                     turnOn("headset");
                     bConnect.setText("Translate");
                 }
+                //condition if user wants to start the translating stage
                 else if (bConnect.getText().toString().equalsIgnoreCase("Translate"))
                 {
                     String t = "Translating";
@@ -161,9 +159,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     bOff.setClickable(true);
                     s2s.beginListening();
                 }
-
-
                 break;
+
+            // When off button is pressed, reset everything
             case R.id.off_toolbarButton:
                 onHeadset = false;
                 onSpeaker = false;
@@ -190,7 +188,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        //When one of the options from the default settings button is pressed
         switch (item.getItemId()) {
+
+            // TranslaTa settings option
             case R.id.action_settings:
                 Intent options = new Intent(this, SettingsActivity.class);
                 if (isTranslating) {
@@ -198,6 +200,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 startActivity(options); //Starts new settings activity
                 break;
+
+            //Demo Activity
             case R.id.action_demo:
                 Intent demo = new Intent(this, DemoActivity.class);
                 if (isTranslating) {
@@ -213,6 +217,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onResume() {
+
+        //When user enters app again after minimizing
         if (onHeadset && onSpeaker) {
             String t = "Translate";
             bConnect.setText(t);
@@ -224,6 +230,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onResume();
     }
 
+    /**
+     * Turn on the image for one of the devices (headset or speaker)
+     * @param device (device whose image on the screen needs to be turned on)
+     */
     public void turnOn (String device)
     {
         if (device.equalsIgnoreCase("headset") && !onHeadset)
@@ -250,6 +260,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /**
+     * Turns off the highlight from the speaker and headset images
+     * @param profile (the device or devices that need to be turned off)
+     */
     public void turnOff(String profile)
     {
         if (profile.equalsIgnoreCase("headset"))
@@ -280,13 +294,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             onSpeaker = false;
         }
     }
+
+    /**
+     * Changes the headset/speaker image from plain image to highlighted image and vice versa
+     * @param view (image to highlight or return to normal)
+     * @param toOn (flag to signal whether to highlight or return image to normal)
+     */
     private void changeSignals(final ImageView view, final boolean toOn) {
+
+        // Turn on the highlight, play the turn on animation
         if (toOn) {
             AlphaAnimation swap = new AlphaAnimation(0,1);
             swap.setDuration(500);
             view.setVisibility(View.VISIBLE);
             view.startAnimation(swap);
         }
+        //Turn off the highlight, play the turn off animation
         else {
             AlphaAnimation swap = new AlphaAnimation(1,0);
             swap.setDuration(500);
@@ -303,18 +326,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /**
+     * Adds the user text to the chat history whenever the user speaks
+     * @param text (speech input from the user)
+     */
     private void addUserTextToWebView(String text) {
         String userT = "User:  " + text;
         String url = "javascript:addUserText('"+ userT +"')";
         hBox.loadUrl(url);
     }
 
+    /**
+     * Adds the other party text to the chat history whenever the other party speaks
+     * @param text (speech input from the other party
+     */
     private void addPartyTextToWebView(String text) {
         String partyT = "Party:  " + text;
         String url = "javascript:addPartyText('"+ partyT +"')";
         hBox.loadUrl(url);
     }
 
+    /**
+     * Adds error messages to the chat history when checking for Bluetooth devices
+     * @param text (error message to print to chat history)
+     */
     private void addErrorTextToWebView(String text)
     {
         String errorT = "Error:  " + text;
@@ -322,7 +357,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         hBox.loadUrl(url);
     }
 
-
+    /**
+     * Chat History interface for letting the user and other party know what they have said and what has been translated
+     */
     public interface ChatHistoryAppender {
 
         void onAddUserText(String text);
@@ -334,6 +371,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        //Bluetooth enabling request handling
         if(requestCode == Bluetooth.BLUETOOTH_REQUEST)
         {
             if (resultCode == Activity.RESULT_OK)

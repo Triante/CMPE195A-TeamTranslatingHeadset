@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import static com.example.triante.translatingheadsetapp.LanguageSettings.Language.ENGLISH_GB_KATE;
 import static com.example.triante.translatingheadsetapp.LanguageSettings.Language.ENGLISH_US_ALLISON;
 import static com.example.triante.translatingheadsetapp.LanguageSettings.Language.ENGLISH_US_LISA;
@@ -25,7 +24,9 @@ import static com.example.triante.translatingheadsetapp.LanguageSettings.Languag
 import static com.example.triante.translatingheadsetapp.LanguageSettings.Language.SPANISH_MX_SOFIA;
 import static com.example.triante.translatingheadsetapp.LanguageSettings.Language.SPANISH_US_SOFIA;
 
-/* Activity used for allowing user to change languages*/
+/**
+ *  Activity used for allowing user to change languages, amplitude threshold for determining who spoke, etc.
+ */
 public class SettingsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
     private int myLanguage = 0; //User's preferred languageSettings
