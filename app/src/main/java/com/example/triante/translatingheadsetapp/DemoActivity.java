@@ -18,7 +18,10 @@ import com.ibm.watson.developer_cloud.alchemy.v1.model.Language;
 
 import java.io.IOException;
 
-/* Main activity. Home to the UI for accessing the buttons for speech recognition, translation, and speech synthesis*/
+/**
+ *  Activity used for testing the components of TranslaTa; speech recognition, translation, speech synthesis, bluetooth
+ *  This activity will not be accessible upon final version of application. Class will be left internally for developing and testing purposes.
+ */
 public class DemoActivity extends AppCompatActivity implements View.OnClickListener {
 
     public Button bSpeechRecognition, bSpeechSynthesis, bTranslate, bTest, bSettings; //Main UI buttons

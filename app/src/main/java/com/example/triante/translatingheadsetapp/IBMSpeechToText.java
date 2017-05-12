@@ -16,24 +16,23 @@ import java.util.ArrayList;
 
 /**
  * Created by Jorge Aguiniga on 10/7/2016.
+ *
+ * Class for converting speech input into text based on a user-specified languageSettings input
+ * using IBM's Speech to Text services hosted on Bluemix.
  */
 
-/* Main class for converting speech input into text based on a user-specified languageSettings input */
 public class IBMSpeechToText {
     private Context instance; //instance of the main activity to send information from this class to the activity UI
-    private String message = ""; //placeholder for the speech being converted
     private ArrayList<Transcript> messagesRecognized;
-    private double amplitude; //placeholder for the peak amplitude of the speech input
 
     private SpeechToText speechToTextUser; //IBM-specific speech-to-text object
     private SpeechToText speechToTextParty;
-    //private MicrophoneInputStream micInput; //Input stream for getting the speech input from microphone
-    private MicrophoneInputStream micInput2;
     private MultipleMicrophoneInputStream micDuelInput;
     private MicrophoneInputStreamReader streamOne;
     private MicrophoneInputStreamReader streamTwo;
     private AmplitudeAverageCalculator calculator;
     private boolean isInRecording; //flag for use to check if system is currently in recording mode
+    private static boolean userDomLock = false;
     double amp = 0;
     double vol = 0;
 
@@ -62,7 +61,10 @@ public class IBMSpeechToText {
         calculator = new AmplitudeAverageCalculator();
     }
 
-    /* Getter for extracting current speech converted by the IBM Speech-to-Text object */
+    /**
+     * Getter for retrieving the oldest speech transcript converted by the IBM Speech-to-Text object
+     * @return the next speech transcript on te list, null if empty
+     */
     public synchronized Transcript speech() {
         if (isMessageRecognizedEmpty()) return null;
         int index = messagesRecognized.size()-1;
@@ -70,6 +72,10 @@ public class IBMSpeechToText {
         return transcript;
     }
 
+    /**
+     * Checks if there are any recognized speech transcripts to be retrieved
+     * @return true if recognized speech list has content, false otherwise
+     */
     public synchronized boolean isSpeechAvailable() {
         if (messagesRecognized.isEmpty()) {
             return false;
@@ -79,6 +85,12 @@ public class IBMSpeechToText {
         }
     }
 
+    /**
+     * Helper method to add recognized speech text and it's user to a ranscript object and then storing it
+     * in the recognized transcript list
+     * @param temp the recognized string
+     * @param isUser the user who spoke
+     */
     private synchronized void addToMessagesRecognized(String temp, boolean isUser) {
         int user = 1;
         if (isUser) user = 0;
@@ -86,26 +98,25 @@ public class IBMSpeechToText {
         messagesRecognized.add(0, transcript);
         }
 
+    /**
+     * Helper function to check if the recognized transcript list is empty
+     * @return true if list is empty, false otherwise
+     */
     private synchronized boolean isMessageRecognizedEmpty() {
         return messagesRecognized.isEmpty();
     }
 
-    /* Method to begin the recording process*/
+    /**
+     *  Begins the speech recognition process for both the user and the party.
+     */
     public void record() {
         /* Don't start recording process if it is already running */
         if (isInRecording) return;
-        
-        
-        //micInput =  new MicrophoneInputStream();
+
         micDuelInput = new MultipleMicrophoneInputStream(2);
         streamOne = new MicrophoneInputStreamReader(micDuelInput);
         streamTwo = new MicrophoneInputStreamReader(micDuelInput);
-        /*
-        Could be used to create two different micInputs with different AmplitudeListeners, one for user and another for party
-        Therefore two different speechToTextUser services running, one for user and another for party
-        One SpeechToText Service is needed for one languageSettings and another service for the second languageSettings
-        Each languageSettings will have therefore different Recognize options that only happen when a certain amplitude range is reached
-        */
+
         AmplitudeListener listener = new AmplitudeListener() {
             @Override
             public void onSample(double amplitude, double volume) {
@@ -113,10 +124,16 @@ public class IBMSpeechToText {
                 vol = volume;
             }
         };
-        //micInput.setOnAmplitudeListener(listener);
+
         micDuelInput.setOnAmplitudeListener(listener);
         micDuelInput.startRecording();
-        /* Make the recording its own separate process */
+
+        /*
+        Two different speechToTextUser services running, one for user and another for party
+        One SpeechToText Service is needed for one languageSettings and another service for the second languageSettings
+        Each languageSettings will have therefore different Recognize options that only happen when a certain amplitude range is reached
+        Make the recording its own separate process
+        */
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -137,18 +154,22 @@ public class IBMSpeechToText {
         isInRecording = true;
     }
 
-    /* Method to end the speech recognition process*/
+    /**
+     *  Method to end the speech recognition process
+     */
     public void end() throws IOException {
         /* Don't continue if process is not already running */
         if (!isInRecording) return;
-        
-        //micInput.close();
+
         micDuelInput.close();
         isInRecording = false;
-
     }
-    
-    /* Retrieve preferences for the speech-to-text process*/
+
+    /**
+     * Creates the preferences to be use during a recognize call in IBM's SpeechToText service using values retrieved from TranslaTa's language settings
+     * @param user 0 to build preferences for the user, 1 for the party
+     * @return the preferences for IBM's SpeechToText service
+     */
     private RecognizeOptions getRecognizeOptions(int user) {
         /* Create and initialize an options builder for setting up speech-to-text preferences */
         RecognizeOptions.Builder build = new RecognizeOptions.Builder();
@@ -172,18 +193,28 @@ public class IBMSpeechToText {
         return option;
     }
 
-    private static boolean userDomLock = true;
-    /* Inner class for extracting the converted speech from the Speech-to-text object */
+    /**
+     *  Inner class for extracting the converted speech from IBM's Speech-to-text object and
+     *  storing it into an ArrayList containing all the transcripts
+     */
     private class MicrophoneRecognizeCallback extends BaseRecognizeCallback {
 
         private boolean isUser = false;
 
-
+        /**
+         * Constructor for MicrophoneRecognizeCallback
+         * @param user 0 if the speech transcript should be tied to the user, 1 if tied to the party
+         */
         public MicrophoneRecognizeCallback(int user) {
             if (user == 0) isUser = true;
         }
 
-
+        /**
+         * Method to handle the transcript retrieved from IBM's SpeechToText service.
+         * Based on the amplitude of the speech, determines whether the transcript was the user's or party's,
+         * then adds the transcript to a list of already recognized speech.
+         * @param speechResults the results from IBM's SpeechToText class
+         */
         @Override
         public void onTranscription(SpeechResults speechResults) {
             /* Does not continue if the system is not recording */
@@ -196,8 +227,6 @@ public class IBMSpeechToText {
                 {
                     Log.d("ampAve", "Current Average:     " + calculator.getAverageAmp());
                     userDomLock = true;
-                    //streamOne.setBlockStatus(false);
-                    //streamTwo.setBlockStatus(true);
                     getOnTranscript(speechResults);
                 }
                 else {
@@ -207,31 +236,25 @@ public class IBMSpeechToText {
             else {
                 if (calculator.getAverageAmp() <= userAmplitudeLevel - (userAmplitudeLevel * .15) && calculator.countAboveOne() && !userDomLock) {
                     Log.d("ampAve", "Current Average:     " + calculator.getAverageAmp());
-                    //streamOne.setBlockStatus(true);
-                    //streamTwo.setBlockStatus(false);
                     getOnTranscript(speechResults);
                 }
             }
-            //if (!isUser) getOnTranscript(speechResults);
 
 
         }
 
+        /**
+         * Helper method to add the speech trasncript to the recognized list. Only adds the transcript if
+         * the speech result is final. Method also resets the calculator back to 0.
+         * @param speechResults the speech results from IBM's SpeechToText service
+         */
         private void getOnTranscript(SpeechResults speechResults) {
             String temp = speechResults.getResults().get(0).getAlternatives().get(0).getTranscript();
-            //message = temp + "\nFinal: " +  speechResults.isFinal();
-            //final String mes = message;
-
-            String mes;
-            if (isUser) mes = "User Speech:   " + temp + "\nAverageAmp:   " + calculator.getAverageAmp();
-            else mes = "Party Speech:   " + temp + "\nAverageAmp:   " + calculator.getAverageAmp();
             if (speechResults.getResults().get(0).isFinal()) {
-                mes = mes + "\nFINAL";
                 streamOne.setBlockStatus(false);
                 streamTwo.setBlockStatus(false);
                 addToMessagesRecognized(temp, isUser);
                 int userAmplitudeLevel = TranslaTaSettings.getThresholdAmplitude();
-                mes = mes + "\nDID ENTER RESET CALC";
                 Log.d("finalAmpAve", "User Saved Average:     " + userAmplitudeLevel);
                 Log.d("finalAmpAve", "Acceptable Range for Average:     " + (userAmplitudeLevel - (userAmplitudeLevel * .15)));
                 Log.d("finalAmpAve", "Final Amplitude Average:     " + calculator.getAverageAmp());
@@ -244,11 +267,8 @@ public class IBMSpeechToText {
                 userDomLock = false;
             }
 
-
-            /* Writes the text to a text field on the current activity UI */
-            messageForTesting = mes;
         }
     }
-    public String messageForTesting = "";
+
 
 }
