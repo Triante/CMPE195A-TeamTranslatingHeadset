@@ -120,7 +120,7 @@ public class Bluetooth {
                     List<BluetoothDevice> headsetConnectedDevices = headset.getConnectedDevices();
                     if (headsetConnectedDevices.size() != 0) {
                         for (BluetoothDevice device : headsetConnectedDevices) {
-                            if (device.getAddress().equalsIgnoreCase(main.getString(R.string.headset_key))) {
+                            if (device.getName().equalsIgnoreCase("RN52-0201")) {
                                 main.turnOn("headset");
                                 isOnHeadset = true;
                                 break;
