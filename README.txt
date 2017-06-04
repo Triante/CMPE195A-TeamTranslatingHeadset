@@ -115,7 +115,7 @@
 ####				   filter is off. Otherwise, the filter is on							   ####
 ####																   ####
 ####	B. Contents of Demo Video												   ####
-####																   ####
+####		https://drive.google.com/open?id=0B0VRY9eFTJOgUkJFdGVEeE9fTmc                 														   ####
 ####		The demo video demonstrates how TranslaTa is works. It includes an overview of the domain (oral communication),	   ####
 ####		the problem (language barriers), an initial solution (interpreters), state of the art (The Pilot), a demo of our   ####
 ####		solution, the components of the system, and the conclusion.							   ####
