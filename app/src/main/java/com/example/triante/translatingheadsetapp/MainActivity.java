@@ -144,15 +144,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 //Condition to start checking for Bluetooth devices
                 if(bConnect.getText().toString().equalsIgnoreCase("Connect")) {
+                    /*
                     //For use with specific speaker and headset
                     btconnection.checkConnection();
+                    */
 
-                    /*
+
                     //Open this version to use without specific speaker and headset
                     turnOn("speaker");
                     turnOn("headset");
                     bConnect.setText("Translate");
-                    */
+
                 }
                 //condition if user wants to start the translating stage
                 else if (bConnect.getText().toString().equalsIgnoreCase("Translate"))

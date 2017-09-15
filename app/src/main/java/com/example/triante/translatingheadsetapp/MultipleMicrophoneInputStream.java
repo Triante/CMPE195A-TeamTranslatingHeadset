@@ -1,9 +1,13 @@
 package com.example.triante.translatingheadsetapp;
 
+import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Process;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import java.io.IOException;
@@ -289,8 +293,11 @@ public final class MultipleMicrophoneInputStream extends InputStream implements 
                     AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT));
             short[] buffer = new short[bufferSize]; // use short to hold 16-bit PCM encoding
 
+            int REQUEST_MICROPHONE = 0;
+
             AudioRecord record = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE,
                     AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize);
+
             record.startRecording();
 
             if (opusEncoded) {

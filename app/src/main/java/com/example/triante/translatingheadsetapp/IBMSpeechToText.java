@@ -49,7 +49,7 @@ public class IBMSpeechToText {
         String sstPass = instance.getString(R.string.SpeechRecognitionPassword);
         
         /* URL for Cloud*/
-        String sstServiceURL = "https://stream.watsonplatform.net/speech-to-text/api";
+        String sstServiceURL = instance.getString(R.string.SpeechRecognitionURL);
         
         /* Initialize all other speech-to-text components (flags, library objects, etc.) */
         isInRecording = false;
